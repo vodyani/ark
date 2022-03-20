@@ -1,0 +1,38 @@
+name: "release"
+
+on:
+  push:
+    branches: [release]
+
+jobs:
+  check_and_test:
+    uses: vodyani/workflows/.github/workflows/pre-check-and-test.yml@master
+
+  publish_codecov:
+    needs: check_and_test
+    uses: vodyani/workflows/.github/workflows/publish-codecov.yml@master
+    secrets:
+      CODE_COV_CI_TOKEN: ${{ secrets.CODECOV_CI_TOKEN_BY_ARK }}
+
+  publish_package:
+    needs: check_and_test
+    uses: vodyani/workflows/.github/workflows/publish-npm-package.yml@master
+    secrets:
+      NPM_CI_TOKEN: ${{ secrets.NPM_CI_TOKEN }}
+    with:
+      enable_build: true
+
+  publish_release:
+    needs: [publish_codecov, publish_package]
+    uses: vodyani/workflows/.github/workflows/publish-release.yml@master
+    secrets:
+      GITHUB_CI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  auto_merge:
+    needs: [publish_release]
+    uses: vodyani/workflows/.github/workflows/auto-merge.yml@master
+    secrets:
+      GITHUB_CI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      source_branch: "release"
+      target_branch: "master"
