@@ -3,7 +3,7 @@
   "license": "MIT",
   "version": "0.0.0",
   "author": "ChoGathK",
-  "description": "☄ When you choose Ark, you get near-unlimited configuration control. When you log in to Ark, you'll be able to quickly handle configuration loading, merging, and listening in vodyani or any other nestjs-based application, and Ark will provide you limitless access to the configuration center.",
+  "description": "☄ When you choose ark, you get near-unlimited configuration control. and ark will provide you limitless access to the configuration center.",
   "homepage": "https://github.com/vodyani/ark#readme",
   "repository": {
     "type": "git",
