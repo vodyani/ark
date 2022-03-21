@@ -3,7 +3,7 @@
   "license": "MIT",
   "version": "0.0.0",
   "author": "ChoGathK",
-  "description": "🛸 When you select \"ark\", you have nearly unrestricted configuration options. and ark will supply you with an unlimited number of configuration centre queries.",
+  "description": "🛸 ark is vodyani's configuration management solution. By accessing ark, you can have maximum control over your local configuration, and if you want, ark can support unlimited configuration centers.",
   "homepage": "https://github.com/vodyani/ark#readme",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 # Vodyani ark
 
-*🛸 When you select "ark", you have nearly unrestricted configuration options. and ark will supply you with an unlimited number of configuration centre queries.*
+*🛸  "ark" is vodyani's configuration management solution. By accessing ark, you can have maximum control over your local configuration, and if you want, ark can support unlimited configuration centers.*
 
 [![Npm](https://img.shields.io/npm/v/@vodyani/ark)](https://www.npmjs.com/package/@vodyani/ark)
 [![Npm](https://img.shields.io/npm/dm/@vodyani/ark)](https://www.npmjs.com/package/@vodyani/ark)
