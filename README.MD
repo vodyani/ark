@@ -1,6 +1,6 @@
 # Vodyani ark
 
-*☄ When you choose "ark", you get near-unlimited configuration control. When you use ark, you'll be able to quickly handle configuration loading, merging, and listening in vodyani or any other nestjs-based application, and ark will provide you limitless access to the configuration center.*
+*🛸 When you select "ark", you have nearly unrestricted configuration options. and ark will supply you with an unlimited number of configuration centre queries.*
 
 [![Npm](https://img.shields.io/npm/v/@vodyani/ark)](https://www.npmjs.com/package/@vodyani/ark)
 [![Npm](https://img.shields.io/npm/dm/@vodyani/ark)](https://www.npmjs.com/package/@vodyani/ark)
