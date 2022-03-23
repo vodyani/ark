@@ -27,12 +27,3 @@ jobs:
     uses: vodyani/workflows/.github/workflows/publish-release.yml@master
     secrets:
       GITHUB_CI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  auto_merge:
-    needs: [publish_release]
-    uses: vodyani/workflows/.github/workflows/auto-merge.yml@master
-    secrets:
-      GITHUB_CI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      source_branch: "release"
-      target_branch: "master"
