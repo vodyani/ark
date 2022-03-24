@@ -1,8 +1,9 @@
 import { FixedContext, isValidArray, makeCycleTask } from '@vodyani/core';
 import { FactoryProvider } from '@nestjs/common';
 
-import { ConfigLoader } from '../config-loader';
 import { ConfigRemoteClientOptions } from '../../common';
+
+import { ConfigMonitor } from './base';
 
 export class ConfigRemoteMonitor {
   public static token = Symbol('ConfigRemoteMonitor');
@@ -17,7 +18,7 @@ export class ConfigRemoteMonitor {
     }
 
     this.provider = {
-      inject: [ConfigLoader],
+      inject: [ConfigMonitor],
       useFactory: this.useFactory,
       provide: ConfigRemoteMonitor.token,
     };
@@ -29,19 +30,19 @@ export class ConfigRemoteMonitor {
   }
 
   @FixedContext
-  private async useFactory(loader: ConfigLoader) {
+  private async useFactory(monitor: ConfigMonitor) {
     const closerList: Array<() => void> = [];
 
     await Promise.all(this.options.map(
       async ({ interval, remoteClient, enableSubscribe, enableCycleSync }) => {
         if (enableSubscribe) {
-          await remoteClient.subscribe(loader.merge);
+          await remoteClient.subscribe(monitor.autoMerge);
         }
 
         if (enableCycleSync) {
           const { close } = makeCycleTask(interval, async () => {
             const details = await remoteClient.getAll();
-            loader.merge(details);
+            monitor.autoMerge(details);
           });
 
           closerList.push(close);

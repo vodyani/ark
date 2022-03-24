@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'fs';
 
 import { Injectable } from '@nestjs/common';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
-import { FixedContext, isValidArray, isValidObject } from '@vodyani/core';
+import { FixedContext, isValid, isValidArray, isValidObject } from '@vodyani/core';
 
 import { ConfigProvider } from '../config';
 import { ConfigLoader } from '../config-loader';
@@ -50,11 +50,48 @@ export class ConfigMonitor<T = any> {
 
     watcher.on('change', (path) => {
       try {
-        this.loader.merge(JSON.parse(readFileSync(path, 'utf-8')));
+        this.autoMerge(JSON.parse(readFileSync(path, 'utf-8')));
       } catch (error) {
         // Ignore error
       }
     });
+  }
+
+  @FixedContext
+  public autoMerge(config: any) {
+    if (!isValidObject(config)) {
+      return;
+    }
+
+    this.loader.merge(config);
+
+    this.check();
+  }
+
+  @FixedContext
+  public check() {
+    this.store.forEach(async (details) => {
+      let result = null;
+      const { configKey, configProperties, configPropertyRule, configValue, callback } = details;
+
+      result = this.config.get(configKey, configProperties, configPropertyRule);
+
+      if (isValidArray(result) || isValidObject(result)) {
+        result = toHash(result);
+      }
+
+      if (isValid(result) && configValue !== result) {
+        callback(result);
+        details.configValue = result;
+      }
+
+      this.store.set(`${configKey}${configPropertyRule}${configProperties}`, details);
+    });
+  }
+
+  @FixedContext
+  public closeWatcher<KEY extends keyof T>(key: KEY, properties?: string, rule = '.') {
+    this.store.delete(`${key}${rule}${properties}`);
   }
 
   @FixedContext
