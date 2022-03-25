@@ -1,2 +1,2 @@
 export type RemoteConfigClientSyncCallBack = () => Promise<any>;
-export type RemoteConfigClientInitCallBack = (...args: any[]) => Promise<void>;
+export type RemoteConfigClientInitCallBack = (path: string, ...args: any[]) => Promise<void>;

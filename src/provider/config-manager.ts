@@ -103,13 +103,15 @@ export class ConfigManager {
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ options: { remoteClientInitArgs }}, index) => {
-        if (isValidObject(remoteClients[index])) {
-          const client = remoteClients[index];
+      async ({ options: { initOptions }}, index) => {
+        const client = remoteClients[index];
 
-          const args = getDefaultArray(remoteClientInitArgs);
+        if (isValidObject(client) && isValidObject(initOptions)) {
+          const { path, args } = initOptions;
 
-          await client.init(...args);
+          const initArgs = getDefaultArray(args);
+
+          await client.init(path, ...initArgs);
 
           const remoteConfig = await client.sync();
 
@@ -126,9 +128,11 @@ export class ConfigManager {
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ options: { interval, enableSubscribe, enableCycleSync }}, index) => {
-        if (isValidObject(remoteClients[index])) {
-          const client = remoteClients[index];
+      async ({ options: { syncOptions }}, index) => {
+        const client = remoteClients[index];
+
+        if (isValidObject(client) && isValidObject(syncOptions)) {
+          const { interval, enableSubscribe, enableCycleSync } = syncOptions;
 
           if (enableSubscribe) {
             const remoteClientUniqueId = uniqueId('remoteClient.subscribe');

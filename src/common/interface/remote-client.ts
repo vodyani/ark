@@ -8,14 +8,22 @@ export interface RemoteConfigClient {
   subscribe?: (callback: (details: Record<string, any>) => any) => Promise<void>;
 }
 
-export interface RemoteConfigClientOptions {
-  remoteClientInitArgs?: any[];
-
-  enableSubscribe?: boolean;
+export interface RemoteConfigClientSyncOptions {
+  interval?: number;
 
   enableCycleSync?: boolean;
 
-  interval?: number;
+  enableSubscribe?: boolean;
+}
 
+export interface RemoteConfigClientInitOptions {
   path: string;
+
+  args?: any[];
+}
+
+export interface RemoteConfigClientOptions {
+  initOptions: RemoteConfigClientInitOptions;
+
+  syncOptions?: RemoteConfigClientSyncOptions;
 }
