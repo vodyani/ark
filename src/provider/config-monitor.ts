@@ -37,7 +37,7 @@ export class ConfigMonitor {
   @FixedContext
   public watchFile(path: string, options?: WatchOptions) {
     if (!existsSync(path)) {
-      throw new Error(`ConfigLocalMonitor.watchFile: The file at ${path} does not exist!`);
+      throw new Error(`ConfigMonitor.watchFile: The file at ${path} does not exist!`);
     }
 
     const watcher = watch(path, options);

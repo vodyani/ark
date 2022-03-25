@@ -1,7 +1,7 @@
-import { existsSync, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 
 import { Injectable } from '@nestjs/common';
-import { ENV, FixedContext, isValidObject } from '@vodyani/core';
+import { FixedContext, isValidObject } from '@vodyani/core';
 
 import { ConfigProvider } from './config';
 
@@ -19,47 +19,17 @@ export class ConfigHandler {
   }
 
   @FixedContext
-  public deploy(path: string, env: string, defaultEnv = ENV.DEFAULT) {
-    const envFilePath = `${path}/${env}.json`;
-    const defaultFilePath = `${path}/${defaultEnv}.json`;
-
-    if (!existsSync(envFilePath)) {
-      throw new Error(`ConfigLocalHandler.deployEnvFile: The file at ${envFilePath} does not exist!`);
-    }
-
-    if (!existsSync(defaultFilePath)) {
-      throw new Error(`ConfigLocalHandler.deployEnvFile: The file at ${defaultFilePath} does not exist!`);
-    }
-
-    let envConfig = null;
-    let defaultConfig = null;
-
+  public deploy(path: string) {
     try {
-      envConfig = JSON.parse(readFileSync(envFilePath, 'utf8'));
+      const config = JSON.parse(readFileSync(path, 'utf8'));
 
-      if (!isValidObject(envConfig)) {
-        throw new Error('envConfig is not valid JSON');
+      if (!isValidObject(config)) {
+        throw new Error('config is not valid JSON');
       }
+
+      this.config.merge(config);
     } catch (err) {
-      throw new Error(`ConfigLocalHandler.deployEnvFile: reading ${envFilePath} fail from disk: ${err}`);
+      throw new Error(`ConfigLocalHandler.deployEnvFile: reading ${path} fail from disk: ${err}`);
     }
-
-    try {
-      defaultConfig = JSON.parse(readFileSync(defaultFilePath, 'utf8'));
-
-      if (!isValidObject(defaultConfig)) {
-        throw new Error('defaultConfig is not valid JSON');
-      }
-    } catch (err) {
-      throw new Error(`ConfigLocalHandler.deployEnvFile: reading ${defaultFilePath} fail from disk: ${err}`);
-    }
-
-    this.config.merge(defaultConfig);
-    this.config.merge(envConfig);
-
-    return {
-      defaultConfig,
-      envConfig,
-    };
   }
 }

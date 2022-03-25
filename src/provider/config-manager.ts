@@ -1,3 +1,5 @@
+import { existsSync } from 'fs';
+
 import { uniqueId } from 'lodash';
 import { Provider } from '@nestjs/common';
 import { FixedContext, getDefaultArray, isValidArray, isValidObject, isValidString } from '@vodyani/core';
@@ -52,20 +54,23 @@ export class ConfigManager {
     const { env, defaultEnv, local, remote } = this.options;
 
     if (!isValidString(env)) {
-      throw new Error('ConfigManager.useFactory: env is a required parameter!');
+      throw new Error('ConfigManager: env is a required parameter!');
     }
 
     if (!isValidString(local.path)) {
-      throw new Error('ConfigManager.useFactory: local.path is a required parameter!');
+      throw new Error('ConfigManager: local.path is a required parameter!');
     }
 
     configHandler.init(local.params);
 
-    const { defaultConfig, envConfig } = configHandler.deploy(local.path, env, defaultEnv as any);
+    const { defaultPath, envPath } = this.deployLocalPath(local.path, env, defaultEnv);
+
+    configHandler.deploy(defaultPath);
+    configHandler.deploy(envPath);
 
     if (local.enableWatch) {
-      configMonitor.watchFile(defaultConfig, local.watchOptions);
-      configMonitor.watchFile(envConfig, local.watchOptions);
+      configMonitor.watchFile(defaultPath, local.watchOptions);
+      configMonitor.watchFile(envPath, local.watchOptions);
     }
 
     if (isValidArray(remote)) {
@@ -74,6 +79,21 @@ export class ConfigManager {
     }
 
     return config;
+  }
+
+  @FixedContext
+  private deployLocalPath(path: string, env: string, defaultEnv: string) {
+    const envPath = `${path}/${env}.json`;
+    const defaultPath = `${path}/${defaultEnv}.json`;
+
+    if (!existsSync(envPath)) {
+      throw new Error(`ConfigManager.deployLocalPath: The file at ${envPath} does not exist!`);
+    }
+
+    if (!existsSync(defaultPath)) {
+      throw new Error(`ConfigManager.deployLocalPath: The file at ${defaultPath} does not exist!`);
+    }
+    return { envPath, defaultPath };
   }
 
   @FixedContext
