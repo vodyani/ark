@@ -1,7 +1,7 @@
 {
   "name": "@vodyani/ark",
   "license": "MIT",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "ChoGathK",
   "description": "🛸 ark is vodyani's configuration management solution. By accessing ark, you can have maximum control over your local configuration, and if you want, ark can support unlimited configuration centers.",
   "homepage": "https://github.com/vodyani/ark#readme",
