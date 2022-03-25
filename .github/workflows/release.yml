@@ -2,7 +2,7 @@ name: "release"
 
 on:
   push:
-    branches: [release]
+    branches: [master]
 
 jobs:
   check_and_test:
