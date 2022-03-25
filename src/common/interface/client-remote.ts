@@ -1,4 +1,4 @@
-export interface ConfigRemoteClient<T = any> {
+export interface RemoteConfigClient<T = any> {
   init: (...args: any[]) => Promise<void>;
 
   getAll: () => Promise<T>;
@@ -6,10 +6,10 @@ export interface ConfigRemoteClient<T = any> {
   subscribe?: (callback: (details: Record<string, any>) => any) => Promise<void>;
 }
 
-export interface ConfigRemoteClientOptions<T = any> {
-  remoteClient: ConfigRemoteClient<T>;
+export interface RemoteConfigClientOptions<T = any> {
+  remoteClient: RemoteConfigClient<T>;
 
-  remoteArgs?: any[];
+  remoteClientInitArgs?: any[];
 
   enableSubscribe?: boolean;
 

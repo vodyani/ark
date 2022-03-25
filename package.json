@@ -32,7 +32,7 @@
     "patch": "npm version patch",
     "minor": "npm version minor",
     "major": "npm version major",
-    "install:all": "npm i && npm i @vodyani/eslint-config -D && npx husky install",
+    "install:all": "npm ci && npm i @vodyani/eslint-config -D && npx husky install",
     "build": "rm -rf dist && tsc",
     "test": "jest",
     "test:coverage": "jest --coverage",

@@ -1,6 +1,6 @@
 import { isValidArray, isValidObject, isValidString } from '@vodyani/core';
 
-export function toMatchProperties<T>(object: any, properties: string, rule = '.'): T {
+export function toMatchProperties<T = any>(object: any, properties: string, rule = '.'): T {
   if (!isValidObject(object) && !isValidString(properties)) {
     return null;
   }
@@ -40,7 +40,7 @@ export function toMatchProperties<T>(object: any, properties: string, rule = '.'
   return nodeResult;
 }
 
-export function toRestoreProperties<T>(value: any, properties: string, rule = '.'): T {
+export function toRestoreProperties<T = any>(value: any, properties: string, rule = '.'): T {
   if (!isValidString(properties)) {
     return null;
   }

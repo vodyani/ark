@@ -1,7 +1,8 @@
-import { FixedContext, isValidArray, makeCycleTask } from '@vodyani/core';
+import { uniqueId } from 'lodash';
 import { FactoryProvider } from '@nestjs/common';
+import { FixedContext, isValidArray, makeCycleTask } from '@vodyani/core';
 
-import { ConfigRemoteClientOptions } from '../../common';
+import { RemoteConfigClientOptions } from '../../common';
 
 import { ConfigMonitor } from './base';
 
@@ -11,7 +12,7 @@ export class ConfigRemoteMonitor {
   private provider: FactoryProvider;
 
   constructor(
-    private readonly options: ConfigRemoteClientOptions[],
+    private readonly options: RemoteConfigClientOptions[],
   ) {
     if (!isValidArray(options)) {
       throw new Error('ConfigRemoteMonitor.constructor: options is a required parameter!');
@@ -36,13 +37,20 @@ export class ConfigRemoteMonitor {
     await Promise.all(this.options.map(
       async ({ interval, remoteClient, enableSubscribe, enableCycleSync }) => {
         if (enableSubscribe) {
-          await remoteClient.subscribe(monitor.autoMerge);
+          const remoteClientUniqueId = uniqueId('ConfigRemoteMonitor.subscribe');
+
+          await remoteClient.subscribe(
+            async (config) => monitor.autoMerge(remoteClientUniqueId, config),
+          );
         }
 
         if (enableCycleSync) {
           const { close } = makeCycleTask(interval, async () => {
-            const details = await remoteClient.getAll();
-            monitor.autoMerge(details);
+            const config = await remoteClient.getAll();
+
+            const remoteClientUniqueId = uniqueId('ConfigRemoteMonitor.getAll');
+
+            monitor.autoMerge(remoteClientUniqueId, config);
           });
 
           closerList.push(close);

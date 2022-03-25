@@ -1,8 +1,8 @@
 import { FixedContext, getDefaultArray, isValidArray } from '@vodyani/core';
 import { FactoryProvider } from '@nestjs/common';
 
-import { ConfigLoader } from '../config-loader';
-import { ConfigRemoteClientOptions } from '../../common';
+import { ConfigProvider } from '../config';
+import { RemoteConfigClientOptions } from '../../common';
 
 export class ConfigRemoteHandler {
   public static token = Symbol('ConfigRemoteHandler');
@@ -10,14 +10,14 @@ export class ConfigRemoteHandler {
   private provider: FactoryProvider;
 
   constructor(
-    private readonly options: ConfigRemoteClientOptions[],
+    private readonly options: RemoteConfigClientOptions[],
   ) {
     if (!isValidArray(options)) {
       throw new Error('ConfigRemoteHandler.constructor: options is a required parameter!');
     }
 
     this.provider = {
-      inject: [ConfigLoader],
+      inject: [ConfigProvider],
       useFactory: this.useFactory,
       provide: ConfigRemoteHandler.token,
     };
@@ -29,15 +29,16 @@ export class ConfigRemoteHandler {
   }
 
   @FixedContext
-  private async useFactory(loader: ConfigLoader) {
+  private async useFactory(config: ConfigProvider) {
     await Promise.all(this.options.map(
-      async ({ remoteClient, remoteArgs }) => {
-        const args = getDefaultArray(remoteArgs);
+      async ({ remoteClient, remoteClientInitArgs }) => {
+        const args = getDefaultArray(remoteClientInitArgs);
 
         await remoteClient.init(...args);
 
-        const details = await remoteClient.getAll();
-        loader.merge(details);
+        const remoteConfig = await remoteClient.getAll();
+
+        config.merge(remoteConfig);
       },
     ));
   }

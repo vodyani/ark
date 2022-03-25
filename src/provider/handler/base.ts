@@ -1,13 +1,13 @@
 import { existsSync, readFileSync } from 'fs';
 
 import { Injectable } from '@nestjs/common';
-import { ENV, FixedContext, isValidObject, toDeepMerge } from '@vodyani/core';
+import { ENV, FixedContext, isValidObject } from '@vodyani/core';
 
-import { ConfigLoader } from '../config-loader';
+import { ConfigProvider } from '../config';
 
 @Injectable()
 export class ConfigHandler {
-  constructor(private readonly loader: ConfigLoader) {}
+  constructor(private readonly config: ConfigProvider) {}
 
   @FixedContext
   public init(details: Record<string, any>) {
@@ -15,7 +15,7 @@ export class ConfigHandler {
       throw new Error('ConfigLocalHandler.deployEnv: When setting an environment variable, the property passed in must be an object!');
     }
 
-    this.loader.merge(details);
+    this.config.merge(details);
   }
 
   @FixedContext
@@ -38,7 +38,7 @@ export class ConfigHandler {
       envConfig = JSON.parse(readFileSync(envFilePath, 'utf8'));
 
       if (!isValidObject(envConfig)) {
-        throw new Error('is not valid JSON');
+        throw new Error('envConfig is not valid JSON');
       }
     } catch (err) {
       throw new Error(`ConfigLocalHandler.deployEnvFile: reading ${envFilePath} fail from disk: ${err}`);
@@ -48,12 +48,14 @@ export class ConfigHandler {
       defaultConfig = JSON.parse(readFileSync(defaultFilePath, 'utf8'));
 
       if (!isValidObject(defaultConfig)) {
-        throw new Error('is not valid JSON');
+        throw new Error('defaultConfig is not valid JSON');
       }
     } catch (err) {
       throw new Error(`ConfigLocalHandler.deployEnvFile: reading ${defaultFilePath} fail from disk: ${err}`);
     }
 
-    this.loader.merge(toDeepMerge(defaultConfig, envConfig));
+    this.config.merge(defaultConfig);
+    this.config.merge(envConfig);
+
   }
 }

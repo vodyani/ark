@@ -1,12 +1,14 @@
 import { FixedContext } from '@vodyani/core';
 
 import { Client } from '../interface';
-import { CreateClient } from '../type';
+import { CreateClientCallback } from '../type';
 
 export class ClientProxy<CLIENT, OPTION> {
   private instance: Client<CLIENT>;
 
-  private callback: CreateClient<CLIENT, OPTION>;
+  private args: any[];
+
+  private callback: CreateClientCallback<CLIENT, OPTION>;
 
   @FixedContext
   public get() {
@@ -14,14 +16,19 @@ export class ClientProxy<CLIENT, OPTION> {
   }
 
   @FixedContext
-  public deploy(callback: CreateClient<CLIENT, OPTION>, option: OPTION) {
+  public deploy(
+    callback: CreateClientCallback<CLIENT, OPTION>,
+    option: OPTION,
+    ...args: any[]
+  ) {
+    this.args = args;
     this.callback = callback;
-    this.instance = callback(option);
+    this.instance = callback(option, ...this.args);
   }
 
   @FixedContext
   public redeploy(option: OPTION) {
-    const newInstance = this.callback(option);
+    const newInstance = this.callback(option, ...this.args);
     this.instance.close();
     this.instance = null;
     this.instance = newInstance;
