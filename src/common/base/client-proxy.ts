@@ -1,9 +1,9 @@
-import { FixedContext } from '@vodyani/core';
+import { FixedContext, isKeyof, isValidObject } from '@vodyani/core';
 
 import { Client } from '../interface';
 import { CreateClientCallback } from '../type';
 
-export class ClientProxy<CLIENT, OPTION> {
+export class ClientProxy<CLIENT = any, OPTION = any> {
   private instance: Client<CLIENT>;
 
   private args: any[];
@@ -12,7 +12,11 @@ export class ClientProxy<CLIENT, OPTION> {
 
   @FixedContext
   public get() {
-    return this.instance.client;
+    if (isValidObject(this.instance) && isKeyof('client', this.instance)) {
+      return this.instance.client;
+    }
+
+    return null;
   }
 
   @FixedContext
@@ -29,6 +33,7 @@ export class ClientProxy<CLIENT, OPTION> {
   @FixedContext
   public redeploy(option: OPTION) {
     const newInstance = this.callback(option, ...this.args);
+
     this.instance.close();
     this.instance = null;
     this.instance = newInstance;

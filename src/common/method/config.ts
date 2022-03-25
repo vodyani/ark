@@ -1,15 +1,11 @@
-import { isValidArray, isValidObject, isValidString } from '@vodyani/core';
+import { isValidObject, isValidString } from '@vodyani/core';
 
 export function toMatchProperties<T = any>(object: any, properties: string, rule = '.'): T {
-  if (!isValidObject(object) && !isValidString(properties)) {
+  if (!isValidObject(object) || !isValidString(properties) || !properties.includes(rule)) {
     return null;
   }
 
   const factors = properties.split(rule);
-
-  if (!isValidArray(factors)) {
-    return null;
-  }
 
   let node;
   let nodeResult = null;
@@ -28,10 +24,13 @@ export function toMatchProperties<T = any>(object: any, properties: string, rule
 
     if (isValidObject(node)) {
       for (const key of Object.keys(node)) {
-        if (key === factors[nodeDeepLevel]) {
+        const indexResult = factors.indexOf(key);
+        const factorResult = factors[nodeDeepLevel];
+
+        if (key === factorResult && indexResult === nodeDeepLevel) {
           stack.push(node[key]);
           nodeDeepLevel += 1;
-          continue;
+          break;
         }
       }
     }
@@ -41,15 +40,11 @@ export function toMatchProperties<T = any>(object: any, properties: string, rule
 }
 
 export function toRestoreProperties<T = any>(value: any, properties: string, rule = '.'): T {
-  if (!isValidString(properties)) {
+  if (!isValidString(properties) || !properties.includes(rule)) {
     return null;
   }
 
   const factors = properties.split(rule);
-
-  if (!isValidArray(factors)) {
-    return null;
-  }
 
   const object = Object();
 

@@ -49,4 +49,9 @@ export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<strin
       this.monitor.watch(clientProxy.redeploy, configKey);
     }
   }
+
+  @FixedContext
+  public close(key: string) {
+    this.store.delete(key);
+  }
 }

@@ -49,4 +49,9 @@ export class AsyncDynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<
       this.monitor.watch(clientProxy.redeploy, configKey);
     }
   }
+
+  @FixedContext
+  public close(key: string) {
+    this.store.delete(key);
+  }
 }
