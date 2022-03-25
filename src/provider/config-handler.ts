@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'fs';
 import { Injectable } from '@nestjs/common';
 import { ENV, FixedContext, isValidObject } from '@vodyani/core';
 
-import { ConfigProvider } from '../config';
+import { ConfigProvider } from './config';
 
 @Injectable()
 export class ConfigHandler {
@@ -19,9 +19,9 @@ export class ConfigHandler {
   }
 
   @FixedContext
-  public getAll(dir: string, env: string, defaultEnv = ENV.DEFAULT) {
-    const envFilePath = `${dir}/${env}.json`;
-    const defaultFilePath = `${dir}/${defaultEnv}.json`;
+  public deploy(path: string, env: string, defaultEnv = ENV.DEFAULT) {
+    const envFilePath = `${path}/${env}.json`;
+    const defaultFilePath = `${path}/${defaultEnv}.json`;
 
     if (!existsSync(envFilePath)) {
       throw new Error(`ConfigLocalHandler.deployEnvFile: The file at ${envFilePath} does not exist!`);
@@ -57,5 +57,9 @@ export class ConfigHandler {
     this.config.merge(defaultConfig);
     this.config.merge(envConfig);
 
+    return {
+      defaultConfig,
+      envConfig,
+    };
   }
 }

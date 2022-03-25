@@ -1,2 +1,2 @@
-export * from './client-async-proxy';
+export * from './async-client-proxy';
 export * from './client-proxy';

@@ -1,14 +1,15 @@
 import { Injectable, Provider, Inject } from '@nestjs/common';
 import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/core';
 
-import { ConfigProvider } from '../config';
-import { ConfigMonitor } from '../monitor/base';
-import { ConfigManager } from '../config-manager';
-import { ClientProxy, ClientProxyMap, CreateClientCallback, DynamicDataSourceOptions } from '../../common';
+import { AsyncClientProxy, AsyncClientProxyMap, AsyncCreateClientCallback, DynamicDataSourceOptions } from '../common';
+
+import { ConfigProvider } from './config';
+import { ConfigManager } from './config-manager';
+import { ConfigMonitor } from './config-monitor';
 
 @Injectable()
-export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<string, any>> {
-  private readonly store: ClientProxyMap<CLIENT> = new Map();
+export class AsyncDynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<string, any>> {
+  private readonly store: AsyncClientProxyMap<CLIENT> = new Map();
 
   constructor(
     @Inject(ConfigManager.token)
@@ -24,8 +25,8 @@ export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<strin
   }
 
   @FixedContext
-  public create(
-    callback: CreateClientCallback<CLIENT, OPTION>,
+  public async create(
+    callback: AsyncCreateClientCallback<CLIENT, OPTION>,
     options: DynamicDataSourceOptions[],
   ) {
     if (!isValid(callback)) {
@@ -39,9 +40,9 @@ export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<strin
     for (const { configKey, args } of options) {
       const option = this.config.get(configKey);
 
-      const clientProxy = new ClientProxy<CLIENT, OPTION>();
+      const clientProxy = new AsyncClientProxy<CLIENT, OPTION>();
 
-      clientProxy.deploy(callback, option, getDefaultArray(args));
+      await clientProxy.deploy(callback, option, getDefaultArray(args));
 
       this.store.set(configKey, clientProxy);
 
