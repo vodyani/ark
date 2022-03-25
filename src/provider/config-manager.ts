@@ -75,7 +75,7 @@ export class ConfigManager {
 
     if (isValidArray(remote)) {
       await this.deployRemoteClient(config, remoteClients, remote);
-      await this.watchRemoteClient(configMonitor, remoteClients, remote);
+      await this.deployRemoteClientSync(configMonitor, remoteClients, remote);
     }
 
     return config;
@@ -120,7 +120,7 @@ export class ConfigManager {
   }
 
   @FixedContext
-  private async watchRemoteClient(
+  private async deployRemoteClientSync(
     monitor: ConfigMonitor,
     remoteClients: RemoteConfigClient[],
     options: RemoteConfigOptions[],
