@@ -1,5 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
 import { toDeepMerge } from '@vodyani/core';
+import { range } from 'lodash';
 
 import { toHash, toMatchProperties, toRestoreProperties } from '../src/common/method';
 
@@ -43,7 +44,9 @@ describe('method', () => {
     expect(toRestoreProperties(1, 'a.b.c.d.e.f.g.l')).toEqual({ 'a': { 'b': { 'c': { 'd': { 'e': { 'f': { 'g': { 'l': 1 }}}}}}}});
     expect(toDeepMerge(toRestoreProperties(1, 'a.b.c.d.e.f.g.l'), { a: { b: 2 }})).toEqual({ a: { b: 2 }});
     expect(toMatchProperties(toRestoreProperties(1, 'a.b.c.d.e.f.g.l'), 'a.b.c.d.e.f.g.l')).toBe(1);
-    expect(toRestoreProperties(1, 'a:b')).toBe(null);
     expect(toRestoreProperties(1, null)).toBe(null);
+
+    const deepKey = range(10000).join('.');
+    expect(toMatchProperties(toRestoreProperties(1, deepKey), deepKey)).toBe(1);
   });
 });

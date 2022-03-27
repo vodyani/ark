@@ -1,0 +1,8 @@
+{
+  "test": {
+    "name": "LOCAL",
+    "type": "test",
+    "port": "8080"
+  },
+  "array": [1]
+}
