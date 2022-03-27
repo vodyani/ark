@@ -6,7 +6,7 @@
 [![Npm](https://img.shields.io/npm/dm/@vodyani/ark)](https://www.npmjs.com/package/@vodyani/ark)
 [![License](https://img.shields.io/github/license/vodyani/ark)](LICENSE)
 ![Workflow](https://github.com/vodyani/ark/actions/workflows/release.yml/badge.svg)
-[![codecov](https://codecov.io/gh/vodyani/ark/branch/main/graph/badge.svg?token=YHBHSZH5PB)](https://codecov.io/gh/vodyani/ark)
+[![codecov](https://codecov.io/gh/vodyani/ark/branch/master/graph/badge.svg?token=3L3398C2KW)](https://codecov.io/gh/vodyani/ark)
 [![Known Vulnerabilities](https://snyk.io/test/github/vodyani/ark/badge.svg?targetFile=package.json)](https://snyk.io/test/github/vodyani/ark?targetFile=package.json)
 
 ## Installation
