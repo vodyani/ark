@@ -2,7 +2,7 @@ import { existsSync } from 'fs';
 
 import { uniqueId } from 'lodash';
 import { Provider } from '@nestjs/common';
-import { FixedContext, getDefaultArray, isValidArray, isValidObject, isValidString } from '@vodyani/core';
+import { FixedContext, getDefaultArray, isValid, isValidArray, isValidObject, isValidString } from '@vodyani/core';
 
 import { ConfigManagerOptions, RemoteConfigClient, RemoteConfigOptions } from '../common';
 
@@ -23,9 +23,9 @@ export class ConfigManager {
     }
 
     const inject: any = [
+      ConfigProvider,
       ConfigHandler,
       ConfigMonitor,
-      ConfigProvider,
     ];
 
     if (isValidArray(options.remote)) {
@@ -49,12 +49,20 @@ export class ConfigManager {
     config: ConfigProvider,
     configHandler: ConfigHandler,
     configMonitor: ConfigMonitor,
-    remoteClients: RemoteConfigClient[],
+    ...remoteClients: RemoteConfigClient[]
   ) {
     const { env, defaultEnv, local, remote } = this.options;
 
     if (!isValidString(env)) {
       throw new Error('ConfigManager: env is a required parameter!');
+    }
+
+    if (!isValidString(defaultEnv)) {
+      throw new Error('ConfigManager: env is a required parameter!');
+    }
+
+    if (!isValidObject(local)) {
+      throw new Error('ConfigManager: local is a required parameter!');
     }
 
     if (!isValidString(local.path)) {
@@ -106,7 +114,7 @@ export class ConfigManager {
       async ({ options: { initOptions }}, index) => {
         const client = remoteClients[index];
 
-        if (isValidObject(client) && isValidObject(initOptions)) {
+        if (isValid(client) && isValidObject(initOptions)) {
           const { path, args } = initOptions;
 
           const initArgs = getDefaultArray(args);
@@ -131,7 +139,7 @@ export class ConfigManager {
       async ({ options: { syncOptions }}, index) => {
         const client = remoteClients[index];
 
-        if (isValidObject(client) && isValidObject(syncOptions)) {
+        if (isValid(client) && isValidObject(syncOptions)) {
           const { interval, enableSubscribe, enableCycleSync } = syncOptions;
 
           if (enableSubscribe) {

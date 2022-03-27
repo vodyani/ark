@@ -7,15 +7,15 @@ import { ConfigProvider } from './config';
 
 @Injectable()
 export class ConfigHandler {
-  constructor(private readonly config: ConfigProvider) {}
+  constructor(
+    private readonly config: ConfigProvider,
+  ) {}
 
   @FixedContext
   public init(details: Record<string, any>) {
-    if (!isValidObject(details)) {
-      throw new Error('ConfigLocalHandler.deployEnv: When setting an environment variable, the property passed in must be an object!');
+    if (isValidObject(details)) {
+      this.config.merge(details);
     }
-
-    this.config.merge(details);
   }
 
   @FixedContext
@@ -23,13 +23,11 @@ export class ConfigHandler {
     try {
       const config = JSON.parse(readFileSync(path, 'utf8'));
 
-      if (!isValidObject(config)) {
-        throw new Error('config is not valid JSON');
+      if (isValidObject(config)) {
+        this.config.merge(config);
       }
-
-      this.config.merge(config);
     } catch (err) {
-      throw new Error(`ConfigLocalHandler.deployEnvFile: reading ${path} fail from disk: ${err}`);
+      throw new Error(`ConfigHandler.deploy: reading ${path} fail from disk: ${err}`);
     }
   }
 }

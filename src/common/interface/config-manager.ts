@@ -18,9 +18,9 @@ export interface RemoteConfigOptions {
 
 export interface ConfigManagerOptions {
   remote?: RemoteConfigOptions[];
-  local?: LocalConfigOptions;
-  defaultEnv?: string;
-  env?: string;
+  local: LocalConfigOptions;
+  defaultEnv: string;
+  env: string;
 }
 
 export interface ConfigModuleOptions extends ConfigManagerOptions {

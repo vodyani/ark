@@ -1,7 +1,7 @@
 import { isValidObject, isValidString } from '@vodyani/core';
 
 export function toMatchProperties<T = any>(object: any, properties: string, rule = '.'): T {
-  if (!isValidObject(object) || !isValidString(properties) || !properties.includes(rule)) {
+  if (!isValidObject(object) || !isValidString(properties)) {
     return null;
   }
 
@@ -40,7 +40,7 @@ export function toMatchProperties<T = any>(object: any, properties: string, rule
 }
 
 export function toRestoreProperties<T = any>(value: any, properties: string, rule = '.'): T {
-  if (!isValidString(properties) || !properties.includes(rule)) {
+  if (!isValidString(properties)) {
     return null;
   }
 
