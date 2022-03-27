@@ -1,0 +1,11 @@
+{
+  "test": {
+    "name": "DEFAULT",
+    "port": "8080"
+  },
+  "development": {
+    "name": "DEFAULT",
+    "port": "8080"
+  },
+  "array": [1, 2, 3, 4, 5]
+}

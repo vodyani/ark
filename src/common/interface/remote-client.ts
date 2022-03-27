@@ -3,7 +3,7 @@ import { RemoteConfigClientSyncCallBack, RemoteConfigClientInitCallBack } from '
 export interface RemoteConfigClient {
   init: RemoteConfigClientInitCallBack;
 
-  sync: RemoteConfigClientSyncCallBack;
+  sync?: RemoteConfigClientSyncCallBack;
 
   subscribe?: (callback: (details: Record<string, any>) => any) => Promise<void>;
 }

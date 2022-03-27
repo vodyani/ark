@@ -12,7 +12,7 @@ export class ConfigProvider<T = any> {
   /**
    * The configuration details store.
    */
-  private readonly store = Object();
+  private store = Object();
   /**
    * get the configuration for the given key.
    */
@@ -35,7 +35,7 @@ export class ConfigProvider<T = any> {
   @FixedContext
   public merge(value: object): void {
     if (isValidObject(value)) {
-      toDeepMerge(this.store, cloneDeep(value));
+      this.store = toDeepMerge(this.store, cloneDeep(value));
     }
   }
 }

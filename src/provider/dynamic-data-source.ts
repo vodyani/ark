@@ -8,7 +8,7 @@ import { ConfigMonitor } from './config-monitor';
 import { ConfigManager } from './config-manager';
 
 @Injectable()
-export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<string, any>> {
+export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
   private readonly store: ClientProxyMap<CLIENT> = new Map();
 
   constructor(
@@ -18,9 +18,9 @@ export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<strin
   ) {}
 
   @FixedContext
-  public discovery(key: string) {
-    if (this.store.has(key)) {
-      return this.store.get(key).get();
+  public discovery(configKey: string) {
+    if (this.store.has(configKey)) {
+      return this.store.get(configKey).get();
     }
   }
 
@@ -34,7 +34,7 @@ export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<strin
     }
 
     if (!isValidArray(options)) {
-      throw new Error('The dynamicDataSource options cannot be empty');
+      throw new Error('The DynamicDataSource options cannot be empty');
     }
 
     for (const { configKey, args } of options) {
@@ -42,16 +42,19 @@ export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = Record<strin
 
       const clientProxy = new ClientProxy<CLIENT, OPTION>();
 
-      clientProxy.deploy(callback, option, getDefaultArray(args));
+      clientProxy.deploy(callback, option, ...getDefaultArray(args));
 
       this.store.set(configKey, clientProxy);
 
-      this.monitor.watch(clientProxy.redeploy, configKey);
+      this.monitor.watchConfig(clientProxy.redeploy, configKey);
     }
   }
 
   @FixedContext
-  public close(key: string) {
-    this.store.delete(key);
+  public close(configKey: string) {
+    if (this.store.has(configKey)) {
+      this.store.get(configKey).close();
+      this.store.delete(configKey);
+    }
   }
 }
