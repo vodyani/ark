@@ -9,7 +9,6 @@ import {
   getDefaultArray,
   RemoteConfigClient,
 } from '@vodyani/core';
-import { uniqueId } from 'lodash';
 import { Provider } from '@nestjs/common';
 
 import { ConfigManagerOptions, RemoteConfigOptions } from '../common';
@@ -151,11 +150,7 @@ export class ArkManager {
           const { interval, enableSubscribe, enableCycleSync } = syncOptions;
 
           if (enableSubscribe) {
-            const remoteClientUniqueId = uniqueId('remoteClient.subscribe');
-
-            await client.subscribe(
-              async (config) => monitor.autoMerge(remoteClientUniqueId, config),
-            );
+            await monitor.autoSubscribe(client.subscribe);
           }
 
           if (enableCycleSync) {
