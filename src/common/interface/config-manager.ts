@@ -23,6 +23,6 @@ export interface ConfigManagerOptions {
   env: string;
 }
 
-export interface ConfigModuleOptions extends ConfigManagerOptions {
+export interface ArkModuleOptions extends ConfigManagerOptions {
   global?: boolean;
 }

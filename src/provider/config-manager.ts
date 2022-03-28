@@ -18,8 +18,8 @@ import { ConfigProvider } from './config';
 import { ConfigHandler } from './config-handler';
 import { ConfigMonitor } from './config-monitor';
 
-export class ConfigManager {
-  public static token = Symbol('ConfigManager');
+export class ArkManager {
+  public static token = Symbol('ArkManager');
 
   private readonly provider: Provider;
 
@@ -27,7 +27,7 @@ export class ConfigManager {
     private readonly options: ConfigManagerOptions,
   ) {
     if (!isValidObject(options)) {
-      throw new Error('ConfigManager.constructor: options is a required parameter!');
+      throw new Error('ArkManager.constructor: options is a required parameter!');
     }
 
     const inject: any = [
@@ -43,7 +43,7 @@ export class ConfigManager {
     this.provider = {
       inject,
       useFactory: this.useFactory,
-      provide: ConfigManager.token,
+      provide: ArkManager.token,
     };
   }
 
@@ -62,19 +62,19 @@ export class ConfigManager {
     const { env, defaultEnv, local, remote } = this.options;
 
     if (!isValidString(env)) {
-      throw new Error('ConfigManager: env is a required parameter!');
+      throw new Error('ArkManager: env is a required parameter!');
     }
 
     if (!isValidString(defaultEnv)) {
-      throw new Error('ConfigManager: env is a required parameter!');
+      throw new Error('ArkManager: env is a required parameter!');
     }
 
     if (!isValidObject(local)) {
-      throw new Error('ConfigManager: local is a required parameter!');
+      throw new Error('ArkManager: local is a required parameter!');
     }
 
     if (!isValidString(local.path)) {
-      throw new Error('ConfigManager: local.path is a required parameter!');
+      throw new Error('ArkManager: local.path is a required parameter!');
     }
 
     configHandler.init(local.params);
@@ -103,11 +103,11 @@ export class ConfigManager {
     const defaultPath = `${path}/${defaultEnv}.json`;
 
     if (!existsSync(envPath)) {
-      throw new Error(`ConfigManager.deployLocalPath: The file at ${envPath} does not exist!`);
+      throw new Error(`ArkManager.deployLocalPath: The file at ${envPath} does not exist!`);
     }
 
     if (!existsSync(defaultPath)) {
-      throw new Error(`ConfigManager.deployLocalPath: The file at ${defaultPath} does not exist!`);
+      throw new Error(`ArkManager.deployLocalPath: The file at ${defaultPath} does not exist!`);
     }
     return { envPath, defaultPath };
   }

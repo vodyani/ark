@@ -5,14 +5,14 @@ import { ClientProxy, ClientProxyMap, CreateClientCallback, DynamicDataSourceOpt
 
 import { ConfigProvider } from './config';
 import { ConfigMonitor } from './config-monitor';
-import { ConfigManager } from './config-manager';
+import { ArkManager } from './config-manager';
 
 @Injectable()
 export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
   private readonly store: ClientProxyMap<CLIENT> = new Map();
 
   constructor(
-    @Inject(ConfigManager.token)
+    @Inject(ArkManager.token)
     private readonly config: ConfigProvider,
     private readonly monitor: ConfigMonitor,
   ) {}
