@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 
 import { describe, it, expect } from '@jest/globals';
-import { ENV, toSleep } from '@vodyani/core';
+import { ENV, toDelay } from '@vodyani/core';
 
 import { ConfigProvider } from '../src/provider/config';
 import { ConfigHandler } from '../src/provider/config-handler';
@@ -88,15 +88,15 @@ describe('ConfigMonitor', () => {
     // @ts-ignore
     // const errorConfigWatcher = monitor.configFileWatchers.get(tempErrorConfig);
 
-    await toSleep(300);
+    await toDelay(300);
 
     writeFileSync(tempConfig, JSON.stringify({ env: ENV.PRO }));
 
-    await toSleep(300);
+    await toDelay(300);
 
     writeFileSync(tempErrorConfig, '10}');
 
-    await toSleep(300);
+    await toDelay(300);
 
     expect(configProvider.get('env')).toBe(ENV.PRO);
 
@@ -113,7 +113,7 @@ describe('ConfigMonitor', () => {
 
     monitor.autoCycleSync(cb, 10);
 
-    await toSleep(250);
+    await toDelay(250);
 
     monitor.autoCycleSync(cb);
 

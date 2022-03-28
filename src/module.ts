@@ -5,8 +5,9 @@ import { ConfigModuleOptions } from './common';
 import { ConfigProvider } from './provider/config';
 import { ConfigMonitor } from './provider/config-monitor';
 import { ConfigManager } from './provider/config-manager';
-import { AsyncDynamicDataSourceProvider, ConfigHandler } from './provider';
+import { ConfigHandler } from './provider/config-handler';
 import { DynamicDataSourceProvider } from './provider/dynamic-data-source';
+import { AsyncDynamicDataSourceProvider } from './provider/async-dynamic-data-source';
 
 export class ConfigModule {
   static forRoot(options: ConfigModuleOptions): DynamicModule {

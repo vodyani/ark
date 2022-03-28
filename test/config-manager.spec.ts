@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { resolve } from 'path';
 
-import { ENV, FixedContext, toSleep } from '@vodyani/core';
+import { ENV, RemoteConfigClient, FixedContext, toDelay } from '@vodyani/core';
 import { Injectable, Module } from '@nestjs/common';
 import { describe, it, expect } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigModule } from '../src/module';
-import { RemoteConfigClient } from '../src/common';
 import { ConfigProvider } from '../src/provider/config';
 import { ConfigManager, ConfigMonitor } from '../src/provider';
 
@@ -115,7 +114,7 @@ describe('ConfigModule', () => {
 
     config = moduleRef.get<ConfigProvider>(ConfigManager.token);
 
-    await toSleep(1000);
+    await toDelay(1000);
 
     expect(config.get('name1')).toBe('RemoteClient1');
     expect(config.get('name2')).toBe('RemoteClient2');

@@ -3,7 +3,7 @@
   "license": "MIT",
   "version": "0.0.2",
   "author": "ChoGathK",
-  "description": "🛸 ark is vodyani's configuration management solution. By accessing ark, you can have maximum control over your local configuration, and if you want, ark can support unlimited configuration centers.",
+  "description": "🛸  ark is the configuration management solution of vodyani. By accessing ark, you can have maximum control over your local configuration, and if you want, ark can support unlimited configuration remote client.",
   "homepage": "https://github.com/vodyani/ark#readme",
   "repository": {
     "type": "git",
@@ -66,7 +66,7 @@
   "dependencies": {
     "@nestjs/common": "^8.4.0",
     "@nestjs/core": "^8.4.0",
-    "@vodyani/core": "^0.1.4",
+    "@vodyani/core": "^0.1.8",
     "chokidar": "^3.5.3",
     "lodash": "^4.17.21",
     "object-hash": "^3.0.0"
@@ -79,8 +79,8 @@
     "@types/jest": "27.4.1",
     "@types/lodash": "4.14.180",
     "@types/node": "16.11.26",
-    "@types/supertest": "2.0.12",
     "@types/object-hash": "^2.2.1",
+    "@types/supertest": "2.0.12",
     "@vodyani/eslint-config": "^1.0.6",
     "husky": "7.0.4",
     "jest": "27.5.1",

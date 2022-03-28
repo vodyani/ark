@@ -1,6 +1,5 @@
-import { FixedContext, isKeyof, isValidObject } from '@vodyani/core';
+import { Client, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
 
-import { Client } from '../interface';
 import { CreateClientCallback } from '../type';
 
 export class ClientProxy<CLIENT = any, OPTION = any> {
