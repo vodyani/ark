@@ -1,6 +1,5 @@
-import { FixedContext, isKeyof, isValidObject } from '@vodyani/core';
+import { AsyncClient, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
 
-import { AsyncClient } from '../interface';
 import { AsyncCreateClientCallback } from '../type';
 
 export class AsyncClientProxy<CLIENT, OPTION> {

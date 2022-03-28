@@ -1,6 +1,6 @@
 import { Provider } from '@nestjs/common';
+import { AsyncClient, Client } from '@vodyani/core';
 
-import { Client, AsyncClient } from '../interface';
 import { ClientProxy, AsyncClientProxy } from '../base';
 
 export type CreateClientCallback<CLIENT, OPTION> = (options: OPTION, ...args: any[]) => Client<CLIENT>;

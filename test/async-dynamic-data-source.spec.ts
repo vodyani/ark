@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { describe, it, expect } from '@jest/globals';
-import { FixedContext, toSleep } from '@vodyani/core';
+import { FixedContext, toDelay } from '@vodyani/core';
 
 import { ConfigProvider } from '../src/provider/config';
 import { ConfigMonitor } from '../src/provider/config-monitor';
@@ -82,7 +82,7 @@ describe('AsyncDynamicDataSourceProvider', () => {
 
     monitor.autoMerge('async_merge', { AsyncDynamicDataSource: 2 });
 
-    await toSleep(200);
+    await toDelay(200);
 
     expect(provider.discovery('AsyncDynamicDataSource').getCount()).toBe(2);
 

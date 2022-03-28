@@ -1,7 +1,7 @@
 import { WatchOptions } from 'chokidar';
 import { BaseModule, BaseProvide } from '@vodyani/core';
 
-import { RemoteConfigClientOptions } from './remote-client';
+import { RemoteConfigClientOptions } from './config-remote-client';
 
 export interface LocalConfigOptions {
   path: string;

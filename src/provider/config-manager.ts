@@ -1,10 +1,18 @@
 import { existsSync } from 'fs';
 
+import {
+  isValid,
+  isValidArray,
+  isValidObject,
+  isValidString,
+  FixedContext,
+  getDefaultArray,
+  RemoteConfigClient,
+} from '@vodyani/core';
 import { uniqueId } from 'lodash';
 import { Provider } from '@nestjs/common';
-import { FixedContext, getDefaultArray, isValid, isValidArray, isValidObject, isValidString } from '@vodyani/core';
 
-import { ConfigManagerOptions, RemoteConfigClient, RemoteConfigOptions } from '../common';
+import { ConfigManagerOptions, RemoteConfigOptions } from '../common';
 
 import { ConfigProvider } from './config';
 import { ConfigHandler } from './config-handler';

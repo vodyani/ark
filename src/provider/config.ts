@@ -1,8 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { FixedContext, isValidObject, toDeepMerge } from '@vodyani/core';
-
-import { toMatchProperties, toRestoreProperties } from '../common';
+import { FixedContext, isValidObject, toDeepMerge, toMatchProperties, toRestoreProperties } from '@vodyani/core';
 
 /**
  * Configuration Accessor
