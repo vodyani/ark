@@ -3,8 +3,8 @@ import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/c
 
 import { AsyncClientProxy, AsyncClientProxyMap, AsyncCreateClientCallback, DynamicDataSourceOptions } from '../common';
 
+import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
-import { ArkManager } from './config-manager';
 import { ConfigMonitor } from './config-monitor';
 
 @Injectable()

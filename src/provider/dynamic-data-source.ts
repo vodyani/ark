@@ -3,9 +3,9 @@ import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/c
 
 import { ClientProxy, ClientProxyMap, CreateClientCallback, DynamicDataSourceOptions } from '../common';
 
+import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
 import { ConfigMonitor } from './config-monitor';
-import { ArkManager } from './config-manager';
 
 @Injectable()
 export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
