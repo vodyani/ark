@@ -11,7 +11,7 @@ import {
 } from '@vodyani/core';
 import { Provider } from '@nestjs/common';
 
-import { ConfigManagerOptions, RemoteConfigOptions } from '../common';
+import { ArkManagerOptions, RemoteConfigOptions } from '../common';
 
 import { ConfigProvider } from './config';
 import { ConfigHandler } from './config-handler';
@@ -23,7 +23,7 @@ export class ArkManager {
   private readonly provider: Provider;
 
   constructor(
-    private readonly options: ConfigManagerOptions,
+    private readonly options: ArkManagerOptions,
   ) {
     if (!isValidObject(options)) {
       throw new Error('ArkManager.constructor: options is a required parameter!');

@@ -16,13 +16,13 @@ export interface RemoteConfigOptions {
   options: RemoteConfigClientOptions;
 }
 
-export interface ConfigManagerOptions {
+export interface ArkManagerOptions {
   remote?: RemoteConfigOptions[];
   local: LocalConfigOptions;
   defaultEnv: string;
   env: string;
 }
 
-export interface ArkModuleOptions extends ConfigManagerOptions {
+export interface ArkModuleOptions extends ArkManagerOptions {
   global?: boolean;
 }
