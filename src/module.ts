@@ -3,8 +3,8 @@ import { DynamicModule } from '@nestjs/common';
 
 import { ArkModuleOptions } from './common';
 import { ConfigProvider } from './provider/config';
-import { ConfigMonitor } from './provider/config-monitor';
 import { ArkManager } from './provider/config-manager';
+import { ConfigMonitor } from './provider/config-monitor';
 import { ConfigHandler } from './provider/config-handler';
 import { DynamicDataSourceProvider } from './provider/dynamic-data-source';
 import { AsyncDynamicDataSourceProvider } from './provider/async-dynamic-data-source';
