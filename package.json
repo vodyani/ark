@@ -68,8 +68,7 @@
     "@nestjs/core": "^8.4.0",
     "@vodyani/core": "^0.1.8",
     "chokidar": "^3.5.3",
-    "lodash": "^4.17.21",
-    "object-hash": "^3.0.0"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@commitlint/cli": "16.2.3",
@@ -79,7 +78,6 @@
     "@types/jest": "27.4.1",
     "@types/lodash": "4.14.180",
     "@types/node": "16.11.26",
-    "@types/object-hash": "^2.2.1",
     "@types/supertest": "2.0.12",
     "@vodyani/eslint-config": "^1.0.6",
     "husky": "7.0.4",
