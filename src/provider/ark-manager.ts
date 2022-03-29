@@ -89,7 +89,7 @@ export class ArkManager {
     }
 
     if (isValidArray(remote)) {
-      await this.deployRemoteClient(config, remoteClients, remote);
+      await this.deployRemoteClient(env, config, remoteClients, remote);
       await this.deployRemoteClientSync(configMonitor, remoteClients, remote);
     }
 
@@ -113,6 +113,7 @@ export class ArkManager {
 
   @FixedContext
   private async deployRemoteClient(
+    env: string,
     config: ConfigProvider,
     remoteClients: RemoteConfigClient[],
     options: RemoteConfigOptions[],
@@ -124,9 +125,7 @@ export class ArkManager {
         if (isValid(client) && isValidObject(initOptions)) {
           const { path, args } = initOptions;
 
-          const initArgs = getDefaultArray(args);
-
-          await client.init(path, ...initArgs);
+          await client.init(path, env, ...getDefaultArray(args));
 
           const remoteConfig = await client.sync();
 
