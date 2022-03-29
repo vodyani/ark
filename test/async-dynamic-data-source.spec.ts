@@ -18,17 +18,17 @@ class Client {
 }
 
 class ClientManager {
-  private instance: any;
+  private client: any;
 
   @FixedContext
   // @ts-ignore
   public async create(count: number, ...args: any[]) {
-    this.instance = new Client(count, args);
+    this.client = new Client(count, args);
 
     return {
-      client: this.instance,
+      instance: this.client,
       close: async () => {
-        this.instance = null;
+        this.client = null;
       },
     };
   }
@@ -74,18 +74,19 @@ describe('AsyncDynamicDataSourceProvider', () => {
       ],
     );
 
-    expect(provider.discovery('AsyncDynamicDataSource').getCount()).toBe(1);
-    expect(provider.discovery('AsyncDynamicDataSource').getArgs()).toEqual([4, 5, 6]);
+    expect(provider.getClient('AsyncDynamicDataSource').getCount()).toBe(1);
+    expect(provider.getClient('AsyncDynamicDataSource').getArgs()).toEqual([4, 5, 6]);
 
-    expect(provider.discovery('AsyncDynamicDataSource_temp').getCount()).toBe(1);
-    expect(provider.discovery('AsyncDynamicDataSource_temp').getArgs()).toEqual([1, 1, 1]);
+    expect(provider.getClient('AsyncDynamicDataSource_temp').getCount()).toBe(1);
+    expect(provider.getClient('AsyncDynamicDataSource_temp').getArgs()).toEqual([1, 1, 1]);
 
     monitor.autoMerge('async_merge', { AsyncDynamicDataSource: 2 });
 
     await toDelay(200);
 
-    expect(provider.discovery('AsyncDynamicDataSource').getCount()).toBe(2);
+    expect(provider.getClient('AsyncDynamicDataSource').getCount()).toBe(2);
 
+    await provider.get('AsyncDynamicDataSource').close();
     provider.close('AsyncDynamicDataSource');
     provider.close('AsyncDynamicDataSource_temp');
   });
