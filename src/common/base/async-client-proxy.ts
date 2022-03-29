@@ -3,7 +3,7 @@ import { AsyncClient, FixedContext, isKeyof, isValidObject } from '@vodyani/core
 import { AsyncCreateClientCallback } from '../type';
 
 export class AsyncClientProxy<CLIENT, OPTION> {
-  private instance: AsyncClient<CLIENT>;
+  private client: AsyncClient<CLIENT>;
 
   private args: any[];
 
@@ -11,8 +11,13 @@ export class AsyncClientProxy<CLIENT, OPTION> {
 
   @FixedContext
   public get() {
-    if (isValidObject(this.instance) && isKeyof('client', this.instance)) {
-      return this.instance.client;
+    return this.client;
+  }
+
+  @FixedContext
+  public getClient() {
+    if (isValidObject(this.client) && isKeyof('instance', this.client)) {
+      return this.client.instance;
     }
 
     return null;
@@ -26,21 +31,21 @@ export class AsyncClientProxy<CLIENT, OPTION> {
   ) {
     this.args = args;
     this.callback = callback;
-    this.instance = await callback(option, ...this.args);
+    this.client = await callback(option, ...this.args);
   }
 
   @FixedContext
   public async redeploy(option: OPTION) {
-    const newInstance = await this.callback(option, ...this.args);
+    const current = await this.callback(option, ...this.args);
 
-    this.instance.close();
-    this.instance = null;
-    this.instance = newInstance;
+    this.client.close();
+    this.client = null;
+    this.client = current;
   }
 
   @FixedContext
   public async close() {
-    await this.instance.close();
-    this.instance = null;
+    await this.client.close();
+    this.client = null;
   }
 }

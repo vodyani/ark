@@ -18,9 +18,16 @@ export class AsyncDynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
   ) {}
 
   @FixedContext
-  public discovery(configKey: string) {
+  public get(configKey: string) {
     if (this.store.has(configKey)) {
       return this.store.get(configKey).get();
+    }
+  }
+
+  @FixedContext
+  public getClient(configKey: string) {
+    if (this.store.has(configKey)) {
+      return this.store.get(configKey).getClient();
     }
   }
 

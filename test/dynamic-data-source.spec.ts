@@ -18,17 +18,17 @@ class Client {
 }
 
 class ClientManager {
-  private instance: any;
+  private client: any;
 
   @FixedContext
   // @ts-ignore
   public create(count: number, ...args: any[]) {
-    this.instance = new Client(count, args);
+    this.client = new Client(count, args);
 
     return {
-      client: this.instance,
+      instance: this.client,
       close: () => {
-        this.instance = null;
+        this.client = null;
       },
     };
   }
@@ -76,15 +76,16 @@ describe('DynamicDataSourceProvider', () => {
       ],
     );
 
-    expect(provider.discovery('DynamicDataSourceProvider').getCount()).toBe(1);
-    expect(provider.discovery('DynamicDataSourceProvider').getArgs()).toEqual([4, 5, 6]);
+    expect(provider.getClient('DynamicDataSourceProvider').getCount()).toBe(1);
+    expect(provider.getClient('DynamicDataSourceProvider').getArgs()).toEqual([4, 5, 6]);
 
-    expect(provider.discovery('DynamicDataSourceProvider_temp').getCount()).toBe(1);
-    expect(provider.discovery('DynamicDataSourceProvider_temp').getArgs()).toEqual([1, 1, 1]);
+    expect(provider.getClient('DynamicDataSourceProvider_temp').getCount()).toBe(1);
+    expect(provider.getClient('DynamicDataSourceProvider_temp').getArgs()).toEqual([1, 1, 1]);
 
     monitor.autoMerge('merge', { DynamicDataSourceProvider: 2 });
-    expect(provider.discovery('DynamicDataSourceProvider').getCount()).toBe(2);
+    expect(provider.getClient('DynamicDataSourceProvider').getCount()).toBe(2);
 
+    provider.get('DynamicDataSourceProvider').close();
     provider.close('DynamicDataSourceProvider');
     provider.close('DynamicDataSourceProvider_temp');
   });
