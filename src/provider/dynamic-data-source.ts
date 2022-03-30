@@ -3,24 +3,31 @@ import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/c
 
 import { ClientProxy, ClientProxyMap, CreateClientCallback, DynamicDataSourceOptions } from '../common';
 
+import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
 import { ConfigMonitor } from './config-monitor';
-import { ConfigManager } from './config-manager';
 
 @Injectable()
 export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
   private readonly store: ClientProxyMap<CLIENT> = new Map();
 
   constructor(
-    @Inject(ConfigManager.token)
+    @Inject(ArkManager.token)
     private readonly config: ConfigProvider,
     private readonly monitor: ConfigMonitor,
   ) {}
 
   @FixedContext
-  public discovery(configKey: string) {
+  public get(configKey: string) {
     if (this.store.has(configKey)) {
       return this.store.get(configKey).get();
+    }
+  }
+
+  @FixedContext
+  public getClient(configKey: string) {
+    if (this.store.has(configKey)) {
+      return this.store.get(configKey).getClient();
     }
   }
 

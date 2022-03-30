@@ -18,17 +18,17 @@ class Client {
 }
 
 class ClientManager {
-  private instance: any;
+  private client: any;
 
   @FixedContext
   // @ts-ignore
   public create(count: number, ...args: any[]) {
-    this.instance = new Client(count, args);
+    this.client = new Client(count, args);
 
     return {
-      client: this.instance,
+      instance: this.client,
       close: () => {
-        this.instance = null;
+        this.client = null;
       },
     };
   }
@@ -36,12 +36,12 @@ class ClientManager {
   @FixedContext
   // @ts-ignore
   public async asyncCreate(count: number, ...args: any[]) {
-    this.instance = new Client(count, args);
+    this.client = new Client(count, args);
 
     return {
-      client: this.instance,
+      instance: this.client,
       close: async () => {
-        this.instance = null;
+        this.client = null;
       },
     };
   }
@@ -55,17 +55,17 @@ describe('ClientProxy', () => {
 
     clientProxy.deploy(manager.create, 1, '2');
 
-    expect(clientProxy.get().getCount()).toBe(1);
+    expect(clientProxy.getClient().getCount()).toBe(1);
 
-    expect(clientProxy.get().getArgs()).toEqual(['2']);
+    expect(clientProxy.getClient().getArgs()).toEqual(['2']);
 
     clientProxy.redeploy(2);
 
-    expect(clientProxy.get().getCount()).toBe(2);
+    expect(clientProxy.getClient().getCount()).toBe(2);
 
     clientProxy.close();
 
-    expect(clientProxy.get()).toBeNull();
+    expect(clientProxy.getClient()).toBeNull();
   });
 });
 
@@ -75,25 +75,25 @@ describe('AsyncClientProxy', () => {
 
     await clientProxy.deploy(manager.asyncCreate, 1, '2');
 
-    expect(clientProxy.get().getCount()).toBe(1);
+    expect(clientProxy.getClient().getCount()).toBe(1);
 
-    expect(clientProxy.get().getArgs()).toEqual(['2']);
+    expect(clientProxy.getClient().getArgs()).toEqual(['2']);
 
     clientProxy.redeploy(2);
 
-    expect(clientProxy.get().getCount()).toBe(1);
+    expect(clientProxy.getClient().getCount()).toBe(1);
 
     await clientProxy.redeploy(2);
 
-    expect(clientProxy.get().getCount()).toBe(2);
+    expect(clientProxy.getClient().getCount()).toBe(2);
 
     clientProxy.close();
 
-    expect(clientProxy.get().getCount()).toBe(2);
+    expect(clientProxy.getClient().getCount()).toBe(2);
 
     await clientProxy.close();
 
-    expect(clientProxy.get()).toBeNull();
+    expect(clientProxy.getClient()).toBeNull();
   });
 });
 

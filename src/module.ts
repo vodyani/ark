@@ -1,16 +1,16 @@
 import { isValidArray } from '@vodyani/core';
 import { DynamicModule } from '@nestjs/common';
 
-import { ConfigModuleOptions } from './common';
+import { ArkModuleOptions } from './common';
 import { ConfigProvider } from './provider/config';
+import { ArkManager } from './provider/ark-manager';
 import { ConfigMonitor } from './provider/config-monitor';
-import { ConfigManager } from './provider/config-manager';
 import { ConfigHandler } from './provider/config-handler';
 import { DynamicDataSourceProvider } from './provider/dynamic-data-source';
 import { AsyncDynamicDataSourceProvider } from './provider/async-dynamic-data-source';
 
-export class ConfigModule {
-  static forRoot(options: ConfigModuleOptions): DynamicModule {
+export class ArkModule {
+  static forRoot(options: ArkModuleOptions): DynamicModule {
     const imports: any[] = [];
 
     const providers: any[] = [
@@ -19,7 +19,7 @@ export class ConfigModule {
       ConfigProvider,
       DynamicDataSourceProvider,
       AsyncDynamicDataSourceProvider,
-      new ConfigManager(options).getFactoryProvider(),
+      new ArkManager(options).getFactoryProvider(),
     ];
 
     if (isValidArray(options.remote)) {
@@ -30,7 +30,7 @@ export class ConfigModule {
       imports,
       providers,
       exports: providers,
-      module: ConfigModule,
+      module: ArkModule,
       global: options.global,
     };
   }

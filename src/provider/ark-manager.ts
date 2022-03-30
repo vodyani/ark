@@ -9,25 +9,24 @@ import {
   getDefaultArray,
   RemoteConfigClient,
 } from '@vodyani/core';
-import { uniqueId } from 'lodash';
 import { Provider } from '@nestjs/common';
 
-import { ConfigManagerOptions, RemoteConfigOptions } from '../common';
+import { ArkManagerOptions, RemoteConfigOptions } from '../common';
 
 import { ConfigProvider } from './config';
 import { ConfigHandler } from './config-handler';
 import { ConfigMonitor } from './config-monitor';
 
-export class ConfigManager {
-  public static token = Symbol('ConfigManager');
+export class ArkManager {
+  public static token = Symbol('ArkManager');
 
   private readonly provider: Provider;
 
   constructor(
-    private readonly options: ConfigManagerOptions,
+    private readonly options: ArkManagerOptions,
   ) {
     if (!isValidObject(options)) {
-      throw new Error('ConfigManager.constructor: options is a required parameter!');
+      throw new Error('ArkManager.constructor: options is a required parameter!');
     }
 
     const inject: any = [
@@ -43,7 +42,7 @@ export class ConfigManager {
     this.provider = {
       inject,
       useFactory: this.useFactory,
-      provide: ConfigManager.token,
+      provide: ArkManager.token,
     };
   }
 
@@ -62,19 +61,19 @@ export class ConfigManager {
     const { env, defaultEnv, local, remote } = this.options;
 
     if (!isValidString(env)) {
-      throw new Error('ConfigManager: env is a required parameter!');
+      throw new Error('ArkManager: env is a required parameter!');
     }
 
     if (!isValidString(defaultEnv)) {
-      throw new Error('ConfigManager: env is a required parameter!');
+      throw new Error('ArkManager: env is a required parameter!');
     }
 
     if (!isValidObject(local)) {
-      throw new Error('ConfigManager: local is a required parameter!');
+      throw new Error('ArkManager: local is a required parameter!');
     }
 
     if (!isValidString(local.path)) {
-      throw new Error('ConfigManager: local.path is a required parameter!');
+      throw new Error('ArkManager: local.path is a required parameter!');
     }
 
     configHandler.init(local.params);
@@ -90,7 +89,7 @@ export class ConfigManager {
     }
 
     if (isValidArray(remote)) {
-      await this.deployRemoteClient(config, remoteClients, remote);
+      await this.deployRemoteClient(env, config, remoteClients, remote);
       await this.deployRemoteClientSync(configMonitor, remoteClients, remote);
     }
 
@@ -103,17 +102,18 @@ export class ConfigManager {
     const defaultPath = `${path}/${defaultEnv}.json`;
 
     if (!existsSync(envPath)) {
-      throw new Error(`ConfigManager.deployLocalPath: The file at ${envPath} does not exist!`);
+      throw new Error(`ArkManager.deployLocalPath: The file at ${envPath} does not exist!`);
     }
 
     if (!existsSync(defaultPath)) {
-      throw new Error(`ConfigManager.deployLocalPath: The file at ${defaultPath} does not exist!`);
+      throw new Error(`ArkManager.deployLocalPath: The file at ${defaultPath} does not exist!`);
     }
     return { envPath, defaultPath };
   }
 
   @FixedContext
   private async deployRemoteClient(
+    env: string,
     config: ConfigProvider,
     remoteClients: RemoteConfigClient[],
     options: RemoteConfigOptions[],
@@ -125,9 +125,7 @@ export class ConfigManager {
         if (isValid(client) && isValidObject(initOptions)) {
           const { path, args } = initOptions;
 
-          const initArgs = getDefaultArray(args);
-
-          await client.init(path, ...initArgs);
+          await client.init(path, env, ...getDefaultArray(args));
 
           const remoteConfig = await client.sync();
 
@@ -151,11 +149,7 @@ export class ConfigManager {
           const { interval, enableSubscribe, enableCycleSync } = syncOptions;
 
           if (enableSubscribe) {
-            const remoteClientUniqueId = uniqueId('remoteClient.subscribe');
-
-            await client.subscribe(
-              async (config) => monitor.autoMerge(remoteClientUniqueId, config),
-            );
+            await monitor.autoSubscribe(client.subscribe);
           }
 
           if (enableCycleSync) {

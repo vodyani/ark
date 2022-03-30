@@ -72,6 +72,14 @@ export class ConfigMonitor {
   }
 
   @FixedContext
+  public async autoSubscribe(
+    callback: (callback: (details: Record<string, any>) => any) => Promise<void>,
+  ) {
+    const remoteClientUniqueId = uniqueId('ConfigMonitor.autoSubscribe');
+    await callback(async (config) => this.autoMerge(remoteClientUniqueId, config));
+  }
+
+  @FixedContext
   public autoMerge(source: string, value: any) {
     if (!isValidObject(value)) {
       return;

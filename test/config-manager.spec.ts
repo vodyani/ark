@@ -6,9 +6,9 @@ import { Injectable, Module } from '@nestjs/common';
 import { describe, it, expect } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ConfigModule } from '../src/module';
+import { ArkModule } from '../src/module';
 import { ConfigProvider } from '../src/provider/config';
-import { ConfigManager, ConfigMonitor } from '../src/provider';
+import { ArkManager, ConfigMonitor } from '../src/provider';
 
 @Injectable()
 // @ts-ignore
@@ -70,10 +70,10 @@ class RemoteModule2 {}
 
 let config: ConfigProvider = null;
 
-describe('ConfigModule', () => {
+describe('ArkModule', () => {
   it('test all', async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot({
+      imports: [ArkModule.forRoot({
         env: ENV.LOCAL,
         defaultEnv: ENV.DEFAULT,
         local: {
@@ -112,7 +112,7 @@ describe('ConfigModule', () => {
       })],
     }).compile();
 
-    config = moduleRef.get<ConfigProvider>(ConfigManager.token);
+    config = moduleRef.get<ConfigProvider>(ArkManager.token);
 
     await toDelay(1000);
 
@@ -130,7 +130,7 @@ describe('ConfigModule', () => {
   it('error options', async () => {
     try {
       await Test.createTestingModule({
-        imports: [ConfigModule.forRoot(null)],
+        imports: [ArkModule.forRoot(null)],
       }).compile();
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
@@ -138,16 +138,7 @@ describe('ConfigModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ConfigModule.forRoot({ name: 1 } as any)],
-      }).compile();
-    } catch (error) {
-
-      expect(error).toBeInstanceOf(Error);
-    }
-
-    try {
-      await Test.createTestingModule({
-        imports: [ConfigModule.forRoot({ env: ENV.DEFAULT } as any)],
+        imports: [ArkModule.forRoot({ name: 1 } as any)],
       }).compile();
     } catch (error) {
 
@@ -156,7 +147,7 @@ describe('ConfigModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ConfigModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.DEFAULT } as any)],
+        imports: [ArkModule.forRoot({ env: ENV.DEFAULT } as any)],
       }).compile();
     } catch (error) {
 
@@ -165,7 +156,7 @@ describe('ConfigModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ConfigModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.DEFAULT, local: { test: 1 }} as any)],
+        imports: [ArkModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.DEFAULT } as any)],
       }).compile();
     } catch (error) {
 
@@ -174,7 +165,7 @@ describe('ConfigModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ConfigModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.PET, local: { path: './' }} as any)],
+        imports: [ArkModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.DEFAULT, local: { test: 1 }} as any)],
       }).compile();
     } catch (error) {
 
@@ -183,7 +174,16 @@ describe('ConfigModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ConfigModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.PET, local: { path: resolve(__dirname, './env') }} as any)],
+        imports: [ArkModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.PET, local: { path: './' }} as any)],
+      }).compile();
+    } catch (error) {
+
+      expect(error).toBeInstanceOf(Error);
+    }
+
+    try {
+      await Test.createTestingModule({
+        imports: [ArkModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.PET, local: { path: resolve(__dirname, './env') }} as any)],
       }).compile();
     } catch (error) {
 

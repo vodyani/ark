@@ -3,8 +3,8 @@ import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/c
 
 import { AsyncClientProxy, AsyncClientProxyMap, AsyncCreateClientCallback, DynamicDataSourceOptions } from '../common';
 
+import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
-import { ConfigManager } from './config-manager';
 import { ConfigMonitor } from './config-monitor';
 
 @Injectable()
@@ -12,15 +12,22 @@ export class AsyncDynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
   private readonly store: AsyncClientProxyMap<CLIENT> = new Map();
 
   constructor(
-    @Inject(ConfigManager.token)
+    @Inject(ArkManager.token)
     private readonly config: ConfigProvider,
     private readonly monitor: ConfigMonitor,
   ) {}
 
   @FixedContext
-  public discovery(configKey: string) {
+  public get(configKey: string) {
     if (this.store.has(configKey)) {
       return this.store.get(configKey).get();
+    }
+  }
+
+  @FixedContext
+  public getClient(configKey: string) {
+    if (this.store.has(configKey)) {
+      return this.store.get(configKey).getClient();
     }
   }
 
