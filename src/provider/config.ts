@@ -15,8 +15,19 @@ export class ConfigProvider<T = any> {
    * get the configuration for the given key.
    */
   @FixedContext
-  public get<KEY extends keyof T>(key: string): T[KEY] {
+  public get(key: string): any {
     const result = toMatchProperties(this.store, key);
+    return isValidObject(result) || isValidArray(result) ? cloneDeep(result) as any : result;
+  }
+  /**
+   * get the configuration for the given key.
+   *
+   * @usageNotes
+   * - Only the specified key can be queried, deep query is not supported
+   */
+  @FixedContext
+  public discovery<KEY extends keyof T>(key: KEY): T[KEY] {
+    const result = this.store[key];
     return isValidObject(result) || isValidArray(result) ? cloneDeep(result) as any : result;
   }
   /**

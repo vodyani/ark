@@ -11,6 +11,7 @@ describe('ConfigProvider', () => {
 
     configProvider.set('test', ['test2']);
     expect(configProvider.get('test')).toEqual(['test2']);
+    expect(configProvider.discovery('test')).toEqual(['test2']);
 
     configProvider.set('test.name', 'test');
     expect(configProvider.get('test.name')).toBe('test');
