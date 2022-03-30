@@ -1,7 +1,6 @@
 import { resolve } from 'path';
 
 import { describe, it, expect } from '@jest/globals';
-import { ENV } from '@vodyani/core';
 
 import { ConfigProvider } from '../src/provider/config';
 import { ConfigHandler } from '../src/provider/config-handler';
@@ -9,8 +8,8 @@ import { ConfigHandler } from '../src/provider/config-handler';
 const configProvider = new ConfigProvider();
 const handler = new ConfigHandler(configProvider);
 
-const env = ENV.LOCAL;
-const defaultEnv = ENV.DEFAULT;
+const env = 'LOCAL';
+const defaultEnv = 'DEFAULT';
 
 describe('ConfigHandler', () => {
   it('init', async () => {

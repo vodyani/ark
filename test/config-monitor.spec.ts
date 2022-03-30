@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 
 import { describe, it, expect } from '@jest/globals';
-import { ENV, toDelay } from '@vodyani/core';
+import { toDelay } from '@vodyani/core';
 
 import { ConfigProvider } from '../src/provider/config';
 import { ConfigHandler } from '../src/provider/config-handler';
@@ -61,7 +61,7 @@ describe('ConfigMonitor', () => {
   });
 
   it('watchFile', async () => {
-    handler.init({ env: ENV.LOCAL });
+    handler.init({ env: 'LOCAL' });
 
     try {
       monitor.watchFile('./undefined.json');
@@ -77,8 +77,8 @@ describe('ConfigMonitor', () => {
       mkdirSync(tempPath);
     }
 
-    writeFileSync(tempConfig, JSON.stringify({ env: ENV.DEFAULT }));
-    writeFileSync(tempErrorConfig, JSON.stringify({ env: ENV.DEFAULT }));
+    writeFileSync(tempConfig, JSON.stringify({ env: 'DEFAULT' }));
+    writeFileSync(tempErrorConfig, JSON.stringify({ env: 'DEFAULT' }));
 
     monitor.watchFile(tempErrorConfig);
     monitor.watchFile(tempConfig);
@@ -90,7 +90,7 @@ describe('ConfigMonitor', () => {
 
     await toDelay(300);
 
-    writeFileSync(tempConfig, JSON.stringify({ env: ENV.PRO }));
+    writeFileSync(tempConfig, JSON.stringify({ env: 'PRO' }));
 
     await toDelay(300);
 
@@ -98,7 +98,7 @@ describe('ConfigMonitor', () => {
 
     await toDelay(300);
 
-    expect(configProvider.get('env')).toBe(ENV.PRO);
+    expect(configProvider.get('env')).toBe('PRO');
 
     monitor.clearConfigFileWatcher();
     monitor.clearConfigMergeWatcher();

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { resolve } from 'path';
 
-import { ENV, RemoteConfigClient, FixedContext, toDelay } from '@vodyani/core';
+import { RemoteConfigClient, FixedContext, toDelay } from '@vodyani/core';
 import { Injectable, Module } from '@nestjs/common';
 import { describe, it, expect } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -74,8 +74,8 @@ describe('ArkModule', () => {
   it('test all', async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [ArkModule.forRoot({
-        env: ENV.LOCAL,
-        defaultEnv: ENV.DEFAULT,
+        env: 'LOCAL',
+        defaultEnv: 'DEFAULT',
         local: {
           path: resolve(__dirname, './env'),
           params: { test: 1 },
@@ -147,7 +147,7 @@ describe('ArkModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: ENV.DEFAULT } as any)],
+        imports: [ArkModule.forRoot({ env: 'DEFAULT' } as any)],
       }).compile();
     } catch (error) {
 
@@ -156,7 +156,7 @@ describe('ArkModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.DEFAULT } as any)],
+        imports: [ArkModule.forRoot({ env: 'LOCAL', defaultEnv: 'DEFAULT' } as any)],
       }).compile();
     } catch (error) {
 
@@ -165,7 +165,7 @@ describe('ArkModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.DEFAULT, local: { test: 1 }} as any)],
+        imports: [ArkModule.forRoot({ env: 'LOCAL', defaultEnv: 'DEFAULT', local: { test: 1 }} as any)],
       }).compile();
     } catch (error) {
 
@@ -174,7 +174,7 @@ describe('ArkModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.PET, local: { path: './' }} as any)],
+        imports: [ArkModule.forRoot({ env: 'LOCAL', defaultEnv: 'PET', local: { path: './' }} as any)],
       }).compile();
     } catch (error) {
 
@@ -183,7 +183,7 @@ describe('ArkModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: ENV.LOCAL, defaultEnv: ENV.PET, local: { path: resolve(__dirname, './env') }} as any)],
+        imports: [ArkModule.forRoot({ env: 'LOCAL', defaultEnv: 'PET', local: { path: resolve(__dirname, './env') }} as any)],
       }).compile();
     } catch (error) {
 
