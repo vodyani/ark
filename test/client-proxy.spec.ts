@@ -6,7 +6,7 @@ import { FixedContext } from '@vodyani/core';
 
 import { ClientProxy, AsyncClientProxy } from '../src/common/base';
 
-class Client {
+class ClientAdapter {
   constructor(
     private readonly count: number,
     private readonly args: any[],
@@ -23,7 +23,7 @@ class ClientManager {
   @FixedContext
   // @ts-ignore
   public create(count: number, ...args: any[]) {
-    this.client = new Client(count, args);
+    this.client = new ClientAdapter(count, args);
 
     return {
       instance: this.client,
@@ -36,7 +36,7 @@ class ClientManager {
   @FixedContext
   // @ts-ignore
   public async asyncCreate(count: number, ...args: any[]) {
-    this.client = new Client(count, args);
+    this.client = new ClientAdapter(count, args);
 
     return {
       instance: this.client,
@@ -51,7 +51,7 @@ const manager = new ClientManager();
 
 describe('ClientProxy', () => {
   it('ClientProxy test', async () => {
-    const clientProxy = new ClientProxy<Client, number>();
+    const clientProxy = new ClientProxy<ClientAdapter, number>();
 
     clientProxy.deploy(manager.create, 1, '2');
 
@@ -71,7 +71,7 @@ describe('ClientProxy', () => {
 
 describe('AsyncClientProxy', () => {
   it('AsyncClientProxy test', async () => {
-    const clientProxy = new AsyncClientProxy<Client, number>();
+    const clientProxy = new AsyncClientProxy<ClientAdapter, number>();
 
     await clientProxy.deploy(manager.asyncCreate, 1, '2');
 

@@ -1,13 +1,13 @@
-import { AsyncClient, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
+import { AsyncClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
 
-import { AsyncCreateClientCallback } from '../type';
+import { AsyncCreateClientAdapter } from '../type';
 
-export class AsyncClientProxy<CLIENT, OPTION> {
-  private client: AsyncClient<CLIENT>;
+export class AsyncClientProxy<T, O> {
+  private client: AsyncClientAdapter<T>;
 
   private args: any[];
 
-  private callback: AsyncCreateClientCallback<CLIENT, OPTION>;
+  private callback: AsyncCreateClientAdapter<T, O>;
 
   @FixedContext
   public get() {
@@ -25,8 +25,8 @@ export class AsyncClientProxy<CLIENT, OPTION> {
 
   @FixedContext
   public async deploy(
-    callback: AsyncCreateClientCallback<CLIENT, OPTION>,
-    option: OPTION,
+    callback: AsyncCreateClientAdapter<T, O>,
+    option: O,
     ...args: any[]
   ) {
     this.args = args;
@@ -35,7 +35,7 @@ export class AsyncClientProxy<CLIENT, OPTION> {
   }
 
   @FixedContext
-  public async redeploy(option: OPTION) {
+  public async redeploy(option: O) {
     const current = await this.callback(option, ...this.args);
 
     this.client.close();

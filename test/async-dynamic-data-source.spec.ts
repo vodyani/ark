@@ -6,7 +6,7 @@ import { ConfigProvider } from '../src/provider/config';
 import { ConfigMonitor } from '../src/provider/config-monitor';
 import { AsyncDynamicDataSourceProvider } from '../src/provider/async-dynamic-data-source';
 
-class Client {
+class ClientAdapter {
   constructor(
     private readonly count: number,
     private readonly args: any[],
@@ -23,7 +23,7 @@ class ClientManager {
   @FixedContext
   // @ts-ignore
   public async create(count: number, ...args: any[]) {
-    this.client = new Client(count, args);
+    this.client = new ClientAdapter(count, args);
 
     return {
       instance: this.client,
@@ -36,7 +36,7 @@ class ClientManager {
 
 const config = new ConfigProvider();
 const monitor = new ConfigMonitor(config);
-const provider = new AsyncDynamicDataSourceProvider<Client, number>(config, monitor);
+const provider = new AsyncDynamicDataSourceProvider<ClientAdapter, number>(config, monitor);
 
 describe('AsyncDynamicDataSourceProvider', () => {
   it('test create error', async () => {

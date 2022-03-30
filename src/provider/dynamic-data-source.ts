@@ -1,15 +1,15 @@
 import { Injectable, Provider, Inject } from '@nestjs/common';
 import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/core';
 
-import { ClientProxy, ClientProxyMap, CreateClientCallback, DynamicDataSourceOptions } from '../common';
+import { ClientProxy, ClientProxyMap, CreateClientAdapter, DynamicDataSourceOptions } from '../common';
 
 import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
 import { ConfigMonitor } from './config-monitor';
 
 @Injectable()
-export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
-  private readonly store: ClientProxyMap<CLIENT> = new Map();
+export class DynamicDataSourceProvider <T = Provider, O = any> {
+  private readonly store: ClientProxyMap<T> = new Map();
 
   constructor(
     @Inject(ArkManager.token)
@@ -33,7 +33,7 @@ export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
 
   @FixedContext
   public create(
-    callback: CreateClientCallback<CLIENT, OPTION>,
+    callback: CreateClientAdapter<T, O>,
     options: DynamicDataSourceOptions[],
   ) {
     if (!isValid(callback)) {
@@ -47,7 +47,7 @@ export class DynamicDataSourceProvider <CLIENT = Provider, OPTION = any> {
     for (const { configKey, args } of options) {
       const option = this.config.get(configKey);
 
-      const clientProxy = new ClientProxy<CLIENT, OPTION>();
+      const clientProxy = new ClientProxy<T, O>();
 
       clientProxy.deploy(callback, option, ...getDefaultArray(args));
 

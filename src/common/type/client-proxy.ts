@@ -1,10 +1,10 @@
 import { Provider } from '@nestjs/common';
-import { AsyncClient, Client } from '@vodyani/core';
+import { AsyncClientAdapter, ClientAdapter } from '@vodyani/core';
 
 import { ClientProxy, AsyncClientProxy } from '../base';
 
-export type CreateClientCallback<CLIENT, OPTION> = (options: OPTION, ...args: any[]) => Client<CLIENT>;
-export type AsyncCreateClientCallback<CLIENT, OPTION> = (options: OPTION, ...args: any[]) => Promise<AsyncClient<CLIENT>>;
+export type CreateClientAdapter<T, O> = (options: O, ...args: any[]) => ClientAdapter<T>;
+export type AsyncCreateClientAdapter<T, O> = (options: O, ...args: any[]) => Promise<AsyncClientAdapter<T>>;
 
-export type ClientProxyMap<CLIENT = Provider> = Map<any, ClientProxy<CLIENT, any>>;
-export type AsyncClientProxyMap<CLIENT = Provider> = Map<any, AsyncClientProxy<CLIENT, any>>;
+export type ClientProxyMap<T = Provider> = Map<any, ClientProxy<T, any>>;
+export type AsyncClientProxyMap<T = Provider> = Map<any, AsyncClientProxy<T, any>>;
