@@ -1,13 +1,13 @@
-import { Client, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
+import { ClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
 
-import { CreateClientCallback } from '../type';
+import { CreateClientAdapter } from '../type';
 
-export class ClientProxy<CLIENT = any, OPTION = any> {
-  private client: Client<CLIENT>;
+export class ClientProxy<T = any, O = any> {
+  private client: ClientAdapter<T>;
 
   private args: any[];
 
-  private callback: CreateClientCallback<CLIENT, OPTION>;
+  private callback: CreateClientAdapter<T, O>;
 
   @FixedContext
   public get() {
@@ -25,8 +25,8 @@ export class ClientProxy<CLIENT = any, OPTION = any> {
 
   @FixedContext
   public deploy(
-    callback: CreateClientCallback<CLIENT, OPTION>,
-    option: OPTION,
+    callback: CreateClientAdapter<T, O>,
+    option: O,
     ...args: any[]
   ) {
     this.args = args;
@@ -35,7 +35,7 @@ export class ClientProxy<CLIENT = any, OPTION = any> {
   }
 
   @FixedContext
-  public redeploy(option: OPTION) {
+  public redeploy(option: O) {
     const current = this.callback(option, ...this.args);
 
     this.client.close();
