@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { FixedContext, isValidObject, toDeepMerge, toMatchProperties, toRestoreProperties } from '@vodyani/core';
+import { FixedContext, isValidArray, isValidObject, toDeepMerge, toMatchProperties, toRestoreProperties } from '@vodyani/core';
 
 /**
  * Configuration Accessor
@@ -17,7 +17,7 @@ export class ConfigProvider<T = any> {
   @FixedContext
   public get<KEY extends keyof T>(key: string): T[KEY] {
     const result = toMatchProperties(this.store, key);
-    return isValidObject(result) ? cloneDeep(result) as any : result;
+    return isValidObject(result) || isValidArray(result) ? cloneDeep(result) as any : result;
   }
   /**
    * set the configuration for the given key.
