@@ -87,10 +87,8 @@ describe('ArkModule', () => {
             module: RemoteModule1,
             provider: RemoteClient1,
             options: {
-              initOptions: {
-                path: '',
-              },
-              syncOptions: {
+              initPath: '',
+              sync: {
                 enableCycleSync: true,
                 interval: 100,
               },
@@ -100,10 +98,8 @@ describe('ArkModule', () => {
             module: RemoteModule2,
             provider: RemoteClient2,
             options: {
-              initOptions: {
-                path: '',
-              },
-              syncOptions: {
+              initPath: '',
+              sync: {
                 enableSubscribe: true,
               },
             },
