@@ -15,7 +15,7 @@ export class ConfigProvider<T = any> {
    * get the configuration for the given key.
    */
   @FixedContext
-  public get(key: string): any {
+  public get(key: string) {
     const result = toMatchProperties(this.store, key);
     return isValidObject(result) || isValidArray(result) ? cloneDeep(result) as any : result;
   }

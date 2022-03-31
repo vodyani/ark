@@ -16,7 +16,7 @@ export class AsyncClientProxy<T, O> {
 
   @FixedContext
   public getClient() {
-    if (isValidObject(this.client) && isKeyof('instance', this.client)) {
+    if (isValidObject(this.client) && isKeyof(this.client, 'instance')) {
       return this.client.instance;
     }
 

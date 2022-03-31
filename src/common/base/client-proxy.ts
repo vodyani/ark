@@ -16,7 +16,7 @@ export class ClientProxy<T = any, O = any> {
 
   @FixedContext
   public getClient() {
-    if (isValidObject(this.client) && isKeyof('instance', this.client)) {
+    if (isValidObject(this.client) && isKeyof(this.client, 'instance')) {
       return this.client.instance;
     }
 

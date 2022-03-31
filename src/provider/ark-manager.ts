@@ -119,13 +119,11 @@ export class ArkManager {
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ options: { initOptions }}, index) => {
+      async ({ options: { initPath, initParam }}, index) => {
         const client = remoteClients[index];
 
-        if (isValid(client) && isValidObject(initOptions)) {
-          const { path, args } = initOptions;
-
-          await client.init(path, env, ...getDefaultArray(args));
+        if (isValid(client)) {
+          await client.init(initPath, env, ...getDefaultArray(initParam));
 
           const remoteConfig = await client.sync();
 
@@ -142,11 +140,11 @@ export class ArkManager {
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ options: { syncOptions }}, index) => {
+      async ({ options: { sync }}, index) => {
         const client = remoteClients[index];
 
-        if (isValid(client) && isValidObject(syncOptions)) {
-          const { interval, enableSubscribe, enableCycleSync } = syncOptions;
+        if (isValid(client) && isValidObject(sync)) {
+          const { interval, enableSubscribe, enableCycleSync } = sync;
 
           if (enableSubscribe) {
             await monitor.autoSubscribe(client.subscribe);
