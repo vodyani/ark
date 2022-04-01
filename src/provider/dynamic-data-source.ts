@@ -1,7 +1,8 @@
 import { Injectable, Provider, Inject } from '@nestjs/common';
 import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/core';
 
-import { ClientProxy, ClientProxyMap, CreateClientAdapter, DynamicDataSourceOptions } from '../common';
+import { BaseClientProxy } from '../base';
+import { ClientProxyMap, CreateClientAdapter, DynamicDataSourceOptions } from '../common';
 
 import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
@@ -47,7 +48,7 @@ export class DynamicDataSourceProvider <T = Provider, O = any> {
     for (const { configKey, args } of options) {
       const option = this.config.get(configKey);
 
-      const clientProxy = new ClientProxy<T, O>();
+      const clientProxy = new BaseClientProxy<T, O>();
 
       clientProxy.deploy(callback, option, ...getDefaultArray(args));
 

@@ -78,7 +78,7 @@ describe('ArkModule', () => {
         defaultEnv: 'DEFAULT',
         local: {
           path: resolve(__dirname, './env'),
-          params: { test: 1 },
+          param: { test: 1 },
           enableWatch: true,
           watchOptions: {},
         },
@@ -86,23 +86,17 @@ describe('ArkModule', () => {
           {
             module: RemoteModule1,
             provider: RemoteClient1,
-            options: {
-              initPath: '',
-              sync: {
-                enableCycleSync: true,
-                interval: 100,
-              },
-            },
+            path: '',
+            args: [],
+            enableCycleSync: true,
+            cycleSyncInterval: 100,
           },
           {
             module: RemoteModule2,
             provider: RemoteClient2,
-            options: {
-              initPath: '',
-              sync: {
-                enableSubscribe: true,
-              },
-            },
+            path: '',
+            args: [],
+            enableSubscribe: true,
           },
         ],
       })],

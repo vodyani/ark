@@ -1,7 +1,7 @@
 import { Provider } from '@nestjs/common';
 import { AsyncClientAdapter, ClientAdapter } from '@vodyani/core';
 
-import { ClientProxy, AsyncClientProxy } from '../base';
+import { ClientProxy, AsyncClientProxy } from '../abstract';
 
 export type CreateClientAdapter<T, O> = (options: O, ...args: any[]) => ClientAdapter<T>;
 export type AsyncCreateClientAdapter<T, O> = (options: O, ...args: any[]) => Promise<AsyncClientAdapter<T>>;

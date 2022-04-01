@@ -1,8 +1,8 @@
 import { AsyncClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
 
-import { AsyncCreateClientAdapter } from '../type';
+import { AsyncClientProxy, AsyncCreateClientAdapter } from '../common';
 
-export class AsyncClientProxy<T, O> {
+export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
   private client: AsyncClientAdapter<T>;
 
   private args: any[];

@@ -4,7 +4,7 @@
 import { describe, it, expect } from '@jest/globals';
 import { FixedContext } from '@vodyani/core';
 
-import { ClientProxy, AsyncClientProxy } from '../src/common/base';
+import { BaseClientProxy, BaseAsyncClientProxy } from '../src/base';
 
 class ClientAdapter {
   constructor(
@@ -49,9 +49,9 @@ class ClientManager {
 
 const manager = new ClientManager();
 
-describe('ClientProxy', () => {
-  it('ClientProxy test', async () => {
-    const clientProxy = new ClientProxy<ClientAdapter, number>();
+describe('BaseClientProxy', () => {
+  it('BaseClientProxy test', async () => {
+    const clientProxy = new BaseClientProxy<ClientAdapter, number>();
 
     clientProxy.deploy(manager.create, 1, '2');
 
@@ -69,9 +69,9 @@ describe('ClientProxy', () => {
   });
 });
 
-describe('AsyncClientProxy', () => {
-  it('AsyncClientProxy test', async () => {
-    const clientProxy = new AsyncClientProxy<ClientAdapter, number>();
+describe('BaseAsyncClientProxy', () => {
+  it('BaseAsyncClientProxy test', async () => {
+    const clientProxy = new BaseAsyncClientProxy<ClientAdapter, number>();
 
     await clientProxy.deploy(manager.asyncCreate, 1, '2');
 

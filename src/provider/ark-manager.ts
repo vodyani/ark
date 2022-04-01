@@ -65,7 +65,7 @@ export class ArkManager {
     }
 
     if (!isValidString(defaultEnv)) {
-      throw new Error('ArkManager: env is a required parameter!');
+      throw new Error('ArkManager: defaultEnv is a required parameter!');
     }
 
     if (!isValidObject(local)) {
@@ -76,7 +76,7 @@ export class ArkManager {
       throw new Error('ArkManager: local.path is a required parameter!');
     }
 
-    configHandler.init(local.params);
+    configHandler.init(local.param);
 
     const { defaultPath, envPath } = this.deployLocalPath(local.path, env, defaultEnv);
 
@@ -119,11 +119,11 @@ export class ArkManager {
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ options: { initPath, initParam }}, index) => {
+      async ({ path, args }, index) => {
         const client = remoteClients[index];
 
         if (isValid(client)) {
-          await client.init(initPath, env, ...getDefaultArray(initParam));
+          await client.init(path, env, ...getDefaultArray(args));
 
           const remoteConfig = await client.sync();
 
@@ -140,18 +140,16 @@ export class ArkManager {
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ options: { sync }}, index) => {
+      async ({ enableCycleSync, enableSubscribe, cycleSyncInterval }, index) => {
         const client = remoteClients[index];
 
-        if (isValid(client) && isValidObject(sync)) {
-          const { interval, enableSubscribe, enableCycleSync } = sync;
-
+        if (isValid(client)) {
           if (enableSubscribe) {
             await monitor.autoSubscribe(client.subscribe);
           }
 
           if (enableCycleSync) {
-            monitor.autoCycleSync(client.sync, interval);
+            monitor.autoCycleSync(client.sync, cycleSyncInterval);
           }
         }
       },
