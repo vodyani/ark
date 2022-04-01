@@ -1,4 +1,4 @@
-import { Injectable, Provider, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/core';
 
 import { BaseAsyncClientProxy } from '../base';
@@ -9,7 +9,7 @@ import { ConfigProvider } from './config';
 import { ConfigMonitor } from './config-monitor';
 
 @Injectable()
-export class AsyncDynamicDataSourceProvider <T = Provider, O = any> {
+export class AsyncDynamicDataSourceProvider <T = any, O = any> {
   private readonly store: AsyncClientProxyMap<T> = new Map();
 
   constructor(
