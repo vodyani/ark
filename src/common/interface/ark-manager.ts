@@ -3,7 +3,7 @@ import { BaseModule, BaseProvide } from '@vodyani/core';
 
 export interface LocalConfigOptions {
   path: string;
-  param?: Record<string, any>;
+  param?: object;
   enableWatch?: boolean;
   watchOptions?: WatchOptions;
 }
