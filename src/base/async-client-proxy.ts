@@ -1,13 +1,13 @@
-import { AsyncClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
+import { AsyncClientAdapter, CreateAsyncClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
 
-import { AsyncClientProxy, AsyncCreateClientAdapter } from '../common';
+import { AsyncClientProxy } from '../common';
 
 export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
   private client: AsyncClientAdapter<T>;
 
   private args: any[];
 
-  private callback: AsyncCreateClientAdapter<T, O>;
+  private callback: CreateAsyncClientAdapter<T, O>;
 
   @FixedContext
   public get() {
@@ -25,7 +25,7 @@ export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
 
   @FixedContext
   public async deploy(
-    callback: AsyncCreateClientAdapter<T, O>,
+    callback: CreateAsyncClientAdapter<T, O>,
     option: O,
     ...args: any[]
   ) {

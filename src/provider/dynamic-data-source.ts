@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/core';
+import { CreateClientAdapter, FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/core';
 
 import { BaseClientProxy } from '../base';
-import { ClientProxyMap, CreateClientAdapter, DynamicDataSourceOptions } from '../common';
+import { ClientProxyMap, DynamicDataSourceOptions } from '../common';
 
 import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';

@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/core';
+import { CreateAsyncClientAdapter, FixedContext, getDefaultArray, isValid, isValidArray } from '@vodyani/core';
 
 import { BaseAsyncClientProxy } from '../base';
-import { AsyncClientProxyMap, AsyncCreateClientAdapter, DynamicDataSourceOptions } from '../common';
+import { AsyncClientProxyMap, DynamicDataSourceOptions } from '../common';
 
 import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
@@ -34,7 +34,7 @@ export class AsyncDynamicDataSourceProvider <T = any, O = any> {
 
   @FixedContext
   public async create(
-    callback: AsyncCreateClientAdapter<T, O>,
+    callback: CreateAsyncClientAdapter<T, O>,
     options: DynamicDataSourceOptions[],
   ) {
     if (!isValid(callback)) {

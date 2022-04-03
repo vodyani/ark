@@ -1,6 +1,6 @@
-import { ClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
+import { ClientAdapter, CreateClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
 
-import { ClientProxy, CreateClientAdapter } from '../common';
+import { ClientProxy } from '../common';
 
 export class BaseClientProxy<T = any, O = any> implements ClientProxy<T, O> {
   private client: ClientAdapter<T>;
