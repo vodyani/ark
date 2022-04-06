@@ -78,7 +78,7 @@ export class ArkManager {
 
     configHandler.init(local.param);
 
-    const { defaultPath, envPath } = this.deployLocalPath(local.path, env, defaultEnv);
+    const { defaultPath, envPath } = this.deployLocalPath(local.path);
 
     configHandler.deploy(defaultPath);
     configHandler.deploy(envPath);
@@ -89,7 +89,7 @@ export class ArkManager {
     }
 
     if (isValidArray(remote)) {
-      await this.deployRemoteClient(env, config, remoteClients, remote);
+      await this.deployRemoteClient(config, remoteClients, remote);
       await this.deployRemoteClientSync(configMonitor, remoteClients, remote);
     }
 
@@ -97,7 +97,9 @@ export class ArkManager {
   }
 
   @FixedContext
-  private deployLocalPath(path: string, env: string, defaultEnv: string) {
+  private deployLocalPath(path: string) {
+    const { env, defaultEnv } = this.options;
+
     const envPath = `${path}/${env}.json`;
     const defaultPath = `${path}/${defaultEnv}.json`;
 
@@ -113,20 +115,18 @@ export class ArkManager {
 
   @FixedContext
   private async deployRemoteClient(
-    env: string,
     config: ConfigProvider,
     remoteClients: RemoteConfigClient[],
     options: RemoteConfigOptions[],
   ) {
+
     await Promise.all(options.map(
-      async ({ path, args }, index) => {
+      async ({ initArgs }, index) => {
         const client = remoteClients[index];
 
         if (isValid(client)) {
-          await client.init(path, env, ...getDefaultArray(args));
-
+          await client.init(...getDefaultArray(initArgs));
           const remoteConfig = await client.sync();
-
           config.merge(remoteConfig);
         }
       },

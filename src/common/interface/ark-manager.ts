@@ -9,8 +9,7 @@ export interface LocalConfigOptions {
 }
 
 export interface RemoteConfigOptions {
-  path: string;
-  args?: any[];
+  initArgs?: any[];
   module: BaseModule;
   provider: BaseProvide;
   enableSubscribe?: boolean;
