@@ -86,16 +86,14 @@ describe('ArkModule', () => {
           {
             module: RemoteModule1,
             provider: RemoteClient1,
-            path: '',
-            args: [],
+            initArgs: [],
             enableCycleSync: true,
             cycleSyncInterval: 100,
           },
           {
             module: RemoteModule2,
             provider: RemoteClient2,
-            path: '',
-            args: [],
+            initArgs: [],
             enableSubscribe: true,
           },
         ],
