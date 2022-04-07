@@ -1,5 +1,6 @@
 import { WatchOptions } from 'chokidar';
-import { ModuleMetadata } from '@nestjs/common';
+import { BaseClass } from '@vodyani/core';
+import { DynamicModule, ForwardReference, Provider } from '@nestjs/common';
 
 export interface Env {
   current: any;
@@ -15,8 +16,8 @@ export interface LocalConfigOptions {
 }
 
 export interface RemoteConfigOptions {
-  module: ModuleMetadata['imports'];
-  provider: ModuleMetadata['providers'];
+  module: BaseClass | DynamicModule | Promise<DynamicModule> | ForwardReference;
+  provider: Provider;
   initArgs?: any[];
   enableSubscribe?: boolean;
   enableCycleSync?: boolean;
