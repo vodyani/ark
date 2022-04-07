@@ -12,7 +12,7 @@
   "keywords": [
     "vodyani",
     "nodejs",
-    "jest",
+    "config",
     "nestjs",
     "javascript",
     "typescript",
@@ -66,7 +66,7 @@
   "dependencies": {
     "@nestjs/common": "^8.4.0",
     "@nestjs/core": "^8.4.0",
-    "@vodyani/core": "^0.2.10",
+    "@vodyani/core": "^0.2.11",
     "chokidar": "^3.5.3",
     "lodash": "^4.17.21"
   },

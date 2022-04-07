@@ -1,17 +1,23 @@
 import { WatchOptions } from 'chokidar';
 import { BaseModule, BaseProvide } from '@vodyani/core';
 
+export interface Env {
+  current: any;
+  default: any;
+}
+
 export interface LocalConfigOptions {
+  env: Env;
   path: string;
-  param?: object;
+  params: Record<string, any>;
   enableWatch?: boolean;
   watchOptions?: WatchOptions;
 }
 
 export interface RemoteConfigOptions {
-  initArgs?: any[];
   module: BaseModule;
   provider: BaseProvide;
+  initArgs?: any[];
   enableSubscribe?: boolean;
   enableCycleSync?: boolean;
   cycleSyncInterval?: number;
@@ -20,8 +26,6 @@ export interface RemoteConfigOptions {
 export interface ArkManagerOptions {
   remote?: RemoteConfigOptions[];
   local: LocalConfigOptions;
-  defaultEnv: string;
-  env: string;
 }
 
 export interface ArkModuleOptions extends ArkManagerOptions {

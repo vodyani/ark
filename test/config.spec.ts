@@ -8,6 +8,11 @@ describe('ConfigProvider', () => {
   it('set & get', async () => {
     configProvider.set('test', 'test');
     expect(configProvider.get('test')).toBe('test');
+    expect(configProvider.discovery('test')).toBe('test');
+
+    configProvider.set('test1', { name: 'test1' });
+    expect(configProvider.get('test1')).toEqual({ name: 'test1' });
+    expect(configProvider.discovery('test1')).toEqual({ name: 'test1' });
 
     configProvider.set('test', ['test2']);
     expect(configProvider.get('test')).toEqual(['test2']);
@@ -24,5 +29,16 @@ describe('ConfigProvider', () => {
     configProvider.set('merge', { 1: [1, 2, 3], 2: '2' });
     configProvider.merge({ merge: { '1': [1, 2, 4], '2': 2 }});
     expect(configProvider.get('merge')).toEqual({ 1: [1, 2, 4], 2: 2 });
+  });
+
+  it('discovery', () => {
+    interface Config {
+      name: string;
+    }
+
+    const configProvider = new ConfigProvider<Config>();
+    configProvider.set('name', 'test');
+    expect(configProvider.discovery('name')).toMatch('test');
+    expect(configProvider.discovery('name')).toBe('test');
   });
 });

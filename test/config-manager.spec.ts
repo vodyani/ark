@@ -74,11 +74,13 @@ describe('ArkModule', () => {
   it('test all', async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [ArkModule.forRoot({
-        env: 'LOCAL',
-        defaultEnv: 'DEFAULT',
         local: {
+          env: {
+            current: 'LOCAL',
+            default: 'DEFAULT',
+          },
+          params: { test: 1 },
           path: resolve(__dirname, './env'),
-          param: { test: 1 },
           enableWatch: true,
           watchOptions: {},
         },
@@ -135,7 +137,7 @@ describe('ArkModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: 'DEFAULT' } as any)],
+        imports: [ArkModule.forRoot({ local: { env: { default: 'DEFAULT' }}} as any)],
       }).compile();
     } catch (error) {
 
@@ -144,37 +146,33 @@ describe('ArkModule', () => {
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: 'LOCAL', defaultEnv: 'DEFAULT' } as any)],
+        imports: [ArkModule.forRoot({ local: { env: { current: 'LOCAL', default: 'DEFAULT' }}} as any)],
       }).compile();
     } catch (error) {
-
       expect(error).toBeInstanceOf(Error);
     }
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: 'LOCAL', defaultEnv: 'DEFAULT', local: { test: 1 }} as any)],
+        imports: [ArkModule.forRoot({ local: { path: '.', env: { current: 'LOCAL', default: 'DEFAULT' }}} as any)],
       }).compile();
     } catch (error) {
-
       expect(error).toBeInstanceOf(Error);
     }
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: 'LOCAL', defaultEnv: 'PET', local: { path: './' }} as any)],
+        imports: [ArkModule.forRoot({ local: { path: resolve(__dirname, './env'), env: { current: 'PRO', default: 'DEFAULT' }}} as any)],
       }).compile();
     } catch (error) {
-
       expect(error).toBeInstanceOf(Error);
     }
 
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot({ env: 'LOCAL', defaultEnv: 'PET', local: { path: resolve(__dirname, './env') }} as any)],
+        imports: [ArkModule.forRoot({ local: { path: resolve(__dirname, './env'), env: { current: 'LOCAL', default: 'PRO' }}} as any)],
       }).compile();
     } catch (error) {
-
       expect(error).toBeInstanceOf(Error);
     }
   });

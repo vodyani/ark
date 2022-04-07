@@ -26,9 +26,9 @@ export class ConfigProvider<T = any> {
    * - Only the specified key can be queried, deep query is not supported
    */
   @FixedContext
-  public discovery<KEY extends keyof T>(key: KEY): T[KEY] {
+  public discovery(key: keyof T) {
     const result = this.store[key];
-    return isValidObject(result) || isValidArray(result) ? cloneDeep(result) as any : result;
+    return (isValidArray(result) || isValidObject(result) ? cloneDeep(result) : result) as T[keyof T];
   }
   /**
    * set the configuration for the given key.

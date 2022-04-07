@@ -58,34 +58,28 @@ export class ArkManager {
     configMonitor: ConfigMonitor,
     ...remoteClients: RemoteConfigClient[]
   ) {
-    const { env, defaultEnv, local, remote } = this.options;
-
-    if (!isValidString(env)) {
-      throw new Error('ArkManager: env is a required parameter!');
-    }
-
-    if (!isValidString(defaultEnv)) {
-      throw new Error('ArkManager: defaultEnv is a required parameter!');
-    }
+    const { local, remote } = this.options;
 
     if (!isValidObject(local)) {
       throw new Error('ArkManager: local is a required parameter!');
     }
 
-    if (!isValidString(local.path)) {
+    const { env, params, path, enableWatch, watchOptions } = local;
+
+    if (!isValidString(path)) {
       throw new Error('ArkManager: local.path is a required parameter!');
     }
 
-    configHandler.init(local.param);
+    configHandler.init({ env: env.current, ...params });
 
-    const { defaultPath, envPath } = this.deployLocalPath(local.path);
+    const { defaultPath, currentPath } = this.deployLocalPath(local.path);
 
     configHandler.deploy(defaultPath);
-    configHandler.deploy(envPath);
+    configHandler.deploy(currentPath);
 
-    if (local.enableWatch) {
-      configMonitor.watchFile(defaultPath, local.watchOptions);
-      configMonitor.watchFile(envPath, local.watchOptions);
+    if (enableWatch) {
+      configMonitor.watchFile(defaultPath, watchOptions);
+      configMonitor.watchFile(currentPath, watchOptions);
     }
 
     if (isValidArray(remote)) {
@@ -98,19 +92,23 @@ export class ArkManager {
 
   @FixedContext
   private deployLocalPath(path: string) {
-    const { env, defaultEnv } = this.options;
+    const { local: { env }} = this.options;
 
-    const envPath = `${path}/${env}.json`;
-    const defaultPath = `${path}/${defaultEnv}.json`;
+    const defaultPath = `${path}/${env.default}.json`;
+    const currentPath = `${path}/${env.current}.json`;
 
-    if (!existsSync(envPath)) {
-      throw new Error(`ArkManager.deployLocalPath: The file at ${envPath} does not exist!`);
-    }
+    console.log(`ArkManager: defaultPath: ${defaultPath}`);
+    console.log(`ArkManager: currentPath: ${currentPath}`);
 
     if (!existsSync(defaultPath)) {
       throw new Error(`ArkManager.deployLocalPath: The file at ${defaultPath} does not exist!`);
     }
-    return { envPath, defaultPath };
+
+    if (!existsSync(currentPath)) {
+      throw new Error(`ArkManager.deployLocalPath: The file at ${currentPath} does not exist!`);
+    }
+
+    return { currentPath, defaultPath };
   }
 
   @FixedContext
