@@ -1,5 +1,5 @@
 import { WatchOptions } from 'chokidar';
-import { BaseModule, BaseProvide } from '@vodyani/core';
+import { ModuleMetadata } from '@nestjs/common';
 
 export interface Env {
   current: any;
@@ -15,8 +15,8 @@ export interface LocalConfigOptions {
 }
 
 export interface RemoteConfigOptions {
-  module: BaseModule;
-  provider: BaseProvide;
+  module: ModuleMetadata['imports'];
+  provider: ModuleMetadata['providers'];
   initArgs?: any[];
   enableSubscribe?: boolean;
   enableCycleSync?: boolean;
