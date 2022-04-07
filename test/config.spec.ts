@@ -34,11 +34,15 @@ describe('ConfigProvider', () => {
   it('discovery', () => {
     interface Config {
       name: string;
+      age?: number;
     }
 
-    const configProvider = new ConfigProvider<Config>();
+    interface Config1 {
+      details?: Record<string, any>;
+    }
+
+    const configProvider = new ConfigProvider<Config & Config1>();
     configProvider.set('name', 'test');
-    expect(configProvider.discovery('name')).toMatch('test');
     expect(configProvider.discovery('name')).toBe('test');
   });
 });
