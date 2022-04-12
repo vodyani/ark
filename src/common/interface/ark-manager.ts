@@ -30,5 +30,8 @@ export interface ArkManagerOptions {
 }
 
 export interface ArkModuleOptions extends ArkManagerOptions {
+  /**
+   * @default: true
+   */
   global?: boolean;
 }

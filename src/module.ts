@@ -1,4 +1,4 @@
-import { isValidArray } from '@vodyani/core';
+import { getDefault, isValidArray } from '@vodyani/core';
 import { DynamicModule } from '@nestjs/common';
 
 import { ArkModuleOptions } from './common';
@@ -31,7 +31,7 @@ export class ArkModule {
       providers,
       exports: providers,
       module: ArkModule,
-      global: options.global,
+      global: getDefault(options.global, true),
     };
   }
 }
