@@ -1,6 +1,7 @@
 import {
   BaseObject,
   FixedContext,
+  isKeyof,
   isValidArray,
   isValidObject,
   toDeepMerge,
@@ -34,12 +35,11 @@ export class ConfigProvider<T = any> {
    * - Only the specified key can be queried, deep query is not supported
    */
   @FixedContext
-  public discovery<K extends keyof BaseObject<T>>(key: K): T[K] {
-    const result = this.store[key] as any;
-
-    return isValidArray(result) || isValidObject(result)
-      ? cloneDeep(result)
-      : result;
+  public discovery<K extends keyof BaseObject<T>>(key: K) {
+    if (isKeyof(this.store, key)) {
+      const result: T[K] = this.store[key];
+      return isValidObject(result) ? cloneDeep(result) : result;
+    }
   }
   /**
    * set the configuration for the given key.

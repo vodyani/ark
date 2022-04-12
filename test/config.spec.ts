@@ -41,8 +41,12 @@ describe('ConfigProvider', () => {
       details?: Record<string, any>;
     }
 
-    const configProvider = new ConfigProvider<Config & Config1>();
+    type BASE = Config & Config1;
+
+    const configProvider = new ConfigProvider<BASE>();
+
     configProvider.set('name', 'test');
-    expect(configProvider.discovery('name')).toBe('test');
+
+    expect(configProvider.discovery<'name'>('name')).toEqual('test');
   });
 });
