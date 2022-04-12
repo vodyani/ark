@@ -97,9 +97,6 @@ export class ArkManager {
     const defaultPath = `${path}/${env.default}.json`;
     const currentPath = `${path}/${env.current}.json`;
 
-    console.log(`ArkManager: defaultPath: ${defaultPath}`);
-    console.log(`ArkManager: currentPath: ${currentPath}`);
-
     if (!existsSync(defaultPath)) {
       throw new Error(`ArkManager.deployLocalPath: The file at ${defaultPath} does not exist!`);
     }
