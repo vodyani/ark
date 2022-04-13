@@ -20,6 +20,7 @@ npm install @vodyani/ark
 - [nestjs](https://github.com/nestjs) `v8`
 - [lodash](https://github.com/lodash/lodash) `v4`
 - [chokidar](https://github.com/paulmillr/chokidar) `v3`
+- [object-hash](https://github.com/puleos/object-hash) `v3`
 
 ## License
 
