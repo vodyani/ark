@@ -3,9 +3,9 @@ import { existsSync, readFileSync } from 'fs';
 import { uniqueId } from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
-import { FixedContext, toHash, isValidArray, isValidObject, makeCycleTask } from '@vodyani/core';
+import { FixedContext, isValidArray, isValidObject, makeCycleTask } from '@vodyani/core';
 
-import { WatchCallback, WatchDetails } from '../common';
+import { toHash, WatchCallback, WatchDetails } from '../common';
 
 import { ConfigProvider } from './config';
 
