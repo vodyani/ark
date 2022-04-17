@@ -12,14 +12,15 @@ import { AsyncDynamicDataSourceProvider } from './provider/async-dynamic-data-so
 export class ArkModule {
   static forRoot(options: ArkModuleOptions): DynamicModule {
     const imports: any[] = [];
+    const manager = new ArkManager(options).create();
 
     const providers: any[] = [
+      manager,
       ConfigMonitor,
       ConfigHandler,
       ConfigProvider,
       DynamicDataSourceProvider,
       AsyncDynamicDataSourceProvider,
-      new ArkManager(options).getFactoryProvider(),
     ];
 
     if (isValidArray(options.remote)) {

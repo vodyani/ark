@@ -3,13 +3,13 @@ import { existsSync } from 'fs';
 import {
   isValid,
   isValidArray,
+  FixedContext,
   isValidObject,
   isValidString,
-  FixedContext,
+  ProviderFactory,
   getDefaultArray,
   RemoteConfigClient,
 } from '@vodyani/core';
-import { Provider } from '@nestjs/common';
 
 import { ArkManagerOptions, RemoteConfigOptions } from '../common';
 
@@ -17,38 +17,34 @@ import { ConfigProvider } from './config';
 import { ConfigHandler } from './config-handler';
 import { ConfigMonitor } from './config-monitor';
 
-export class ArkManager {
+export class ArkManager implements ProviderFactory {
   public static token = Symbol('ArkManager');
-
-  private readonly provider: Provider;
 
   constructor(
     private readonly options: ArkManagerOptions,
   ) {
-    if (!isValidObject(options)) {
+    if (!isValidObject(this.options)) {
       throw new Error('ArkManager.constructor: options is a required parameter!');
     }
+  }
 
+  @FixedContext
+  public create() {
     const inject: any = [
       ConfigProvider,
       ConfigHandler,
       ConfigMonitor,
     ];
 
-    if (isValidArray(options.remote)) {
-      options.remote.forEach(item => inject.push(item.provider));
+    if (isValidArray(this.options.remote)) {
+      this.options.remote.forEach(item => inject.push(item.provider));
     }
 
-    this.provider = {
+    return {
       inject,
       useFactory: this.useFactory,
       provide: ArkManager.token,
     };
-  }
-
-  @FixedContext
-  public getFactoryProvider() {
-    return this.provider;
   }
 
   @FixedContext
