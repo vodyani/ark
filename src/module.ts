@@ -1,5 +1,6 @@
-import { getDefault, isValidArray } from '@vodyani/core';
 import { DynamicModule } from '@nestjs/common';
+import { getDefault } from '@vodyani/transformer';
+import { isValidArray } from '@vodyani/validator';
 
 import { ArkModuleOptions } from './common';
 import { ConfigProvider } from './provider/config';

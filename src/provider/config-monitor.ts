@@ -3,7 +3,8 @@ import { existsSync, readFileSync } from 'fs';
 import { uniqueId } from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
-import { FixedContext, isValidArray, isValidObject, makeCycleTask } from '@vodyani/core';
+import { FixedContext, makeCycleTask } from '@vodyani/core';
+import { isValidArray, isValidObject } from '@vodyani/validator';
 
 import { toHash, WatchCallback, WatchDetails } from '../common';
 

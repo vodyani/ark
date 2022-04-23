@@ -1,7 +1,8 @@
 import { readFileSync } from 'fs';
 
 import { Injectable } from '@nestjs/common';
-import { FixedContext, isValidObject } from '@vodyani/core';
+import { FixedContext } from '@vodyani/core';
+import { isValidObject } from '@vodyani/validator';
 
 import { ConfigProvider } from './config';
 

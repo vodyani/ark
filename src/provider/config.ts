@@ -1,15 +1,8 @@
-import {
-  BaseObject,
-  FixedContext,
-  isKeyof,
-  isValidArray,
-  isValidObject,
-  toDeepMerge,
-  toMatchProperties,
-  toRestoreProperties,
-} from '@vodyani/core';
 import { cloneDeep } from 'lodash';
 import { Injectable } from '@nestjs/common';
+import { toDeepMerge } from '@vodyani/transformer';
+import { isValidArray, isValidObject } from '@vodyani/validator';
+import { FixedContext, toMatchProperties, toRestoreProperties, ObjectType } from '@vodyani/core';
 
 /**
  * Configuration Accessor
@@ -19,7 +12,7 @@ export class ConfigProvider<T = any> {
   /**
    * The configuration details store.
    */
-  private store: BaseObject<T> = Object();
+  private store: ObjectType<T> = Object();
   /**
    * get the configuration for the given key.
    */
@@ -35,11 +28,9 @@ export class ConfigProvider<T = any> {
    * - Only the specified key can be queried, deep query is not supported
    */
   @FixedContext
-  public discovery<K extends keyof BaseObject<T>>(key: K) {
-    if (isKeyof(this.store, key)) {
-      const result: T[K] = this.store[key];
-      return isValidObject(result) ? cloneDeep(result) : result;
-    }
+  public discovery<K extends keyof ObjectType<T>>(key: K): ObjectType<T>[K] {
+    const result = this.store[key];
+    return isValidObject(result) ? cloneDeep(result) : result;
   }
   /**
    * set the configuration for the given key.

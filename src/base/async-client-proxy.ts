@@ -1,4 +1,5 @@
-import { AsyncClientAdapter, CreateAsyncClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
+import { isValidObject } from '@vodyani/validator';
+import { AsyncClientAdapter, CreateAsyncClientAdapter, FixedContext, isKeyof } from '@vodyani/core';
 
 import { AsyncClientProxy } from '../common';
 

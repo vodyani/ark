@@ -1,4 +1,5 @@
-import { ClientAdapter, CreateClientAdapter, FixedContext, isKeyof, isValidObject } from '@vodyani/core';
+import { isValidObject } from '@vodyani/validator';
+import { ClientAdapter, CreateClientAdapter, FixedContext, isKeyof } from '@vodyani/core';
 
 import { ClientProxy } from '../common';
 
