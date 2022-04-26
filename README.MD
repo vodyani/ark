@@ -9,18 +9,17 @@
 [![codecov](https://codecov.io/gh/vodyani/ark/branch/master/graph/badge.svg?token=3L3398C2KW)](https://codecov.io/gh/vodyani/ark)
 [![Known Vulnerabilities](https://snyk.io/test/github/vodyani/ark/badge.svg?targetFile=package.json)](https://snyk.io/test/github/vodyani/ark?targetFile=package.json)
 
+## Installation
+
+```sh
+npm install @vodyani/ark
+```
 
 ## Recommendations
 > [Get started with documentation](https://vodyani.vercel.app/docs/advanced/ark)
 
 - typescript `v4.6.x`
 - node.js `v12.x` ~ `v16.x`
-
-## Installation
-
-```sh
-npm install @vodyani/ark
-```
 
 ## Dependencies
 
