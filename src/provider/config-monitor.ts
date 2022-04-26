@@ -1,10 +1,9 @@
 import { existsSync, readFileSync } from 'fs';
 
-import { uniqueId } from 'lodash';
 import { Injectable } from '@nestjs/common';
+import { isArray, isObject, uniqueId } from 'lodash';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
-import { FixedContext, makeCycleTask } from '@vodyani/core';
-import { isValidArray, isValidObject } from '@vodyani/validator';
+import { FixedContext, PromiseType, makeCycleTask } from '@vodyani/core';
 
 import { toHash, WatchCallback, WatchDetails } from '../common';
 
@@ -28,7 +27,7 @@ export class ConfigMonitor {
   public watchConfig(callback: WatchCallback, key: string) {
     let value = this.config.get(key);
 
-    if (isValidArray(value) || isValidObject(value)) {
+    if (value && (isArray(value) || isObject(value))) {
       value = toHash(value);
     }
 
@@ -59,7 +58,7 @@ export class ConfigMonitor {
 
   @FixedContext
   public autoCycleSync(
-    callback: (...args: any[]) => Promise<any>,
+    callback: PromiseType,
     interval = 1000,
   ) {
     const remoteClientUniqueId = uniqueId('ConfigMonitor.autoCycleSync');
@@ -82,7 +81,7 @@ export class ConfigMonitor {
 
   @FixedContext
   public autoMerge(source: string, value: any) {
-    if (!isValidObject(value)) {
+    if (!value) {
       return;
     }
 
@@ -104,7 +103,7 @@ export class ConfigMonitor {
 
       currentConfig = this.config.get(key);
 
-      if (isValidArray(currentConfig) || isValidObject(currentConfig)) {
+      if (currentConfig && (isArray(currentConfig) || isObject(currentConfig))) {
         currentConfig = toHash(currentConfig);
       }
 

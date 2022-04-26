@@ -1,8 +1,8 @@
 import { existsSync } from 'fs';
 
-import { getDefaultArray } from '@vodyani/transformer';
+import { isArray } from 'lodash';
+import { convertArray } from '@vodyani/transformer';
 import { FixedContext, ProviderFactory, RemoteConfigClient } from '@vodyani/core';
-import { isValidObject, isValidArray, isValidString, isValid } from '@vodyani/validator';
 
 import { ArkManagerOptions, RemoteConfigOptions } from '../common';
 
@@ -16,7 +16,7 @@ export class ArkManager implements ProviderFactory {
   constructor(
     private readonly options: ArkManagerOptions,
   ) {
-    if (!isValidObject(this.options)) {
+    if (!this.options) {
       throw new Error('ArkManager.constructor: options is a required parameter!');
     }
   }
@@ -29,7 +29,7 @@ export class ArkManager implements ProviderFactory {
       ConfigMonitor,
     ];
 
-    if (isValidArray(this.options.remote)) {
+    if (this.options.remote && isArray(this.options.remote)) {
       this.options.remote.forEach(item => inject.push(item.provider));
     }
 
@@ -49,13 +49,13 @@ export class ArkManager implements ProviderFactory {
   ) {
     const { local, remote } = this.options;
 
-    if (!isValidObject(local)) {
+    if (!local) {
       throw new Error('ArkManager: local is a required parameter!');
     }
 
     const { env, params, path, enableWatch, watchOptions } = local;
 
-    if (!isValidString(path)) {
+    if (!path) {
       throw new Error('ArkManager: local.path is a required parameter!');
     }
 
@@ -71,7 +71,7 @@ export class ArkManager implements ProviderFactory {
       configMonitor.watchFile(currentPath, watchOptions);
     }
 
-    if (isValidArray(remote)) {
+    if (remote) {
       await this.deployRemoteClient(config, remoteClients, remote);
       await this.deployRemoteClientSync(configMonitor, remoteClients, remote);
     }
@@ -108,8 +108,8 @@ export class ArkManager implements ProviderFactory {
       async ({ initArgs }, index) => {
         const client = remoteClients[index];
 
-        if (isValid(client)) {
-          await client.init(...getDefaultArray(initArgs));
+        if (client) {
+          await client.init(...convertArray(initArgs));
           const remoteConfig = await client.sync();
           config.merge(remoteConfig);
         }
@@ -127,7 +127,7 @@ export class ArkManager implements ProviderFactory {
       async ({ enableCycleSync, enableSubscribe, cycleSyncInterval }, index) => {
         const client = remoteClients[index];
 
-        if (isValid(client)) {
+        if (client) {
           if (enableSubscribe) {
             await monitor.autoSubscribe(client.subscribe);
           }

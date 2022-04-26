@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { getDefaultArray } from '@vodyani/transformer';
-import { isValid, isValidArray } from '@vodyani/validator';
+import { convertArray } from '@vodyani/transformer';
 import { CreateAsyncClientAdapter, FixedContext } from '@vodyani/core';
 
 import { BaseAsyncClientProxy } from '../base';
@@ -39,11 +38,11 @@ export class AsyncDynamicDataSourceProvider <T = any, O = any> {
     callback: CreateAsyncClientAdapter<T, O>,
     options: DynamicDataSourceOptions[],
   ) {
-    if (!isValid(callback)) {
+    if (!callback) {
       throw new Error('The creation callback cannot be empty');
     }
 
-    if (!isValidArray(options)) {
+    if (!options) {
       throw new Error('The AsyncDynamicDataSource options cannot be empty');
     }
 
@@ -52,7 +51,7 @@ export class AsyncDynamicDataSourceProvider <T = any, O = any> {
 
       const clientProxy = new BaseAsyncClientProxy<T, O>();
 
-      await clientProxy.deploy(callback, option, ...getDefaultArray(args));
+      await clientProxy.deploy(callback, option, ...convertArray(args));
 
       this.store.set(configKey, clientProxy);
 

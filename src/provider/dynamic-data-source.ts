@@ -1,13 +1,12 @@
+import { convertArray } from '@vodyani/transformer';
 import { Injectable, Inject } from '@nestjs/common';
-import { getDefaultArray } from '@vodyani/transformer';
-import { isValid, isValidArray } from '@vodyani/validator';
 import { CreateClientAdapter, FixedContext } from '@vodyani/core';
 
 import { BaseClientProxy } from '../base';
 import { ClientProxyMap, DynamicDataSourceOptions } from '../common';
 
-import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
+import { ArkManager } from './ark-manager';
 import { ConfigMonitor } from './config-monitor';
 
 @Injectable()
@@ -39,11 +38,11 @@ export class DynamicDataSourceProvider <T = any, O = any> {
     callback: CreateClientAdapter<T, O>,
     options: DynamicDataSourceOptions[],
   ) {
-    if (!isValid(callback)) {
+    if (!callback) {
       throw new Error('The creation callback cannot be empty');
     }
 
-    if (!isValidArray(options)) {
+    if (!options) {
       throw new Error('The DynamicDataSource options cannot be empty');
     }
 
@@ -52,7 +51,7 @@ export class DynamicDataSourceProvider <T = any, O = any> {
 
       const clientProxy = new BaseClientProxy<T, O>();
 
-      clientProxy.deploy(callback, option, ...getDefaultArray(args));
+      clientProxy.deploy(callback, option, ...convertArray(args));
 
       this.store.set(configKey, clientProxy);
 

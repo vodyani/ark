@@ -1,5 +1,4 @@
-import { isValidObject } from '@vodyani/validator';
-import { AsyncClientAdapter, CreateAsyncClientAdapter, FixedContext, isKeyof } from '@vodyani/core';
+import { AsyncClientAdapter, CreateAsyncClientAdapter, FixedContext } from '@vodyani/core';
 
 import { AsyncClientProxy } from '../common';
 
@@ -17,11 +16,7 @@ export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
 
   @FixedContext
   public getClient() {
-    if (isValidObject(this.client) && isKeyof(this.client, 'instance')) {
-      return this.client.instance;
-    }
-
-    return null;
+    return this.client?.instance;
   }
 
   @FixedContext

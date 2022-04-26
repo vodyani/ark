@@ -65,7 +65,7 @@ describe('BaseClientProxy', () => {
 
     clientProxy.close();
 
-    expect(clientProxy.getClient()).toBeNull();
+    expect(clientProxy.getClient()).toBe(undefined);
   });
 });
 
@@ -93,7 +93,7 @@ describe('BaseAsyncClientProxy', () => {
 
     await clientProxy.close();
 
-    expect(clientProxy.getClient()).toBeNull();
+    expect(clientProxy.getClient()).toBe(undefined);
   });
 });
 

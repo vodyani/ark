@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 
+import { isObject } from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { FixedContext } from '@vodyani/core';
-import { isValidObject } from '@vodyani/validator';
 
 import { ConfigProvider } from './config';
 
@@ -14,7 +14,7 @@ export class ConfigHandler {
 
   @FixedContext
   public init(details: Record<string, any>) {
-    if (isValidObject(details)) {
+    if (details && isObject(details)) {
       this.config.merge(details);
     }
   }
@@ -24,7 +24,7 @@ export class ConfigHandler {
     try {
       const config = JSON.parse(readFileSync(path, 'utf8'));
 
-      if (isValidObject(config)) {
+      if (config && isObject(config)) {
         this.config.merge(config);
       }
     } catch (err) {

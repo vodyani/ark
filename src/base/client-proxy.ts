@@ -1,5 +1,4 @@
-import { isValidObject } from '@vodyani/validator';
-import { ClientAdapter, CreateClientAdapter, FixedContext, isKeyof } from '@vodyani/core';
+import { ClientAdapter, CreateClientAdapter, FixedContext } from '@vodyani/core';
 
 import { ClientProxy } from '../common';
 
@@ -17,7 +16,7 @@ export class BaseClientProxy<T = any, O = any> implements ClientProxy<T, O> {
 
   @FixedContext
   public getClient() {
-    return isValidObject(this.client) && isKeyof(this.client, 'instance') ? this.client.instance : null;
+    return this.client?.instance;
   }
 
   @FixedContext
