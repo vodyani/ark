@@ -23,8 +23,8 @@ npm install @vodyani/ark
 
 ## Dependencies
 
-- [vodyani/core](https://github.com/vodyani/core) `v0.3`
 - [vodyani/transformer](https://github.com/vodyani/transformer) `v0.5`
+- [vodyani/core](https://github.com/vodyani/core) `v8`
 - [nestjs/common](https://github.com/nestjs) `v8`
 - [lodash](https://github.com/lodash/lodash) `v4`
 - [chokidar](https://github.com/paulmillr/chokidar) `v3`
