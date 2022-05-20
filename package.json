@@ -85,7 +85,7 @@
     "@types/node": "16.11.26",
     "@types/object-hash": "2.2.1",
     "@types/supertest": "2.0.12",
-    "@vodyani/eslint-config": "1.0.6",
+    "@vodyani/eslint-config": "1.0.9",
     "husky": "7.0.4",
     "jest": "27.5.1",
     "supertest": "6.2.2",
