@@ -1,3 +1,5 @@
+import { ClientAdapter } from '../interface';
+import { CreateClientAdapter } from '../type';
 
 export abstract class ClientProxy<T = any, O = any> {
   public get: () => ClientAdapter<T>;
