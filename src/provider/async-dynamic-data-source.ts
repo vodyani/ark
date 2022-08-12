@@ -1,9 +1,9 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { convertArray } from '@vodyani/transformer';
-import { CreateAsyncClientAdapter, FixedContext } from '@vodyani/core';
+import { Injectable } from '@nestjs/common';
+import { AsyncInject } from '@vodyani/core';
+import { This } from '@vodyani/class-decorator';
 
-import { BaseAsyncClientProxy } from '../base';
-import { AsyncClientProxyMap, DynamicDataSourceOptions } from '../common';
+import { BaseAsyncClientProxy } from '../struct';
+import { CreateAsyncClientAdapter, DynamicDataSourceOptions } from '../common';
 
 import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
@@ -11,29 +11,29 @@ import { ConfigMonitor } from './config-monitor';
 
 @Injectable()
 export class AsyncDynamicDataSourceProvider <T = any, O = any> {
-  private readonly store: AsyncClientProxyMap<T> = new Map();
+  private readonly store = new Map();
 
   constructor(
-    @Inject(ArkManager.token)
+    @AsyncInject(ArkManager)
     private readonly config: ConfigProvider,
     private readonly monitor: ConfigMonitor,
   ) {}
 
-  @FixedContext
+  @This
   public get(configKey: string) {
     if (this.store.has(configKey)) {
       return this.store.get(configKey).get();
     }
   }
 
-  @FixedContext
+  @This
   public getClient(configKey: string) {
     if (this.store.has(configKey)) {
       return this.store.get(configKey).getClient();
     }
   }
 
-  @FixedContext
+  @This
   public async create(
     callback: CreateAsyncClientAdapter<T, O>,
     options: DynamicDataSourceOptions[],
@@ -51,7 +51,7 @@ export class AsyncDynamicDataSourceProvider <T = any, O = any> {
 
       const clientProxy = new BaseAsyncClientProxy<T, O>();
 
-      await clientProxy.deploy(callback, option, ...convertArray(args));
+      await clientProxy.deploy(callback, option, ...(args || []));
 
       this.store.set(configKey, clientProxy);
 
@@ -59,7 +59,7 @@ export class AsyncDynamicDataSourceProvider <T = any, O = any> {
     }
   }
 
-  @FixedContext
+  @This
   public async close(configKey: string) {
     if (this.store.has(configKey)) {
       await this.store.get(configKey).close();

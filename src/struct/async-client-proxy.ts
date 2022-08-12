@@ -1,6 +1,6 @@
-import { AsyncClientAdapter, CreateAsyncClientAdapter, FixedContext } from '@vodyani/core';
+import { This } from '@vodyani/class-decorator';
 
-import { AsyncClientProxy } from '../common';
+import { AsyncClientAdapter, AsyncClientProxy, CreateAsyncClientAdapter } from '../common';
 
 export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
   private client: AsyncClientAdapter<T>;
@@ -9,17 +9,17 @@ export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
 
   private callback: CreateAsyncClientAdapter<T, O>;
 
-  @FixedContext
+  @This
   public get() {
     return this.client;
   }
 
-  @FixedContext
+  @This
   public getClient() {
     return this.client?.instance;
   }
 
-  @FixedContext
+  @This
   public async deploy(
     callback: CreateAsyncClientAdapter<T, O>,
     option: O,
@@ -30,7 +30,7 @@ export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
     this.client = await callback(option, ...this.args);
   }
 
-  @FixedContext
+  @This
   public async redeploy(option: O) {
     const current = await this.callback(option, ...this.args);
 
@@ -39,7 +39,7 @@ export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
     this.client = current;
   }
 
-  @FixedContext
+  @This
   public async close() {
     await this.client.close();
     this.client = null;

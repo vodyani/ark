@@ -1,6 +1,6 @@
-import { ClientAdapter, CreateClientAdapter, FixedContext } from '@vodyani/core';
+import { This } from '@vodyani/class-decorator';
 
-import { ClientProxy } from '../common';
+import { ClientAdapter, ClientProxy, CreateClientAdapter } from '../common';
 
 export class BaseClientProxy<T = any, O = any> implements ClientProxy<T, O> {
   private client: ClientAdapter<T>;
@@ -9,17 +9,17 @@ export class BaseClientProxy<T = any, O = any> implements ClientProxy<T, O> {
 
   private callback: CreateClientAdapter<T, O>;
 
-  @FixedContext
+  @This
   public get() {
     return this.client;
   }
 
-  @FixedContext
+  @This
   public getClient() {
     return this.client?.instance;
   }
 
-  @FixedContext
+  @This
   public deploy(
     callback: CreateClientAdapter<T, O>,
     option: O,
@@ -30,7 +30,7 @@ export class BaseClientProxy<T = any, O = any> implements ClientProxy<T, O> {
     this.client = callback(option, ...this.args);
   }
 
-  @FixedContext
+  @This
   public redeploy(option: O) {
     const current = this.callback(option, ...this.args);
 
@@ -39,7 +39,7 @@ export class BaseClientProxy<T = any, O = any> implements ClientProxy<T, O> {
     this.client = current;
   }
 
-  @FixedContext
+  @This
   public close() {
     this.client.close();
     this.client = null;

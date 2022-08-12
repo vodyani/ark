@@ -1,4 +1,5 @@
-import { AsyncClientAdapter, CreateAsyncClientAdapter } from '@vodyani/core';
+import { AsyncClientAdapter } from '../interface';
+import { CreateAsyncClientAdapter } from '../type';
 
 export abstract class AsyncClientProxy<T = any, O = any> {
   public get: () => AsyncClientAdapter<T>;

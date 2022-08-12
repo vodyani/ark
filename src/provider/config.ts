@@ -1,7 +1,9 @@
+import { cloneDeep } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { cloneDeep, isObject } from 'lodash';
-import { toDeepMerge } from '@vodyani/transformer';
-import { FixedContext, toMatchProperties, toRestoreProperties, ObjectType } from '@vodyani/core';
+import { This } from '@vodyani/class-decorator';
+import { toDeepMerge, toDeepMatch, toDeepRestore, isValidDict, isKeyof } from '@vodyani/utils';
+
+import { Dictionary } from '../common';
 
 /**
  * Configuration Accessor
@@ -11,14 +13,14 @@ export class ConfigProvider<T = any> {
   /**
    * The configuration details store.
    */
-  private store: ObjectType<T> = Object();
+  private store: Dictionary<T> = Object();
   /**
    * get the configuration for the given key.
    */
-  @FixedContext
-  public get(key: string) {
-    const result = toMatchProperties(this.store, key);
-    return result && isObject(result) ? cloneDeep(result) as any : result;
+  @This
+  public match(key: string) {
+    const result = toDeepMatch(this.store, key);
+    return isValidDict(result) ? cloneDeep(result) as any : result;
   }
   /**
    * get the configuration for the given key.
@@ -26,25 +28,30 @@ export class ConfigProvider<T = any> {
    * @usageNotes
    * - Only the specified key can be queried, deep query is not supported
    */
-  @FixedContext
-  public discovery<K extends keyof ObjectType<T>>(key: K): ObjectType<T>[K] {
-    const result = this.store[key];
-    return result && isObject(result) ? cloneDeep(result) : result;
+  @This
+  public get<K extends keyof Dictionary<T>>(key: K) {
+    let result = null;
+
+    if (isKeyof(this.store, key as number | string)) {
+      result = this.store[key];
+    }
+
+    return isValidDict(result) ? cloneDeep(result) : result;
   }
   /**
    * set the configuration for the given key.
    */
-  @FixedContext
+  @This
   public set(key: string, value: any): void {
-    const result = toRestoreProperties(value, key);
+    const result = toDeepRestore(value, key);
     this.merge(result);
   }
   /**
    * merge the configuration
    */
-  @FixedContext
+  @This
   public merge(value: object): void {
-    if (value) {
+    if (isValidDict(value)) {
       this.store = toDeepMerge(this.store, cloneDeep(value));
     }
   }

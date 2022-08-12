@@ -1,4 +1,3 @@
-import { ClientAdapter, CreateClientAdapter } from '@vodyani/core';
 
 export abstract class ClientProxy<T = any, O = any> {
   public get: () => ClientAdapter<T>;

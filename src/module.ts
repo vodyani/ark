@@ -1,6 +1,5 @@
-import { isArray } from 'lodash';
-import { convert } from '@vodyani/transformer';
 import { DynamicModule } from '@nestjs/common';
+import { isValid, isValidArray } from '@vodyani/utils';
 
 import { ArkModuleOptions } from './common';
 import { ConfigProvider } from './provider/config';
@@ -24,7 +23,7 @@ export class ArkModule {
       AsyncDynamicDataSourceProvider,
     ];
 
-    if (options.remote && isArray(options.remote)) {
+    if (isValidArray(options.remote)) {
       options.remote.forEach(item => imports.push(item.module));
     }
 
@@ -33,7 +32,7 @@ export class ArkModule {
       providers,
       exports: providers,
       module: ArkModule,
-      global: convert(options.global, true),
+      global: isValid(options.global) ? options.global : true,
     };
   }
 }

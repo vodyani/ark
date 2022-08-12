@@ -1,11 +1,12 @@
 import { existsSync, readFileSync } from 'fs';
 
+import { toCycle } from '@vodyani/utils';
 import { Injectable } from '@nestjs/common';
+import { This } from '@vodyani/class-decorator';
 import { isArray, isObject, uniqueId } from 'lodash';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
-import { FixedContext, PromiseType, makeCycleTask } from '@vodyani/core';
 
-import { toHash, WatchCallback, WatchDetails } from '../common';
+import { Method, toHash, WatchDetails } from '../common';
 
 import { ConfigProvider } from './config';
 
@@ -23,8 +24,8 @@ export class ConfigMonitor {
     private readonly config: ConfigProvider,
   ) {}
 
-  @FixedContext
-  public watchConfig(callback: WatchCallback, key: string) {
+  @This
+  public watchConfig(callback: Method, key: string) {
     let value = this.config.get(key);
 
     if (value && (isArray(value) || isObject(value))) {
@@ -34,7 +35,7 @@ export class ConfigMonitor {
     this.configWatchers.set(key, { key, value, callback });
   }
 
-  @FixedContext
+  @This
   public watchFile(path: string, options?: WatchOptions) {
     if (!existsSync(path)) {
       throw new Error(`ConfigMonitor.watchFile: The file at ${path} does not exist!`);
@@ -56,22 +57,22 @@ export class ConfigMonitor {
     });
   }
 
-  @FixedContext
+  @This
   public autoCycleSync(
-    callback: PromiseType,
+    callback: any,
     interval = 1000,
   ) {
     const remoteClientUniqueId = uniqueId('ConfigMonitor.autoCycleSync');
 
-    const worker = makeCycleTask(interval, async () => {
+    const worker = toCycle(async () => {
       const config = await callback();
       this.autoMerge(remoteClientUniqueId, config);
-    });
+    }, { interval });
 
     this.cycleWorkers.set(remoteClientUniqueId, worker);
   }
 
-  @FixedContext
+  @This
   public async autoSubscribe(
     callback: (callback: (details: Record<string, any>) => any) => Promise<void>,
   ) {
@@ -79,7 +80,7 @@ export class ConfigMonitor {
     await callback(async (config) => this.autoMerge(remoteClientUniqueId, config));
   }
 
-  @FixedContext
+  @This
   public autoMerge(source: string, value: any) {
     if (!value) {
       return;
@@ -95,7 +96,7 @@ export class ConfigMonitor {
     }
   }
 
-  @FixedContext
+  @This
   public check() {
     this.configWatchers.forEach(async (details) => {
       let currentConfig = null;
@@ -116,17 +117,17 @@ export class ConfigMonitor {
     });
   }
 
-  @FixedContext
+  @This
   public clearConfigWatcher() {
     this.configWatchers.clear();
   }
 
-  @FixedContext
+  @This
   public clearConfigMergeWatcher() {
     this.configMergeWatchers.clear();
   }
 
-  @FixedContext
+  @This
   public async clearCycleSyncWorker() {
     this.cycleWorkers.forEach((worker) => {
       worker.close();
@@ -135,7 +136,7 @@ export class ConfigMonitor {
     this.cycleWorkers.clear();
   }
 
-  @FixedContext
+  @This
   public async clearConfigFileWatcher() {
     for (const watcher of this.configFileWatchers.values()) {
       await watcher.close();

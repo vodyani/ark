@@ -1,16 +1,16 @@
 import { existsSync } from 'fs';
 
 import { isArray } from 'lodash';
-import { convertArray } from '@vodyani/transformer';
-import { FixedContext, ProviderFactory, RemoteConfigClient } from '@vodyani/core';
+import { This } from '@vodyani/class-decorator';
+import { AsyncProviderFactory } from '@vodyani/core';
 
-import { ArkManagerOptions, RemoteConfigOptions } from '../common';
+import { ArkManagerOptions, RemoteConfigClient, RemoteConfigOptions } from '../common';
 
 import { ConfigProvider } from './config';
 import { ConfigHandler } from './config-handler';
 import { ConfigMonitor } from './config-monitor';
 
-export class ArkManager implements ProviderFactory {
+export class ArkManager implements AsyncProviderFactory {
   public static token = Symbol('ArkManager');
 
   constructor(
@@ -21,7 +21,7 @@ export class ArkManager implements ProviderFactory {
     }
   }
 
-  @FixedContext
+  @This
   public create() {
     const inject: any = [
       ConfigProvider,
@@ -40,7 +40,7 @@ export class ArkManager implements ProviderFactory {
     };
   }
 
-  @FixedContext
+  @This
   private async useFactory(
     config: ConfigProvider,
     configHandler: ConfigHandler,
@@ -79,7 +79,7 @@ export class ArkManager implements ProviderFactory {
     return config;
   }
 
-  @FixedContext
+  @This
   private deployLocalPath(path: string) {
     const { local: { env }} = this.options;
 
@@ -97,7 +97,7 @@ export class ArkManager implements ProviderFactory {
     return { currentPath, defaultPath };
   }
 
-  @FixedContext
+  @This
   private async deployRemoteClient(
     config: ConfigProvider,
     remoteClients: RemoteConfigClient[],
@@ -109,7 +109,7 @@ export class ArkManager implements ProviderFactory {
         const client = remoteClients[index];
 
         if (client) {
-          await client.init(...convertArray(initArgs));
+          await client.init(...(initArgs || []));
           const remoteConfig = await client.sync();
           config.merge(remoteConfig);
         }
@@ -117,7 +117,7 @@ export class ArkManager implements ProviderFactory {
     ));
   }
 
-  @FixedContext
+  @This
   private async deployRemoteClientSync(
     monitor: ConfigMonitor,
     remoteClients: RemoteConfigClient[],

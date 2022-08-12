@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 
-import { isObject } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { FixedContext } from '@vodyani/core';
+import { isValidDict } from '@vodyani/utils';
+import { This } from '@vodyani/class-decorator';
 
 import { ConfigProvider } from './config';
 
@@ -12,19 +12,19 @@ export class ConfigHandler {
     private readonly config: ConfigProvider,
   ) {}
 
-  @FixedContext
+  @This
   public init(details: Record<string, any>) {
-    if (details && isObject(details)) {
+    if (isValidDict(details)) {
       this.config.merge(details);
     }
   }
 
-  @FixedContext
+  @This
   public deploy(path: string) {
     try {
       const config = JSON.parse(readFileSync(path, 'utf8'));
 
-      if (config && isObject(config)) {
+      if (isValidDict(config)) {
         this.config.merge(config);
       }
     } catch (err) {
