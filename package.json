@@ -67,7 +67,7 @@
   "dependencies": {
     "@nestjs/common": "8.4.4",
     "@vodyani/core": "^8.0.1",
-    "@vodyani/transformer": "0.5.3",
+    "@vodyani/transformer": "0.6.1",
     "chokidar": "3.5.3",
     "lodash": "4.17.21",
     "object-hash": "3.0.0"
