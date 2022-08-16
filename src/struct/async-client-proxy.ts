@@ -11,7 +11,7 @@ export class AsyncClientProxy<T, O> implements IAsyncClientProxy<T, O> {
 
   @This
   public get() {
-    return this.client.connect();
+    return this.client.get();
   }
 
   @This

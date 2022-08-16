@@ -11,7 +11,7 @@ export class ClientProxy<T = any, O = any> implements IClientProxy<T, O> {
 
   @This
   public get() {
-    return this.client.connect();
+    return this.client.get();
   }
 
   @This

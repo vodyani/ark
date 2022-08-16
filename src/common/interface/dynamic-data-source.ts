@@ -1,23 +1,13 @@
 import { DeployAsyncClient, DeployClient, Method, PromiseMethod, RemoteSubscribe } from '../type';
 
 export interface Client<T = any> {
-  connect: () => T;
+  get: () => T;
   close: Method<any>;
 }
 
 export interface AsyncClient<T = any> {
-  connect: () => T;
+  get: () => T;
   close: PromiseMethod<any>;
-}
-
-export interface ClientAdapter<T = any, O = any> {
-  connect: (key: string) => T;
-  create: (options: O) => Client<T>;
-}
-
-export interface AsyncClientAdapter<O = any, T = any> {
-  connect: (key: string) => T;
-  create: (options: O) => Promise<AsyncClient<T>>;
 }
 
 export interface IClientProxy<T = any, O = any> {
@@ -38,6 +28,16 @@ export interface IAsyncClientProxy<T = any, O = any> {
   redeploy: (option: O) => Promise<void>;
 
   close: PromiseMethod<void>;
+}
+
+export interface ClientAdapter<T = any, O = any> {
+  connect: (key: string) => T;
+  create: (options: O) => Client<T>;
+}
+
+export interface AsyncClientAdapter<O = any, T = any> {
+  connect: (key: string) => T;
+  create: (options: O) => Promise<AsyncClient<T>>;
 }
 
 export interface DynamicDataSourceOptions {
