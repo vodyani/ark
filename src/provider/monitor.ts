@@ -6,13 +6,13 @@ import { This } from '@vodyani/class-decorator';
 import { isArray, isObject, uniqueId } from 'lodash';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
 
-import { Method, toHash, WatchDetails } from '../common';
+import { Method, toHash, WatchInfo } from '../common';
 
 import { ConfigProvider } from './config';
 
 @Injectable()
 export class ConfigMonitor {
-  private readonly configWatchers = new Map<string, WatchDetails>();
+  private readonly configWatchers = new Map<string, WatchInfo>();
 
   private readonly configMergeWatchers = new Map<string, string>();
 

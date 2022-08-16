@@ -1,27 +1,27 @@
 import { This } from '@vodyani/class-decorator';
 
-import { AsyncClientAdapter, AsyncClientProxy, CreateAsyncClientAdapter } from '../common';
+import { AsyncClient, IAsyncClientProxy, CreateAsyncClient } from '../common';
 
-export class BaseAsyncClientProxy<T, O> implements AsyncClientProxy<T, O> {
-  private client: AsyncClientAdapter<T>;
-
+export class AsyncClientProxy<T, O> implements IAsyncClientProxy<T, O> {
   private args: any[];
 
-  private callback: CreateAsyncClientAdapter<T, O>;
+  private client: AsyncClient<T>;
+
+  private callback: CreateAsyncClient<T, O>;
 
   @This
   public get() {
-    return this.client;
+    return this.client.connect();
   }
 
   @This
   public getClient() {
-    return this.client?.instance;
+    return this.client;
   }
 
   @This
   public async deploy(
-    callback: CreateAsyncClientAdapter<T, O>,
+    callback: CreateAsyncClient<T, O>,
     option: O,
     ...args: any[]
   ) {

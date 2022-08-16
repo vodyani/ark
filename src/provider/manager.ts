@@ -6,9 +6,9 @@ import { AsyncProviderFactory } from '@vodyani/core';
 
 import { ArkManagerOptions, RemoteConfigClient, RemoteConfigOptions } from '../common';
 
+import { ConfigHandler } from './handler';
+import { ConfigMonitor } from './monitor';
 import { ConfigProvider } from './config';
-import { ConfigHandler } from './config-handler';
-import { ConfigMonitor } from './config-monitor';
 
 export class ArkManager implements AsyncProviderFactory {
   public static token = Symbol('ArkManager');

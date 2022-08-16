@@ -3,11 +3,10 @@ import { isValid, isValidArray } from '@vodyani/utils';
 
 import { ArkModuleOptions } from './common';
 import { ConfigProvider } from './provider/config';
-import { ArkManager } from './provider/ark-manager';
-import { ConfigMonitor } from './provider/config-monitor';
-import { ConfigHandler } from './provider/config-handler';
-import { DynamicDataSourceProvider } from './provider/dynamic-data-source';
-import { AsyncDynamicDataSourceProvider } from './provider/async-dynamic-data-source';
+import { ArkManager } from './provider/manager';
+import { ConfigMonitor } from './provider/monitor';
+import { ConfigHandler } from './provider/handler';
+import { DynamicDataSourceProvider, AsyncDynamicDataSourceProvider } from './provider/dynamic-data-source';
 
 export class ArkModule {
   static forRoot(options: ArkModuleOptions): DynamicModule {

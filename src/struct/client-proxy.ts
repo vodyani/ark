@@ -1,27 +1,27 @@
 import { This } from '@vodyani/class-decorator';
 
-import { ClientAdapter, ClientProxy, CreateClientAdapter } from '../common';
+import { Client, IClientProxy, CreateClient } from '../common';
 
-export class BaseClientProxy<T = any, O = any> implements ClientProxy<T, O> {
-  private client: ClientAdapter<T>;
-
+export class ClientProxy<T = any, O = any> implements IClientProxy<T, O> {
   private args: any[];
 
-  private callback: CreateClientAdapter<T, O>;
+  private client: Client<T>;
+
+  private callback: CreateClient<T, O>;
 
   @This
   public get() {
-    return this.client;
+    return this.client.connect();
   }
 
   @This
   public getClient() {
-    return this.client?.instance;
+    return this.client;
   }
 
   @This
   public deploy(
-    callback: CreateClientAdapter<T, O>,
+    callback: CreateClient<T, O>,
     option: O,
     ...args: any[]
   ) {
