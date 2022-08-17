@@ -1,17 +1,18 @@
 import { existsSync, readFileSync } from 'fs';
 
+import { uniqueId } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { isArray, isObject, uniqueId } from 'lodash';
+import { This } from '@vodyani/class-decorator';
+import { isValid, toCycle } from '@vodyani/utils';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
-import { FixedContext, PromiseType, makeCycleTask } from '@vodyani/core';
 
-import { toHash, WatchCallback, WatchDetails } from '../common';
+import { Method, toHash, WatchInfo } from '../common';
 
 import { ConfigProvider } from './config';
 
 @Injectable()
 export class ConfigMonitor {
-  private readonly configWatchers = new Map<string, WatchDetails>();
+  private readonly configWatchers = new Map<string, WatchInfo>();
 
   private readonly configMergeWatchers = new Map<string, string>();
 
@@ -23,18 +24,15 @@ export class ConfigMonitor {
     private readonly config: ConfigProvider,
   ) {}
 
-  @FixedContext
-  public watchConfig(callback: WatchCallback, key: string) {
-    let value = this.config.get(key);
+  @This
+  public watchConfig(callback: Method, key: string) {
+    const value = this.config.get(key);
+    const hashToken = toHash(value);
 
-    if (value && (isArray(value) || isObject(value))) {
-      value = toHash(value);
-    }
-
-    this.configWatchers.set(key, { key, value, callback });
+    this.configWatchers.set(key, { key, value, hashToken, callback });
   }
 
-  @FixedContext
+  @This
   public watchFile(path: string, options?: WatchOptions) {
     if (!existsSync(path)) {
       throw new Error(`ConfigMonitor.watchFile: The file at ${path} does not exist!`);
@@ -46,87 +44,80 @@ export class ConfigMonitor {
 
     watcher.on('change', (path) => {
       try {
-        this.autoMerge(
-          'ConfigMonitor.watchFile',
-          JSON.parse(readFileSync(path, 'utf-8')),
-        );
+        const data = readFileSync(path, 'utf-8');
+        this.autoMerge(JSON.parse(data), 'ConfigMonitor.watchFile');
       } catch (error) {
-        console.error(error);
+        //
       }
     });
   }
 
-  @FixedContext
+  @This
   public autoCycleSync(
-    callback: PromiseType,
+    callback: any,
     interval = 1000,
   ) {
     const remoteClientUniqueId = uniqueId('ConfigMonitor.autoCycleSync');
 
-    const worker = makeCycleTask(interval, async () => {
+    const worker = toCycle(async () => {
       const config = await callback();
-      this.autoMerge(remoteClientUniqueId, config);
-    });
+      this.autoMerge(config, remoteClientUniqueId);
+    }, { interval });
 
     this.cycleWorkers.set(remoteClientUniqueId, worker);
   }
 
-  @FixedContext
+  @This
   public async autoSubscribe(
     callback: (callback: (details: Record<string, any>) => any) => Promise<void>,
   ) {
     const remoteClientUniqueId = uniqueId('ConfigMonitor.autoSubscribe');
-    await callback(async (config) => this.autoMerge(remoteClientUniqueId, config));
+    await callback(async (config) => this.autoMerge(config, remoteClientUniqueId));
   }
 
-  @FixedContext
-  public autoMerge(source: string, value: any) {
-    if (!value) {
+  @This
+  public autoMerge(value: any, token: string) {
+    if (!isValid(value)) {
       return;
     }
-
+    const record = this.configMergeWatchers.get(token);
     const current = toHash(value);
-    const record = this.configMergeWatchers.get(source);
 
     if (record !== current) {
       this.config.merge(value);
-      this.configMergeWatchers.set(source, current);
+      this.configMergeWatchers.set(token, current);
       this.check();
     }
   }
 
-  @FixedContext
+  @This
   public check() {
     this.configWatchers.forEach(async (details) => {
-      let currentConfig = null;
-      const { key, value, callback } = details;
+      const { key, callback, hashToken } = details;
+      const currentConfig = this.config.get(key);
+      const currentHashToken = toHash(currentConfig);
 
-      currentConfig = this.config.get(key);
-
-      if (currentConfig && (isArray(currentConfig) || isObject(currentConfig))) {
-        currentConfig = toHash(currentConfig);
-      }
-
-      if (value !== currentConfig) {
+      if (hashToken !== currentHashToken) {
         callback(currentConfig);
         details.value = currentConfig;
+        details.hashToken = currentHashToken;
       }
 
       this.configWatchers.set(key, details);
     });
   }
 
-  @FixedContext
+  @This
   public clearConfigWatcher() {
     this.configWatchers.clear();
   }
 
-  @FixedContext
+  @This
   public clearConfigMergeWatcher() {
     this.configMergeWatchers.clear();
   }
 
-  @FixedContext
+  @This
   public async clearCycleSyncWorker() {
     this.cycleWorkers.forEach((worker) => {
       worker.close();
@@ -135,7 +126,7 @@ export class ConfigMonitor {
     this.cycleWorkers.clear();
   }
 
-  @FixedContext
+  @This
   public async clearConfigFileWatcher() {
     for (const watcher of this.configFileWatchers.values()) {
       await watcher.close();

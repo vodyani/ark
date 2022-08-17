@@ -1,13 +1,19 @@
 # Vodyani ark
 
-*🛸  "ark" is the configuration management solution of vodyani. By accessing ark, you can have maximum control over your local configuration, and if you want, ark can support unlimited configuration remote client.*
+🛸  Vodyani ark 是一个完备的配置管理解决方案。
 
-[![Npm](https://img.shields.io/npm/v/@vodyani/ark)](https://www.npmjs.com/package/@vodyani/ark)
+通过在项目中引入 ark，开发者可以轻易的管理本地的配置数据，并且根据配置的变化，动态地根据配置重建本地客户端（如 MySQL/Redis 等）🤩
+
+此外，ark 还提供了远程配置中心的数据同步和数据订阅功能 🎉
+
+[![Npm](https://img.shields.io/npm/v/@vodyani/ark/latest.svg)](https://www.npmjs.com/package/@vodyani/ark)
+[![Npm](https://img.shields.io/npm/v/@vodyani/ark/beta.svg)](https://www.npmjs.com/package/@vodyani/ark)
 [![Npm](https://img.shields.io/npm/dm/@vodyani/ark)](https://www.npmjs.com/package/@vodyani/ark)
 [![License](https://img.shields.io/github/license/vodyani/ark)](LICENSE)
-![Workflow](https://github.com/vodyani/ark/actions/workflows/release.yml/badge.svg)
+<br>
 [![codecov](https://codecov.io/gh/vodyani/ark/branch/master/graph/badge.svg?token=3L3398C2KW)](https://codecov.io/gh/vodyani/ark)
-[![Known Vulnerabilities](https://snyk.io/test/github/vodyani/ark/badge.svg?targetFile=package.json)](https://snyk.io/test/github/vodyani/ark?targetFile=package.json)
+![Workflow](https://github.com/vodyani/ark/actions/workflows/release.yml/badge.svg)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 ## Installation
 
@@ -15,20 +21,14 @@
 npm install @vodyani/ark
 ```
 
-## Recommendations
-> [Get started with documentation](https://vodyani.vercel.app/docs/advanced/ark)
+## Getting started
 
-- typescript `v4.6.x`
-- node.js `v12.x` ~ `v16.x`
+- [使用文档 📚](https://vodyani.vercel.app/docs/advanced/ark)
+- [Documentation 📚](https://vodyani.vercel.app/en/docs/advanced/ark)
 
-## Dependencies
+## Questions
 
-- [vodyani/transformer](https://github.com/vodyani/transformer) `v0.5`
-- [vodyani/core](https://github.com/vodyani/core) `v8`
-- [nestjs/common](https://github.com/nestjs) `v8`
-- [lodash](https://github.com/lodash/lodash) `v4`
-- [chokidar](https://github.com/paulmillr/chokidar) `v3`
-- [object-hash](https://github.com/puleos/object-hash) `v3`
+- [Discussions 🧐](https://github.com/vodyani/ark/discussions)
 
 ## License
 

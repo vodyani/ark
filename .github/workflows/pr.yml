@@ -5,5 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  check_and_test:
-    uses: vodyani/workflows/.github/workflows/pre-check-and-test.yml@master
+  check:
+    uses: vodyani/workflows/.github/workflows/check.yml@master
+    with:
+      enable_test: true

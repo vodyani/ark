@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import { describe, it, expect } from '@jest/globals';
 
 import { ConfigProvider } from '../src/provider/config';
-import { ConfigHandler } from '../src/provider/config-handler';
+import { ConfigHandler } from '../src/provider/handler';
 
 const configProvider = new ConfigProvider();
 const handler = new ConfigHandler(configProvider);
@@ -15,32 +15,32 @@ describe('ConfigHandler', () => {
   it('init', async () => {
     handler.init({ env, defaultEnv, name: 'test' });
 
-    expect(configProvider.get('env')).toBe(env);
-    expect(configProvider.get('name')).toBe('test');
-    expect(configProvider.get('defaultEnv')).toBe(defaultEnv);
+    expect(configProvider.match('env')).toBe(env);
+    expect(configProvider.match('name')).toBe('test');
+    expect(configProvider.match('defaultEnv')).toBe(defaultEnv);
   });
 
   it('deploy config json', () => {
     handler.deploy(resolve(__dirname, './env/DEFAULT.json'));
 
-    expect(configProvider.get('array')).toEqual([1, 2, 3, 4, 5]);
+    expect(configProvider.match('array')).toEqual([1, 2, 3, 4, 5]);
 
-    expect(configProvider.get('development.name')).toBe(defaultEnv);
-    expect(configProvider.get('development.port')).toBe('8080');
+    expect(configProvider.match('development.name')).toBe(defaultEnv);
+    expect(configProvider.match('development.port')).toBe('8080');
 
-    expect(configProvider.get('test.name')).toBe(defaultEnv);
-    expect(configProvider.get('test.port')).toBe('8080');
+    expect(configProvider.match('test.name')).toBe(defaultEnv);
+    expect(configProvider.match('test.port')).toBe('8080');
 
     handler.deploy(resolve(__dirname, `./env/${env}.json`));
 
-    expect(configProvider.get('array')).toEqual([1, 2, 3, 4, 5]);
+    expect(configProvider.match('array')).toEqual([1, 2, 3, 4, 5, 1]);
 
-    expect(configProvider.get('development.name')).toBe(defaultEnv);
-    expect(configProvider.get('development.port')).toBe('8080');
+    expect(configProvider.match('development.name')).toBe(defaultEnv);
+    expect(configProvider.match('development.port')).toBe('8080');
 
-    expect(configProvider.get('test.name')).toBe(env);
-    expect(configProvider.get('test.type')).toBe('test');
-    expect(configProvider.get('test.port')).toBe('8080');
+    expect(configProvider.match('test.name')).toBe(env);
+    expect(configProvider.match('test.type')).toBe('test');
+    expect(configProvider.match('test.port')).toBe('8080');
   });
 
   it('deploy error config json', () => {
