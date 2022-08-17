@@ -1,8 +1,9 @@
 import { existsSync } from 'fs';
 
-import { isArray } from 'lodash';
-import { This } from '@vodyani/class-decorator';
-import { AsyncProviderFactory } from '@vodyani/core';
+import { FactoryProvider } from '@nestjs/common';
+import { isValidArray, isValidDict, toConvert } from '@vodyani/utils';
+import { AsyncInjectable, AsyncProviderFactory, getToken } from '@vodyani/core';
+import { ArgumentValidator, CustomValidated, This } from '@vodyani/class-decorator';
 
 import { ArkManagerOptions, RemoteConfigClient, RemoteConfigOptions } from '../common';
 
@@ -10,33 +11,32 @@ import { ConfigHandler } from './handler';
 import { ConfigMonitor } from './monitor';
 import { ConfigProvider } from './config';
 
+@AsyncInjectable
 export class ArkManager implements AsyncProviderFactory {
-  public static token = Symbol('ArkManager');
-
-  constructor(
-    private readonly options: ArkManagerOptions,
-  ) {
-    if (!this.options) {
-      throw new Error('ArkManager.constructor: options is a required parameter!');
-    }
-  }
+  private options: ArkManagerOptions;
 
   @This
-  public create() {
-    const inject: any = [
+  @ArgumentValidator()
+  public create(
+    @CustomValidated(isValidDict, 'options is a required parameter!') options: ArkManagerOptions,
+  ): FactoryProvider
+  {
+    this.options = options;
+
+    const inject: any[] = [
       ConfigProvider,
       ConfigHandler,
       ConfigMonitor,
     ];
 
-    if (this.options.remote && isArray(this.options.remote)) {
+    if (isValidArray(this.options.remote)) {
       this.options.remote.forEach(item => inject.push(item.provider));
     }
 
     return {
       inject,
       useFactory: this.useFactory,
-      provide: ArkManager.token,
+      provide: getToken(ArkManager),
     };
   }
 
@@ -107,9 +107,10 @@ export class ArkManager implements AsyncProviderFactory {
     await Promise.all(options.map(
       async ({ initArgs }, index) => {
         const client = remoteClients[index];
+        const currentArgs = toConvert(initArgs, { default: [] });
 
         if (client) {
-          await client.init(...(initArgs || []));
+          await client.init(...currentArgs);
           const remoteConfig = await client.sync();
           config.merge(remoteConfig);
         }
