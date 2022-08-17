@@ -1,76 +1,26 @@
+import { toConvert } from '@vodyani/utils';
+import { Injectable } from '@nestjs/common';
 import { AsyncInject } from '@vodyani/core';
-import { This } from '@vodyani/class-decorator';
-import { Injectable, Inject } from '@nestjs/common';
+import { ArgumentValidator, Required, This } from '@vodyani/class-decorator';
 
+import {
+  Client,
+  CreateClient,
+  CreateAsyncClient,
+  DynamicDataSourceOptions,
+  IClientProxy,
+  IAsyncClientProxy,
+  AsyncClient,
+} from '../common';
 import { AsyncClientProxy, ClientProxy } from '../struct';
-import { CreateAsyncClient, CreateClient, DynamicDataSourceOptions } from '../common';
 
 import { ArkManager } from './manager';
-import { ConfigProvider } from './config';
 import { ConfigMonitor } from './monitor';
+import { ConfigProvider } from './config';
 
 @Injectable()
-export class DynamicDataSourceProvider <T = any, O = any> {
-  private readonly store = new Map();
-
-  constructor(
-    @Inject(ArkManager.token)
-    private readonly config: ConfigProvider,
-    private readonly monitor: ConfigMonitor,
-  ) {}
-
-  @This
-  public get(configKey: string) {
-    if (this.store.has(configKey)) {
-      return this.store.get(configKey).get();
-    }
-  }
-
-  @This
-  public getClient(configKey: string) {
-    if (this.store.has(configKey)) {
-      return this.store.get(configKey).getClient();
-    }
-  }
-
-  @This
-  public deploy(
-    callback: CreateClient<T, O>,
-    options: DynamicDataSourceOptions[],
-  ) {
-    if (!callback) {
-      throw new Error('The creation callback cannot be empty');
-    }
-
-    if (!options) {
-      throw new Error('The DynamicDataSource options cannot be empty');
-    }
-
-    for (const { key, args } of options) {
-      const option = this.config.get(key);
-
-      const clientProxy = new ClientProxy<T, O>();
-
-      clientProxy.deploy(callback, option, ...(args || []));
-
-      this.store.set(key, clientProxy);
-
-      this.monitor.watchConfig(clientProxy.redeploy, key);
-    }
-  }
-
-  @This
-  public close(configKey: string) {
-    if (this.store.has(configKey)) {
-      this.store.get(configKey).close();
-      this.store.delete(configKey);
-    }
-  }
-}
-
-@Injectable()
-export class AsyncDynamicDataSourceProvider <T = any, O = any> {
-  private readonly store = new Map();
+export class DynamicDataSourceProvider<T = any, O = any> {
+  private readonly store: Map<string, IClientProxy<T>> = new Map();
 
   constructor(
     @AsyncInject(ArkManager)
@@ -79,50 +29,85 @@ export class AsyncDynamicDataSourceProvider <T = any, O = any> {
   ) {}
 
   @This
-  public get(configKey: string) {
-    if (this.store.has(configKey)) {
-      return this.store.get(configKey).get();
-    }
+  public getInstance(key: string): T {
+    return this.getClient(key)?.getInstance() || null;
   }
 
   @This
-  public getClient(configKey: string) {
-    if (this.store.has(configKey)) {
-      return this.store.get(configKey).getClient();
-    }
+  public getClient(key: string): Client<T> {
+    return this.store.has(key) ? this.store.get(key).getClient() : null;
   }
 
   @This
-  public async deploy(
-    callback: CreateAsyncClient<T, O>,
-    options: DynamicDataSourceOptions[],
+  @ArgumentValidator()
+  public deploy(
+    @Required() callback: CreateClient<T, O>,
+    @Required() callbackOptions: DynamicDataSourceOptions,
   ) {
-    if (!callback) {
-      throw new Error('The creation callback cannot be empty');
-    }
+    const { configKey, args } = callbackOptions;
 
-    if (!options) {
-      throw new Error('The AsyncDynamicDataSource options cannot be empty');
-    }
+    const currentArgs = toConvert(args, { default: [] });
+    const options = this.config.get(configKey);
+    const proxy = new ClientProxy<T, O>();
 
-    for (const { key, args } of options) {
-      const option = this.config.get(key);
+    proxy.deploy(callback, options, ...currentArgs);
 
-      const clientProxy = new AsyncClientProxy<T, O>();
-
-      await clientProxy.deploy(callback, option, ...(args || []));
-
-      this.store.set(key, clientProxy);
-
-      this.monitor.watchConfig(clientProxy.redeploy, key);
-    }
+    this.store.set(configKey, proxy);
+    this.monitor.watchConfig(proxy.redeploy, configKey);
   }
 
   @This
-  public async close(configKey: string) {
-    if (this.store.has(configKey)) {
-      await this.store.get(configKey).close();
-      this.store.delete(configKey);
+  public clear(key: string) {
+    if (this.store.has(key)) {
+      this.store.get(key).close();
+      this.store.delete(key);
+    }
+  }
+}
+
+@Injectable()
+export class AsyncDynamicDataSourceProvider<T = any, O = any> {
+  private readonly store = new Map<string, IAsyncClientProxy<T, O>>();
+
+  constructor(
+    @AsyncInject(ArkManager)
+    private readonly config: ConfigProvider,
+    private readonly monitor: ConfigMonitor,
+  ) {}
+
+  @This
+  public getInstance(key: string): T {
+    return this.getClient(key)?.getInstance() || null;
+  }
+
+  @This
+  public getClient(key: string): AsyncClient<T> {
+    return this.store.has(key) ? this.store.get(key).getClient() : null;
+  }
+
+  @This
+  @ArgumentValidator()
+  public async deploy(
+    @Required() callback: CreateAsyncClient<T, O>,
+    @Required() callbackOptions: DynamicDataSourceOptions,
+  ) {
+    const { configKey, args } = callbackOptions;
+
+    const currentArgs = toConvert(args, { default: [] });
+    const option = this.config.get(configKey);
+    const proxy = new AsyncClientProxy<T, O>();
+
+    await proxy.deploy(callback, option, ...currentArgs);
+
+    this.store.set(configKey, proxy);
+    this.monitor.watchConfig(proxy.redeploy, configKey);
+  }
+
+  @This
+  public async clear(key: string) {
+    if (this.store.has(key)) {
+      await this.store.get(key).close();
+      this.store.delete(key);
     }
   }
 }
