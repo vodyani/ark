@@ -1,46 +1,46 @@
 import { existsSync } from 'fs';
 
-import { isArray } from 'lodash';
-import { convertArray } from '@vodyani/transformer';
-import { FixedContext, ProviderFactory, RemoteConfigClient } from '@vodyani/core';
+import { FactoryProvider } from '@nestjs/common';
+import { isValidArray, isValidDict, toConvert } from '@vodyani/utils';
+import { AsyncInjectable, AsyncProviderFactory, getToken } from '@vodyani/core';
+import { ArgumentValidator, CustomValidated, This } from '@vodyani/class-decorator';
 
-import { ArkManagerOptions, RemoteConfigOptions } from '../common';
+import { ArkManagerOptions, RemoteConfigClient, RemoteConfigOptions } from '../common';
 
+import { ConfigHandler } from './handler';
+import { ConfigMonitor } from './monitor';
 import { ConfigProvider } from './config';
-import { ConfigHandler } from './config-handler';
-import { ConfigMonitor } from './config-monitor';
 
-export class ArkManager implements ProviderFactory {
-  public static token = Symbol('ArkManager');
+@AsyncInjectable
+export class ArkManager implements AsyncProviderFactory {
+  private options: ArkManagerOptions;
 
-  constructor(
-    private readonly options: ArkManagerOptions,
-  ) {
-    if (!this.options) {
-      throw new Error('ArkManager.constructor: options is a required parameter!');
-    }
-  }
+  @This
+  @ArgumentValidator()
+  public create(
+    @CustomValidated(isValidDict, 'options is a required parameter!') options: ArkManagerOptions,
+  ): FactoryProvider
+  {
+    this.options = options;
 
-  @FixedContext
-  public create() {
-    const inject: any = [
+    const inject: any[] = [
       ConfigProvider,
       ConfigHandler,
       ConfigMonitor,
     ];
 
-    if (this.options.remote && isArray(this.options.remote)) {
+    if (isValidArray(this.options.remote)) {
       this.options.remote.forEach(item => inject.push(item.provider));
     }
 
     return {
       inject,
       useFactory: this.useFactory,
-      provide: ArkManager.token,
+      provide: getToken(ArkManager),
     };
   }
 
-  @FixedContext
+  @This
   private async useFactory(
     config: ConfigProvider,
     configHandler: ConfigHandler,
@@ -79,7 +79,7 @@ export class ArkManager implements ProviderFactory {
     return config;
   }
 
-  @FixedContext
+  @This
   private deployLocalPath(path: string) {
     const { local: { env }} = this.options;
 
@@ -97,7 +97,7 @@ export class ArkManager implements ProviderFactory {
     return { currentPath, defaultPath };
   }
 
-  @FixedContext
+  @This
   private async deployRemoteClient(
     config: ConfigProvider,
     remoteClients: RemoteConfigClient[],
@@ -107,9 +107,10 @@ export class ArkManager implements ProviderFactory {
     await Promise.all(options.map(
       async ({ initArgs }, index) => {
         const client = remoteClients[index];
+        const currentArgs = toConvert(initArgs, { default: [] });
 
         if (client) {
-          await client.init(...convertArray(initArgs));
+          await client.init(...currentArgs);
           const remoteConfig = await client.sync();
           config.merge(remoteConfig);
         }
@@ -117,7 +118,7 @@ export class ArkManager implements ProviderFactory {
     ));
   }
 
-  @FixedContext
+  @This
   private async deployRemoteClientSync(
     monitor: ConfigMonitor,
     remoteClients: RemoteConfigClient[],

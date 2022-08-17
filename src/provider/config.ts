@@ -1,51 +1,68 @@
+import { cloneDeep } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { cloneDeep, isObject } from 'lodash';
-import { toDeepMerge } from '@vodyani/transformer';
-import { FixedContext, toMatchProperties, toRestoreProperties, ObjectType } from '@vodyani/core';
+import { toDeepMerge, toDeepMatch, toDeepRestore, isValidObject, isKeyof } from '@vodyani/utils';
+import { ArgumentValidator, CustomValidated, Required, This } from '@vodyani/class-decorator';
 
-/**
- * Configuration Accessor
- */
+import { Dictionary } from '../common';
+
 @Injectable()
 export class ConfigProvider<T = any> {
   /**
    * The configuration details store.
    */
-  private store: ObjectType<T> = Object();
+  private store: Dictionary<T> = Object();
+
   /**
-   * get the configuration for the given key.
+   * Get the configuration for the given key.
+   *
+   * @publicApi
    */
-  @FixedContext
-  public get(key: string) {
-    const result = toMatchProperties(this.store, key);
-    return result && isObject(result) ? cloneDeep(result) as any : result;
+  @This
+  @ArgumentValidator()
+  public match(
+    @Required() key: string,
+  ) {
+    const result = toDeepMatch(this.store, key);
+    return isValidObject(result) ? cloneDeep(result) as any : result;
   }
   /**
-   * get the configuration for the given key.
+   * Get the configuration for the given key.
    *
-   * @usageNotes
-   * - Only the specified key can be queried, deep query is not supported
+   * @tips Only the specified key can be queried, deep query is not supported.
+   *
+   * @publicApi
    */
-  @FixedContext
-  public discovery<K extends keyof ObjectType<T>>(key: K): ObjectType<T>[K] {
-    const result = this.store[key];
-    return result && isObject(result) ? cloneDeep(result) : result;
+  @This
+  @ArgumentValidator()
+  public get<K extends keyof Dictionary<T>>(
+    @Required() key: K,
+  ) {
+    if (isKeyof(this.store, key as string | number)) {
+      const result = this.store[key];
+
+      return isValidObject(result) ? cloneDeep(result) : result;
+    }
   }
   /**
    * set the configuration for the given key.
    */
-  @FixedContext
-  public set(key: string, value: any): void {
-    const result = toRestoreProperties(value, key);
+  @This
+  @ArgumentValidator()
+  public set(
+    @Required() key: string,
+    @Required() value: any,
+  ): void {
+    const result = toDeepRestore(value, key);
     this.merge(result);
   }
   /**
    * merge the configuration
    */
-  @FixedContext
-  public merge(value: object): void {
-    if (value) {
-      this.store = toDeepMerge(this.store, cloneDeep(value));
-    }
+  @This
+  @ArgumentValidator()
+  public merge(
+    @CustomValidated(isValidObject, 'value must be object !') value: object,
+  ): void {
+    this.store = toDeepMerge(this.store, cloneDeep(value));
   }
 }

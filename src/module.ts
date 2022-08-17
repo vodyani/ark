@@ -1,19 +1,17 @@
-import { isArray } from 'lodash';
-import { convert } from '@vodyani/transformer';
 import { DynamicModule } from '@nestjs/common';
+import { isValidArray, toConvert } from '@vodyani/utils';
 
 import { ArkModuleOptions } from './common';
+import { ArkManager } from './provider/manager';
 import { ConfigProvider } from './provider/config';
-import { ArkManager } from './provider/ark-manager';
-import { ConfigMonitor } from './provider/config-monitor';
-import { ConfigHandler } from './provider/config-handler';
-import { DynamicDataSourceProvider } from './provider/dynamic-data-source';
-import { AsyncDynamicDataSourceProvider } from './provider/async-dynamic-data-source';
+import { ConfigMonitor } from './provider/monitor';
+import { ConfigHandler } from './provider/handler';
+import { DynamicDataSourceProvider, AsyncDynamicDataSourceProvider } from './provider/dynamic-data-source';
 
 export class ArkModule {
   static forRoot(options: ArkModuleOptions): DynamicModule {
     const imports: any[] = [];
-    const manager = new ArkManager(options).create();
+    const manager = new ArkManager().create(options);
 
     const providers: any[] = [
       manager,
@@ -24,7 +22,7 @@ export class ArkModule {
       AsyncDynamicDataSourceProvider,
     ];
 
-    if (options.remote && isArray(options.remote)) {
+    if (isValidArray(options.remote)) {
       options.remote.forEach(item => imports.push(item.module));
     }
 
@@ -33,7 +31,7 @@ export class ArkModule {
       providers,
       exports: providers,
       module: ArkModule,
-      global: convert(options.global, true),
+      global: toConvert(options.global, { default: true }),
     };
   }
 }
