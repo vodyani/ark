@@ -1,48 +1,57 @@
 import { cloneDeep } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { This } from '@vodyani/class-decorator';
-import { toDeepMerge, toDeepMatch, toDeepRestore, isValidDict, isKeyof } from '@vodyani/utils';
+import { toDeepMerge, toDeepMatch, toDeepRestore, isValidObject, isKeyof } from '@vodyani/utils';
+import { ArgumentValidator, CustomValidated, Required, This } from '@vodyani/class-decorator';
 
 import { Dictionary } from '../common';
 
-/**
- * Configuration Accessor
- */
 @Injectable()
 export class ConfigProvider<T = any> {
   /**
    * The configuration details store.
    */
   private store: Dictionary<T> = Object();
+
   /**
-   * get the configuration for the given key.
+   * Get the configuration for the given key.
+   *
+   * @publicApi
    */
   @This
-  public match(key: string) {
+  @ArgumentValidator()
+  public match(
+    @Required() key: string,
+  ) {
     const result = toDeepMatch(this.store, key);
-    return isValidDict(result) ? cloneDeep(result) as any : result;
+    return isValidObject(result) ? cloneDeep(result) as any : result;
   }
   /**
-   * get the configuration for the given key.
+   * Get the configuration for the given key.
    *
-   * @usageNotes
-   * - Only the specified key can be queried, deep query is not supported
+   * @tips Only the specified key can be queried, deep query is not supported.
+   *
+   * @publicApi
    */
   @This
-  public get<K extends keyof Dictionary<T>>(key: K) {
-    let result = null;
+  @ArgumentValidator()
+  public get<K extends keyof Dictionary<T>>(
+    @Required() key: K,
+  ) {
+    if (isKeyof(this.store, key as string | number)) {
+      const result = this.store[key];
 
-    if (isKeyof(this.store, key as number | string)) {
-      result = this.store[key];
+      return isValidObject(result) ? cloneDeep(result) : result;
     }
-
-    return isValidDict(result) ? cloneDeep(result) : result;
   }
   /**
    * set the configuration for the given key.
    */
   @This
-  public set(key: string, value: any): void {
+  @ArgumentValidator()
+  public set(
+    @Required() key: string,
+    @Required() value: any,
+  ): void {
     const result = toDeepRestore(value, key);
     this.merge(result);
   }
@@ -50,9 +59,10 @@ export class ConfigProvider<T = any> {
    * merge the configuration
    */
   @This
-  public merge(value: object): void {
-    if (isValidDict(value)) {
-      this.store = toDeepMerge(this.store, cloneDeep(value));
-    }
+  @ArgumentValidator()
+  public merge(
+    @CustomValidated(isValidObject, 'value must be object !') value: object,
+  ): void {
+    this.store = toDeepMerge(this.store, cloneDeep(value));
   }
 }
