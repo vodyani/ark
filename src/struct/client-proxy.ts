@@ -1,6 +1,13 @@
-import { This } from '@vodyani/class-decorator';
+import { ArgumentValidator, Required, This } from '@vodyani/class-decorator';
 
-import { Client, IClientProxy, CreateClient } from '../common';
+import {
+  AsyncClient,
+  Client,
+  CreateClient,
+  CreateAsyncClient,
+  IClientProxy,
+  IAsyncClientProxy,
+} from '../common';
 
 export class ClientProxy<T = any, O = any> implements IClientProxy<T, O> {
   private args: any[];
@@ -10,29 +17,25 @@ export class ClientProxy<T = any, O = any> implements IClientProxy<T, O> {
   private callback: CreateClient<T, O>;
 
   @This
-  public get() {
-    return this.client.get();
-  }
-
-  @This
   public getClient() {
     return this.client;
   }
 
   @This
+  @ArgumentValidator()
   public deploy(
-    callback: CreateClient<T, O>,
-    option: O,
-    ...args: any[]
+    @Required() callback: CreateClient<T, O>,
+    @Required() options: O,
+      ...args: any[]
   ) {
     this.args = args;
     this.callback = callback;
-    this.client = callback(option, ...this.args);
+    this.client = callback(options, ...this.args);
   }
 
   @This
-  public redeploy(option: O) {
-    const current = this.callback(option, ...this.args);
+  public redeploy(options: O) {
+    const current = this.callback(options, ...this.args);
 
     this.client.close();
     this.client = null;
@@ -45,3 +48,43 @@ export class ClientProxy<T = any, O = any> implements IClientProxy<T, O> {
     this.client = null;
   }
 }
+
+export class AsyncClientProxy<T, O> implements IAsyncClientProxy<T, O> {
+  private args: any[];
+
+  private client: AsyncClient<T>;
+
+  private callback: CreateAsyncClient<T, O>;
+
+  @This
+  public getClient() {
+    return this.client;
+  }
+
+  @This
+  public async deploy(
+    callback: CreateAsyncClient<T, O>,
+    options: O,
+    ...args: any[]
+  ) {
+    this.args = args;
+    this.callback = callback;
+    this.client = await callback(options, ...this.args);
+  }
+
+  @This
+  public async redeploy(options: O) {
+    const current = await this.callback(options, ...this.args);
+
+    this.client.close();
+    this.client = null;
+    this.client = current;
+  }
+
+  @This
+  public async close() {
+    await this.client.close();
+    this.client = null;
+  }
+}
+

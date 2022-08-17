@@ -1,9 +1,9 @@
 import { DynamicModule } from '@nestjs/common';
-import { isValid, isValidArray } from '@vodyani/utils';
+import { isValidArray, toConvert } from '@vodyani/utils';
 
 import { ArkModuleOptions } from './common';
-import { ConfigProvider } from './provider/config';
 import { ArkManager } from './provider/manager';
+import { ConfigProvider } from './provider/config';
 import { ConfigMonitor } from './provider/monitor';
 import { ConfigHandler } from './provider/handler';
 import { DynamicDataSourceProvider, AsyncDynamicDataSourceProvider } from './provider/dynamic-data-source';
@@ -11,7 +11,7 @@ import { DynamicDataSourceProvider, AsyncDynamicDataSourceProvider } from './pro
 export class ArkModule {
   static forRoot(options: ArkModuleOptions): DynamicModule {
     const imports: any[] = [];
-    const manager = new ArkManager(options).create();
+    const manager = new ArkManager().create(options);
 
     const providers: any[] = [
       manager,
@@ -31,7 +31,7 @@ export class ArkModule {
       providers,
       exports: providers,
       module: ArkModule,
-      global: isValid(options.global) ? options.global : true,
+      global: toConvert(options.global, { default: true }),
     };
   }
 }
