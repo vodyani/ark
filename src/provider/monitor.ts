@@ -1,9 +1,9 @@
 import { existsSync, readFileSync } from 'fs';
 
-import { toCycle } from '@vodyani/utils';
+import { uniqueId } from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
-import { isArray, isObject, uniqueId } from 'lodash';
+import { isValid, toCycle } from '@vodyani/utils';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
 
 import { Method, toHash, WatchInfo } from '../common';
@@ -26,13 +26,10 @@ export class ConfigMonitor {
 
   @This
   public watchConfig(callback: Method, key: string) {
-    let value = this.config.get(key);
+    const value = this.config.get(key);
+    const hashToken = toHash(value);
 
-    if (value && (isArray(value) || isObject(value))) {
-      value = toHash(value);
-    }
-
-    this.configWatchers.set(key, { key, value, callback });
+    this.configWatchers.set(key, { key, value, hashToken, callback });
   }
 
   @This
@@ -47,12 +44,10 @@ export class ConfigMonitor {
 
     watcher.on('change', (path) => {
       try {
-        this.autoMerge(
-          'ConfigMonitor.watchFile',
-          JSON.parse(readFileSync(path, 'utf-8')),
-        );
+        const data = readFileSync(path, 'utf-8');
+        this.autoMerge(JSON.parse(data), 'ConfigMonitor.watchFile');
       } catch (error) {
-        console.error(error);
+        //
       }
     });
   }
@@ -66,7 +61,7 @@ export class ConfigMonitor {
 
     const worker = toCycle(async () => {
       const config = await callback();
-      this.autoMerge(remoteClientUniqueId, config);
+      this.autoMerge(config, remoteClientUniqueId);
     }, { interval });
 
     this.cycleWorkers.set(remoteClientUniqueId, worker);
@@ -77,21 +72,20 @@ export class ConfigMonitor {
     callback: (callback: (details: Record<string, any>) => any) => Promise<void>,
   ) {
     const remoteClientUniqueId = uniqueId('ConfigMonitor.autoSubscribe');
-    await callback(async (config) => this.autoMerge(remoteClientUniqueId, config));
+    await callback(async (config) => this.autoMerge(config, remoteClientUniqueId));
   }
 
   @This
-  public autoMerge(source: string, value: any) {
-    if (!value) {
+  public autoMerge(value: any, token: string) {
+    if (!isValid(value)) {
       return;
     }
-
+    const record = this.configMergeWatchers.get(token);
     const current = toHash(value);
-    const record = this.configMergeWatchers.get(source);
 
     if (record !== current) {
       this.config.merge(value);
-      this.configMergeWatchers.set(source, current);
+      this.configMergeWatchers.set(token, current);
       this.check();
     }
   }
@@ -99,18 +93,14 @@ export class ConfigMonitor {
   @This
   public check() {
     this.configWatchers.forEach(async (details) => {
-      let currentConfig = null;
-      const { key, value, callback } = details;
+      const { key, callback, hashToken } = details;
+      const currentConfig = this.config.get(key);
+      const currentHashToken = toHash(currentConfig);
 
-      currentConfig = this.config.get(key);
-
-      if (currentConfig && (isArray(currentConfig) || isObject(currentConfig))) {
-        currentConfig = toHash(currentConfig);
-      }
-
-      if (value !== currentConfig) {
+      if (hashToken !== currentHashToken) {
         callback(currentConfig);
         details.value = currentConfig;
+        details.hashToken = currentHashToken;
       }
 
       this.configWatchers.set(key, details);
