@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 
 import { Injectable } from '@nestjs/common';
-import { isValidDict } from '@vodyani/utils';
-import { This } from '@vodyani/class-decorator';
+import { isValidObject } from '@vodyani/utils';
+import { ArgumentValidator, CustomValidated, This } from '@vodyani/class-decorator';
 
 import { ConfigProvider } from './config';
 
@@ -13,10 +13,11 @@ export class ConfigHandler {
   ) {}
 
   @This
-  public init(details: Record<string, any>) {
-    if (isValidDict(details)) {
-      this.config.merge(details);
-    }
+  @ArgumentValidator()
+  public init(
+    @CustomValidated(isValidObject, 'params must be object !') params: Record<string, any>,
+  ): void {
+    this.config.merge(params);
   }
 
   @This
@@ -24,11 +25,11 @@ export class ConfigHandler {
     try {
       const config = JSON.parse(readFileSync(path, 'utf8'));
 
-      if (isValidDict(config)) {
+      if (isValidObject(config)) {
         this.config.merge(config);
       }
     } catch (err) {
-      throw new Error(`ConfigHandler.deploy: reading ${path} fail from disk: ${err}`);
+      throw new Error(`reading ${path} fail from disk: ${err}`);
     }
   }
 }
