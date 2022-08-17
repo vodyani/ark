@@ -16,9 +16,9 @@
     "vodyani",
     "nodejs",
     "config",
+    "ark",
     "nestjs",
-    "remote-config-center",
-    "npm-package"
+    "remote-config"
   ],
   "files": [
     "package.json",
@@ -66,12 +66,12 @@
     ]
   },
   "dependencies": {
-    "@nestjs/common": "^8.4.4",
-    "@vodyani/class-decorator": "^8.1.0",
-    "@vodyani/core": "^8.5.0",
-    "@vodyani/utils": "^8.4.2",
+    "@nestjs/common": "8.4.4",
+    "@vodyani/class-decorator": "8.1.1",
+    "@vodyani/core": "8.5.0",
+    "@vodyani/utils": "8.4.2",
     "chokidar": "3.5.3",
-    "lodash": "^4.17.21",
+    "lodash": "4.17.21",
     "object-hash": "3.0.0"
   },
   "devDependencies": {
