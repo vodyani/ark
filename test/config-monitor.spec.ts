@@ -2,12 +2,12 @@
 import { resolve } from 'path';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 
+import { toDelay } from '@vodyani/utils';
 import { describe, it, expect } from '@jest/globals';
-import { toDelay } from '@vodyani/core';
 
 import { ConfigProvider } from '../src/provider/config';
-import { ConfigHandler } from '../src/provider/config-handler';
-import { ConfigMonitor } from '../src/provider/config-monitor';
+import { ConfigHandler } from '../src/provider/handler';
+import { ConfigMonitor } from '../src/provider/monitor';
 
 const configProvider = new ConfigProvider();
 const handler = new ConfigHandler(configProvider);
@@ -19,14 +19,14 @@ describe('ConfigMonitor', () => {
 
     monitor.watchConfig(
       (config: number[]) => {
-        expect(config).toBe([2]);
+        expect(config).toEqual([1, 2]);
       },
       'array',
     );
 
     monitor.autoMerge(
-      'array',
-      [2],
+      { test: { test: 1 }, array: [2] },
+      'autoMerge.array',
     );
 
     const testList: any[] = [];
@@ -39,20 +39,20 @@ describe('ConfigMonitor', () => {
     );
 
     monitor.autoMerge(
-      'test',
       { test: 'test' },
+      'autoMerge.test',
     );
 
     monitor.autoMerge(
-      'test',
       null,
+      'autoMerge.test',
     );
 
     expect(testList[0]).toBe('test');
 
     monitor.autoMerge(
-      'test',
       { test: 1 },
+      'autoMerge.test',
     );
 
     expect(testList[1]).toBe(1);
@@ -84,9 +84,9 @@ describe('ConfigMonitor', () => {
     monitor.watchFile(tempConfig);
 
     // @ts-ignore
-    // const watcher = monitor.configFileWatchers.get(tempConfig);
+    // const watcher = monitor.configFileWatchers.match(tempConfig);
     // @ts-ignore
-    // const errorConfigWatcher = monitor.configFileWatchers.get(tempErrorConfig);
+    // const errorConfigWatcher = monitor.configFileWatchers.match(tempErrorConfig);
 
     await toDelay(300);
 
@@ -98,7 +98,7 @@ describe('ConfigMonitor', () => {
 
     await toDelay(300);
 
-    expect(configProvider.get('env')).toBe('PRO');
+    expect(configProvider.match('env')).toBe('PRO');
 
     monitor.clearConfigFileWatcher();
     monitor.clearConfigMergeWatcher();
@@ -119,6 +119,6 @@ describe('ConfigMonitor', () => {
 
     await monitor.clearCycleSyncWorker();
 
-    expect(configProvider.get('autoCycleSync')).toBe(2);
+    expect(configProvider.match('autoCycleSync')).toBe(2);
   });
 });

@@ -1,62 +1,70 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { This } from '@vodyani/class-decorator';
 import { describe, it, expect } from '@jest/globals';
-import { FixedContext } from '@vodyani/core';
 
+import { Client, ClientAdapter } from '../src/common';
 import { ConfigProvider } from '../src/provider/config';
-import { ConfigMonitor } from '../src/provider/config-monitor';
+import { ConfigMonitor } from '../src/provider/monitor';
 import { DynamicDataSourceProvider } from '../src/provider/dynamic-data-source';
 
-class ClientAdapter {
+interface Demo {
+  getArgs: () => any[],
+  getCount: () => number,
+}
+
+class DemoClient implements Client<Demo> {
+  private instance: Demo = Object();
+
   constructor(
     private readonly count: number,
     private readonly args: any[],
-  ) {}
+  ) {
+    this.instance = {
+      getArgs: () => this.args,
+      getCount: () => this.count,
+    };
+  }
 
-  getArgs = () => this.args;
-
-  getCount = () => this.count;
+  getInstance = () => this.instance;
+  close = () => { this.instance = Object() };
 }
 
-class ClientManager {
-  private client: any;
+class ClientManager implements ClientAdapter<Demo> {
+  private client: DemoClient;
 
-  @FixedContext
+  @This
+  // @ts-ignore
+  public getClient() {
+    return this.client;
+  }
+
+  @This
   // @ts-ignore
   public create(count: number, ...args: any[]) {
-    this.client = new ClientAdapter(count, args);
-
-    return {
-      instance: this.client,
-      close: () => {
-        this.client = null;
-      },
-    };
+    this.client = new DemoClient(count, args);
+    return this.client;
   }
 }
 
 const config = new ConfigProvider();
 const monitor = new ConfigMonitor(config);
-const provider = new DynamicDataSourceProvider<ClientAdapter, number>(config, monitor);
+const provider = new DynamicDataSourceProvider<Demo, number>(config, monitor);
 
 describe('DynamicDataSourceProvider', () => {
   it('test create error', () => {
     try {
-      provider.create(
-        null,
-        [
-          { configKey: 'DynamicDataSourceProvider', args: [1, 2, 3] },
-          { configKey: 'DynamicDataSourceProvider', args: [4, 5, 6] },
-          { configKey: 'DynamicDataSourceProvider_temp', args: [1, 1, 1] },
-        ],
+      provider.deploy(
+        null as any,
+        { configKey: 'DynamicDataSourceProvider', args: [1, 2, 3] },
       );
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
 
     try {
-      provider.create(
+      provider.deploy(
         new ClientManager().create,
-        null,
+        null as any,
       );
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
@@ -66,27 +74,30 @@ describe('DynamicDataSourceProvider', () => {
   it('test all', async () => {
     config.set('DynamicDataSourceProvider', 1);
     config.set('DynamicDataSourceProvider_temp', 1);
+    const manager = new ClientManager();
+    const key_01 = 'DynamicDataSourceProvider';
+    const key_02 = 'DynamicDataSourceProvider_temp';
 
-    provider.create(
-      new ClientManager().create,
-      [
-        { configKey: 'DynamicDataSourceProvider', args: [1, 2, 3] },
-        { configKey: 'DynamicDataSourceProvider', args: [4, 5, 6] },
-        { configKey: 'DynamicDataSourceProvider_temp', args: [1, 1, 1] },
-      ],
-    );
+    await Promise.all([
+      provider.deploy(manager.create, { configKey: key_01, args: [1, 2, 3] }),
+      provider.deploy(manager.create, { configKey: key_01, args: [4, 5, 6] }),
+      provider.deploy(manager.create, { configKey: key_02, args: [1, 1, 1] }),
+    ]);
 
-    expect(provider.getClient('DynamicDataSourceProvider').getCount()).toBe(1);
-    expect(provider.getClient('DynamicDataSourceProvider').getArgs()).toEqual([4, 5, 6]);
+    expect(provider.getInstance(key_01).getCount()).toBe(1);
+    expect(provider.getInstance(key_01).getArgs()).toEqual([4, 5, 6]);
 
-    expect(provider.getClient('DynamicDataSourceProvider_temp').getCount()).toBe(1);
-    expect(provider.getClient('DynamicDataSourceProvider_temp').getArgs()).toEqual([1, 1, 1]);
+    expect(provider.getInstance(key_02).getCount()).toBe(1);
+    expect(provider.getInstance(key_02).getArgs()).toEqual([1, 1, 1]);
 
-    monitor.autoMerge('merge', { DynamicDataSourceProvider: 2 });
-    expect(provider.getClient('DynamicDataSourceProvider').getCount()).toBe(2);
+    monitor.autoMerge({ DynamicDataSourceProvider: 2 }, 'merge');
+    expect(provider.getInstance(key_01).getCount()).toBe(2);
 
-    provider.get('DynamicDataSourceProvider').close();
-    provider.close('DynamicDataSourceProvider');
-    provider.close('DynamicDataSourceProvider_temp');
+    expect(provider.getClient('???')).toBe(null);
+    expect(provider.getInstance('???')).toBe(null);
+
+    provider.getClient(key_01).close();
+    provider.clear(key_01);
+    provider.clear(key_02);
   });
 });

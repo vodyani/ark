@@ -1,31 +1,34 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { resolve } from 'path';
 
-import { RemoteConfigClient, FixedContext, toDelay } from '@vodyani/core';
+import { getToken } from '@vodyani/core';
+import { toDelay } from '@vodyani/utils';
+import { This } from '@vodyani/class-decorator';
 import { Injectable, Module } from '@nestjs/common';
 import { describe, it, expect } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ArkModule } from '../src/module';
+import { RemoteConfigClient } from '../src/common';
 import { ConfigProvider } from '../src/provider/config';
 import { ArkManager, ConfigMonitor } from '../src/provider';
 
 @Injectable()
 // @ts-ignore
 class RemoteClient1 implements RemoteConfigClient {
-  @FixedContext
+  @This
   // @ts-ignore
   async init() {
     return null;
   }
 
-  @FixedContext
+  @This
   // @ts-ignore
   async sync() {
     return { name1: 'RemoteClient1' };
   }
 
-  @FixedContext
+  @This
   // @ts-ignore
   subscribe(cb) {
     return cb({ name1: 'RemoteClient1' });
@@ -42,19 +45,19 @@ class RemoteModule1 {}
 @Injectable()
 // @ts-ignore
 class RemoteClient2 implements RemoteConfigClient {
-  @FixedContext
+  @This
   // @ts-ignore
   async init() {
     return null;
   }
 
-  @FixedContext
+  @This
   // @ts-ignore
   async sync() {
     return { name2: 'RemoteClient2' };
   }
 
-  @FixedContext
+  @This
   // @ts-ignore
   subscribe(cb) {
     return cb({ name2: 'RemoteClient2' });
@@ -68,7 +71,7 @@ class RemoteClient2 implements RemoteConfigClient {
 // @ts-ignore
 class RemoteModule2 {}
 
-let config: ConfigProvider = null;
+let config: ConfigProvider = Object();
 
 describe('ArkModule', () => {
   it('test all', async () => {
@@ -102,7 +105,7 @@ describe('ArkModule', () => {
       })],
     }).compile();
 
-    config = moduleRef.get<ConfigProvider>(ArkManager.token);
+    config = moduleRef.get<ConfigProvider>(getToken(ArkManager));
 
     await toDelay(1000);
 
@@ -120,7 +123,7 @@ describe('ArkModule', () => {
   it('error options', async () => {
     try {
       await Test.createTestingModule({
-        imports: [ArkModule.forRoot(null)],
+        imports: [ArkModule.forRoot(null as any)],
       }).compile();
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
