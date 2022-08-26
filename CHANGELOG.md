@@ -1,3 +1,10 @@
+## [8.4.1](https://github.com/vodyani/ark/compare/v8.4.0...v8.4.1) (2022-08-26)
+
+
+### Bug Fixes
+
+* add missing types ([dfa2c07](https://github.com/vodyani/ark/commit/dfa2c0714416ddd717351304d48372da9d9c8e96))
+
 # [8.4.0](https://github.com/vodyani/ark/compare/v8.3.3...v8.4.0) (2022-08-17)
 
 
