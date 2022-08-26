@@ -76,7 +76,7 @@
     "@nestjs/testing": "8.4.4",
     "@types/express": "4.17.13",
     "@types/jest": "27.4.1",
-    "@types/lodash": "^4.14.182",
+    "@types/lodash": "4.14.184",
     "@types/node": "16.11.26",
     "@types/object-hash": "2.2.1",
     "@vodyani/eslint-config": "^1.0.10",
