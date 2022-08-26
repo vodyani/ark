@@ -1,4 +1,6 @@
-import { DeployAsyncClient, DeployClient, Method, PromiseMethod } from '../type';
+import { Method, PromiseMethod } from '@vodyani/utils';
+
+import { DeployAsyncClient, DeployClient } from '../type';
 
 export interface Client<T = any> {
   getInstance: Method<T>;

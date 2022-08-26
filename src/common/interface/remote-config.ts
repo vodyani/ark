@@ -1,4 +1,6 @@
-import { PromiseMethod, RemoteSubscribe } from '../type';
+import { PromiseMethod } from '@vodyani/utils';
+
+import { RemoteSubscribe } from '../type';
 
 export interface RemoteConfigClient {
   init: PromiseMethod<any>;

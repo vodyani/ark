@@ -1,9 +1,7 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, Dictionary } from 'lodash';
 import { Injectable } from '@nestjs/common';
-import { toDeepMerge, toDeepMatch, toDeepRestore, isValidObject, isKeyof } from '@vodyani/utils';
 import { ArgumentValidator, CustomValidated, Required, This } from '@vodyani/class-decorator';
-
-import { Dictionary } from '../common';
+import { toDeepMerge, toDeepMatch, toDeepRestore, isValidObject, isKeyof } from '@vodyani/utils';
 
 @Injectable()
 export class ConfigProvider<T = any> {

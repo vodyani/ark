@@ -3,10 +3,10 @@ import { existsSync, readFileSync } from 'fs';
 import { uniqueId } from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
-import { isValid, toCycle } from '@vodyani/utils';
+import { isValid, Method, toCycle } from '@vodyani/utils';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
 
-import { Method, toHash, WatchInfo } from '../common';
+import { toHash, WatchInfo } from '../common';
 
 import { ConfigProvider } from './config';
 

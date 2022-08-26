@@ -1,4 +1,4 @@
-import { Method } from '../type';
+import { Method } from '@vodyani/utils';
 
 export interface WatchInfo {
   key: any;
