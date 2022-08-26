@@ -62,7 +62,7 @@
     ]
   },
   "dependencies": {
-    "@nestjs/common": "8.4.4",
+    "@nestjs/common": "8.4.7",
     "@vodyani/class-decorator": "^8.1.2",
     "@vodyani/core": "^8.5.1",
     "@vodyani/utils": "^8.4.3",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@commitlint/cli": "16.2.3",
     "@commitlint/config-conventional": "16.2.1",
-    "@nestjs/testing": "8.4.4",
+    "@nestjs/testing": "8.4.7",
     "@types/express": "4.17.13",
     "@types/jest": "27.4.1",
     "@types/lodash": "^4.14.182",
