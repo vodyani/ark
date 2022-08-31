@@ -1,3 +1,11 @@
+## [8.4.2](https://github.com/vodyani/ark/compare/v8.4.1...v8.4.2) (2022-08-31)
+
+
+### Bug Fixes
+
+* adjust processing logic with core package changes ([b4670b3](https://github.com/vodyani/ark/commit/b4670b37e143ede4cb6672d7ea41cdd23a202310))
+* ci ([cd5f627](https://github.com/vodyani/ark/commit/cd5f6276b634c772b5248a6e6d9df9de3a5addea))
+
 ## [8.4.1](https://github.com/vodyani/ark/compare/v8.4.0...v8.4.1) (2022-08-26)
 
 
