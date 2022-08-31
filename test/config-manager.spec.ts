@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { resolve } from 'path';
 
-import { getToken } from '@vodyani/core';
 import { toDelay } from '@vodyani/utils';
 import { This } from '@vodyani/class-decorator';
 import { Injectable, Module } from '@nestjs/common';
@@ -105,7 +104,7 @@ describe('ArkModule', () => {
       })],
     }).compile();
 
-    config = moduleRef.get<ConfigProvider>(getToken(ArkManager));
+    config = moduleRef.get<ConfigProvider>(ArkManager.getToken());
 
     await toDelay(1000);
 

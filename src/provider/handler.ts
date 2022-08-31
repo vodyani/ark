@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@vodyani/core';
 import { isValidObject } from '@vodyani/utils';
 import { ArgumentValidator, CustomValidated, This } from '@vodyani/class-decorator';
 

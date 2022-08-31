@@ -1,6 +1,5 @@
 import { toConvert } from '@vodyani/utils';
-import { Injectable } from '@nestjs/common';
-import { AsyncInject } from '@vodyani/core';
+import { AsyncInject, Injectable } from '@vodyani/core';
 import { ArgumentValidator, Required, This } from '@vodyani/class-decorator';
 
 import {

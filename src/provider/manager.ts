@@ -1,9 +1,8 @@
 import { existsSync } from 'fs';
 
-import { FactoryProvider } from '@nestjs/common';
 import { isValidArray, isValidDict, toConvert } from '@vodyani/utils';
-import { AsyncInjectable, AsyncProviderFactory, getToken } from '@vodyani/core';
 import { ArgumentValidator, CustomValidated, This } from '@vodyani/class-decorator';
+import { AsyncInjectable, AsyncProvider, AsyncProviderFactory } from '@vodyani/core';
 
 import { ArkManagerOptions, RemoteConfigClient, RemoteConfigOptions } from '../common';
 
@@ -12,15 +11,14 @@ import { ConfigMonitor } from './monitor';
 import { ConfigProvider } from './config';
 
 @AsyncInjectable
-export class ArkManager implements AsyncProviderFactory {
+export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
   private options: ArkManagerOptions;
 
   @This
   @ArgumentValidator()
   public create(
     @CustomValidated(isValidDict, 'options is a required parameter!') options: ArkManagerOptions,
-  ): FactoryProvider
-  {
+  ) {
     this.options = options;
 
     const inject: any[] = [
@@ -36,7 +34,7 @@ export class ArkManager implements AsyncProviderFactory {
     return {
       inject,
       useFactory: this.useFactory,
-      provide: getToken(ArkManager),
+      provide: ArkManager.getToken(),
     };
   }
 
