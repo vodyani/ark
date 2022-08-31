@@ -12,7 +12,7 @@ jobs:
 
   codecov:
     needs: [check]
-    uses: vodyani/workflows/.github/workflows/publish-codecov.yml@master
+    uses: vodyani/workflows/.github/workflows/codecov.yml@master
     secrets:
       CODE_COV_CI_TOKEN: ${{ secrets.CODECOV_CI_TOKEN_BY_ARK }}
 
