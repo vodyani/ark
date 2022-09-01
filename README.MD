@@ -36,6 +36,8 @@ npm install @vodyani/ark
 |:-:|
 |[ChoGathK](https://github.com/chogathK)|
 
+![Alt](https://repobeats.axiom.co/api/embed/f3931a0928ef44aa8d7cb0a439f58176542dba70.svg "Repobeats analytics image")
+
 ## License
 
 Vodyani ark is [MIT licensed](LICENSE).
