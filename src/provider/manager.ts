@@ -2,9 +2,9 @@ import { existsSync } from 'fs';
 
 import { isValidArray, isValidDict, toConvert } from '@vodyani/utils';
 import { ArgumentValidator, CustomValidated, This } from '@vodyani/class-decorator';
-import { AsyncInjectable, AsyncProvider, AsyncProviderFactory } from '@vodyani/core';
+import { AsyncInjectable, AsyncProvider, AsyncProviderFactory, RemoteConfigClient } from '@vodyani/core';
 
-import { ArkManagerOptions, RemoteConfigClient, RemoteConfigOptions } from '../common';
+import { ArkManagerOptions, RemoteConfigOptions } from '../common';
 
 import { ConfigHandler } from './handler';
 import { ConfigMonitor } from './monitor';
@@ -59,7 +59,7 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
 
     configHandler.init({ env: env.current, ...params });
 
-    const { defaultPath, currentPath } = this.deployLocalPath(local.path);
+    const { defaultPath, currentPath } = this.getPath(local.path);
 
     configHandler.deploy(defaultPath);
     configHandler.deploy(currentPath);
@@ -70,15 +70,15 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
     }
 
     if (remote) {
-      await this.deployRemoteClient(config, remoteClients, remote);
-      await this.deployRemoteClientSync(configMonitor, remoteClients, remote);
+      await this.initRemoteClient(config, remoteClients, remote);
+      await this.deployRemoteClient(configMonitor, remoteClients, remote);
     }
 
     return config;
   }
 
   @This
-  private deployLocalPath(path: string) {
+  private getPath(path: string) {
     const { local: { env }} = this.options;
 
     const defaultPath = `${path}/${env.default}.json`;
@@ -96,39 +96,43 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
   }
 
   @This
-  private async deployRemoteClient(
+  private async initRemoteClient(
     config: ConfigProvider,
-    remoteClients: RemoteConfigClient[],
+    clients: RemoteConfigClient[],
     options: RemoteConfigOptions[],
   ) {
 
-    await Promise.all(options.map(
-      async ({ initArgs }, index) => {
-        const client = remoteClients[index];
-        const currentArgs = toConvert(initArgs, { default: [] });
+    await Promise.all(
+      options.map(
+        async ({ initArgs }, index) => {
+          const client = clients[index];
+          const currentArgs = toConvert(initArgs, { default: [] });
 
-        if (client) {
-          await client.init(...currentArgs);
-          const remoteConfig = await client.sync();
-          config.merge(remoteConfig);
-        }
-      },
-    ));
+          if (client) {
+            await client.init(...currentArgs);
+
+            config.merge(await client.sync());
+          }
+        },
+      ),
+    );
   }
 
   @This
-  private async deployRemoteClientSync(
+  private async deployRemoteClient(
     monitor: ConfigMonitor,
-    remoteClients: RemoteConfigClient[],
+    clients: RemoteConfigClient[],
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ enableCycleSync, enableSubscribe, cycleSyncInterval }, index) => {
-        const client = remoteClients[index];
+      async ({ enableCycleSync, enableSubscribe, subscribeKeys, cycleSyncInterval }, index) => {
+        const client = clients[index];
 
         if (client) {
-          if (enableSubscribe) {
-            await monitor.autoSubscribe(client.subscribe);
+          if (enableSubscribe && isValidArray(subscribeKeys)) {
+            for (const key of subscribeKeys) {
+              await monitor.autoSubscribe(key, client.subscribe);
+            }
           }
 
           if (enableCycleSync) {

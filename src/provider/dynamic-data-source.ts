@@ -1,17 +1,9 @@
 import { toConvert } from '@vodyani/utils';
-import { AsyncInject, Injectable } from '@vodyani/core';
 import { ArgumentValidator, Required, This } from '@vodyani/class-decorator';
+import { AsyncClient, AsyncInject, Client, Injectable } from '@vodyani/core';
 
-import {
-  Client,
-  CreateClient,
-  CreateAsyncClient,
-  DynamicDataSourceOptions,
-  IClientProxy,
-  IAsyncClientProxy,
-  AsyncClient,
-} from '../common';
 import { AsyncClientProxy, ClientProxy } from '../struct';
+import { CreateClient, CreateAsyncClient, IClientProxy, IAsyncClientProxy } from '../common';
 
 import { ArkManager } from './manager';
 import { ConfigMonitor } from './monitor';
@@ -41,10 +33,9 @@ export class DynamicDataSourceProvider<T = any, O = any> {
   @ArgumentValidator()
   public deploy(
     @Required() callback: CreateClient<T, O>,
-    @Required() callbackOptions: DynamicDataSourceOptions,
+    @Required() configKey: string,
+      ...args: any[]
   ) {
-    const { configKey, args } = callbackOptions;
-
     const currentArgs = toConvert(args, { default: [] });
     const options = this.config.get(configKey);
     const proxy = new ClientProxy<T, O>();
@@ -88,10 +79,9 @@ export class AsyncDynamicDataSourceProvider<T = any, O = any> {
   @ArgumentValidator()
   public async deploy(
     @Required() callback: CreateAsyncClient<T, O>,
-    @Required() callbackOptions: DynamicDataSourceOptions,
+    @Required() configKey: string,
+      ...args: any[]
   ) {
-    const { configKey, args } = callbackOptions;
-
     const currentArgs = toConvert(args, { default: [] });
     const option = this.config.get(configKey);
     const proxy = new AsyncClientProxy<T, O>();

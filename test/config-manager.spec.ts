@@ -3,12 +3,11 @@ import { resolve } from 'path';
 
 import { toDelay } from '@vodyani/utils';
 import { This } from '@vodyani/class-decorator';
-import { Injectable, Module } from '@nestjs/common';
 import { describe, it, expect } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Injectable, Module, RemoteConfigClient } from '@vodyani/core';
 
 import { ArkModule } from '../src/module';
-import { RemoteConfigClient } from '../src/common';
 import { ConfigProvider } from '../src/provider/config';
 import { ArkManager, ConfigMonitor } from '../src/provider';
 
@@ -88,14 +87,14 @@ describe('ArkModule', () => {
         },
         remote: [
           {
-            module: RemoteModule1,
+            import: RemoteModule1,
             provider: RemoteClient1,
             initArgs: [],
             enableCycleSync: true,
             cycleSyncInterval: 100,
           },
           {
-            module: RemoteModule2,
+            import: RemoteModule2,
             provider: RemoteClient2,
             initArgs: [],
             enableSubscribe: true,
