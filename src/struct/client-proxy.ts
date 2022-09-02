@@ -3,10 +3,10 @@ import { ArgumentValidator, Required, This } from '@vodyani/class-decorator';
 
 import { CreateClient, CreateAsyncClient, IClientProxy, IAsyncClientProxy } from '../common';
 
-export class ClientProxy<I = any, O = any> implements IClientProxy<I, O> {
+export class ClientProxy<I = any, C = any> implements IClientProxy<I, C> {
   private args: any[];
   private client: Client<I>;
-  private callback: CreateClient<I, O>;
+  private callback: CreateClient<I, C>;
 
   @This
   public getClient() {
@@ -16,21 +16,21 @@ export class ClientProxy<I = any, O = any> implements IClientProxy<I, O> {
   @This
   @ArgumentValidator()
   public deploy(
-    @Required() callback: CreateClient<I, O>,
-    @Required() options: O,
+    @Required() callback: CreateClient<I, C>,
+    @Required() config: C,
       ...args: any[]
   ) {
     this.args = args;
     this.callback = callback;
-    this.client = callback(options, ...this.args);
+    this.client = callback(config, ...this.args);
   }
 
   @This
   @ArgumentValidator()
   public redeploy(
-    @Required() options: O,
+    @Required() config: C,
   ) {
-    const current = this.callback(options, ...this.args);
+    const current = this.callback(config, ...this.args);
     this.client.close();
     this.client = null;
     this.client = current;
@@ -43,10 +43,10 @@ export class ClientProxy<I = any, O = any> implements IClientProxy<I, O> {
   }
 }
 
-export class AsyncClientProxy<I, O> implements IAsyncClientProxy<I, O> {
+export class AsyncClientProxy<I, C> implements IAsyncClientProxy<I, C> {
   private args: any[];
   private client: AsyncClient<I>;
-  private callback: CreateAsyncClient<I, O>;
+  private callback: CreateAsyncClient<I, C>;
 
   @This
   public getClient() {
@@ -56,21 +56,21 @@ export class AsyncClientProxy<I, O> implements IAsyncClientProxy<I, O> {
   @This
   @ArgumentValidator()
   public async deploy(
-    @Required() callback: CreateAsyncClient<I, O>,
-    @Required() options: O,
+    @Required() callback: CreateAsyncClient<I, C>,
+    @Required() config: C,
       ...args: any[]
   ) {
     this.args = args;
     this.callback = callback;
-    this.client = await callback(options, ...this.args);
+    this.client = await callback(config, ...this.args);
   }
 
   @This
   @ArgumentValidator()
   public async redeploy(
-    @Required() options: O,
+    @Required() config: C,
   ) {
-    const current = await this.callback(options, ...this.args);
+    const current = await this.callback(config, ...this.args);
     this.client.close();
     this.client = null;
     this.client = current;
@@ -82,4 +82,3 @@ export class AsyncClientProxy<I, O> implements IAsyncClientProxy<I, O> {
     this.client = null;
   }
 }
-

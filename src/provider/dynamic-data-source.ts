@@ -37,7 +37,7 @@ export class DynamicDataSourceProvider<T = any, O = any> {
       ...args: any[]
   ) {
     const currentArgs = toConvert(args, { default: [] });
-    const options = this.config.get(configKey);
+    const options = this.config.match(configKey);
     const proxy = new ClientProxy<T, O>();
 
     proxy.deploy(callback, options, ...currentArgs);
@@ -83,7 +83,7 @@ export class AsyncDynamicDataSourceProvider<T = any, O = any> {
       ...args: any[]
   ) {
     const currentArgs = toConvert(args, { default: [] });
-    const option = this.config.get(configKey);
+    const option = this.config.match(configKey);
     const proxy = new AsyncClientProxy<T, O>();
 
     await proxy.deploy(callback, option, ...currentArgs);

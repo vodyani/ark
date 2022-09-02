@@ -64,7 +64,7 @@ export class ConfigMonitor {
   public check() {
     this.watchers.forEach(async e => {
       const { key, callback, hashToken } = e;
-      const currentConfig = this.config.get(key);
+      const currentConfig = this.config.match(key);
       const currentHashToken = toHash(currentConfig);
 
       if (hashToken !== currentHashToken) {
@@ -79,7 +79,7 @@ export class ConfigMonitor {
 
   @This
   public watchConfig(callback: (config: any) => any, key: string) {
-    const value = this.config.get(key);
+    const value = this.config.match(key);
 
     this.watchers.set(
       key,
