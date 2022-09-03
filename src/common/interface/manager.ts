@@ -1,5 +1,5 @@
 import { WatchOptions } from 'chokidar';
-import { DynamicModule, ForwardReference, Provider, Type } from '@nestjs/common';
+import { Type, DynamicModule, ForwardReference, Provider } from '@vodyani/core';
 
 export interface EnvConfigOptions {
   current: any;
@@ -15,17 +15,18 @@ export interface LocalConfigOptions {
 }
 
 export interface RemoteConfigOptions {
-  module: Type | DynamicModule | Promise<DynamicModule> | ForwardReference;
+  import: Type | DynamicModule | Promise<DynamicModule> | ForwardReference;
   provider: Provider;
   initArgs?: any[];
   enableSubscribe?: boolean;
+  subscribeKeys?: string[];
   enableCycleSync?: boolean;
   cycleSyncInterval?: number;
 }
 
 export interface ArkManagerOptions {
-  remote?: RemoteConfigOptions[];
   local: LocalConfigOptions;
+  remote?: RemoteConfigOptions[];
 }
 
 export interface ArkModuleOptions extends ArkManagerOptions {

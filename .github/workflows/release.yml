@@ -12,13 +12,13 @@ jobs:
 
   codecov:
     needs: [check]
-    uses: vodyani/workflows/.github/workflows/publish-codecov.yml@master
+    uses: vodyani/workflows/.github/workflows/codecov.yml@master
     secrets:
       CODE_COV_CI_TOKEN: ${{ secrets.CODECOV_CI_TOKEN_BY_ARK }}
 
   semantic_release:
     needs: [codecov]
-    uses: vodyani/workflows/.github/workflows/semantic-release.yml@master
+    uses: vodyani/workflows/.github/workflows/semantic-release-npm.yml@master
     secrets:
       NPM_CI_TOKEN: ${{ secrets.NPM_CI_TOKEN }}
       GITHUB_CI_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,7 +1,7 @@
 {
   "name": "@vodyani/ark",
   "license": "MIT",
-  "version": "8.4.0-beta.1",
+  "version": "8.4.2",
   "author": "ChoGathK",
   "description": "🛸 ark is the configuration management solution of vodyani. By accessing ark, you can have maximum control over your local configuration, and if you want, ark can support unlimited configuration remote client.",
   "homepage": "https://github.com/vodyani/ark#readme",
@@ -36,17 +36,13 @@
     "lint": "eslint ./src ./test && tsc",
     "lint:fix": "eslint --fix --ext .ts src/ test/",
     "lint:html-report": "eslint ./src ./test -f html -o eslint-report.html",
-    "lint:json-report": "eslint ./src ./test -f json -o eslint-report.json",
-    "release": "npx semantic-release"
+    "lint:json-report": "eslint ./src ./test -f json -o eslint-report.json"
   },
   "publishConfig": {
     "access": "public"
   },
   "eslintConfig": {
     "extends": "@vodyani"
-  },
-  "release": {
-    "extends": "@vodyani/semantic-release"
   },
   "commitlint": {
     "extends": "@commitlint/config-conventional"
@@ -66,28 +62,27 @@
     ]
   },
   "dependencies": {
-    "@nestjs/common": "8.4.4",
-    "@vodyani/class-decorator": "8.1.1",
-    "@vodyani/core": "8.5.0",
-    "@vodyani/utils": "8.4.2",
+    "@vodyani/class-decorator": "^8.2.1",
+    "@vodyani/core": "^8.6.6",
+    "@vodyani/utils": "^8.5.1",
     "chokidar": "3.5.3",
     "lodash": "4.17.21",
     "object-hash": "3.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "16.2.3",
-    "@commitlint/config-conventional": "16.2.1",
-    "@nestjs/testing": "8.4.4",
-    "@types/express": "4.17.13",
-    "@types/jest": "27.4.1",
+    "@commitlint/cli": "16.3.0",
+    "@commitlint/config-conventional": "16.2.4",
+    "@nestjs/testing": "8.4.7",
+    "@types/jest": "27.5.2",
     "@types/lodash": "^4.14.182",
-    "@types/node": "16.11.26",
+    "@types/node": "16.11.56",
     "@types/object-hash": "2.2.1",
-    "@vodyani/eslint-config": "1.0.10",
-    "@vodyani/semantic-release": "1.1.1",
+    "@types/supertest": "2.0.12",
+    "@vodyani/eslint-config": "^1.1.0",
     "husky": "7.0.4",
     "jest": "27.5.1",
-    "ts-jest": "27.1.4",
-    "typescript": "4.6.3"
+    "supertest": "6.2.4",
+    "ts-jest": "27.1.5",
+    "typescript": "4.8.2"
   }
 }

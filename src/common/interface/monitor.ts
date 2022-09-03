@@ -1,8 +1,6 @@
-import { Method } from '../type';
-
 export interface WatchInfo {
-  key: any;
+  key: string;
   value: any;
-  callback: Method;
   hashToken: string;
+  callback: (config: any) => any;
 }
