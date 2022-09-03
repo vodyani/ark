@@ -15,17 +15,18 @@ export interface LocalConfigOptions {
 }
 
 export interface RemoteConfigOptions {
-  module: Type | DynamicModule | Promise<DynamicModule> | ForwardReference;
+  import: Type | DynamicModule | Promise<DynamicModule> | ForwardReference;
   provider: Provider;
   initArgs?: any[];
   enableSubscribe?: boolean;
+  subscribeKeys?: string[];
   enableCycleSync?: boolean;
   cycleSyncInterval?: number;
 }
 
 export interface ArkManagerOptions {
-  remote?: RemoteConfigOptions[];
   local: LocalConfigOptions;
+  remote?: RemoteConfigOptions[];
 }
 
 export interface ArkModuleOptions extends ArkManagerOptions {

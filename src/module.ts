@@ -26,7 +26,7 @@ export class ArkModule {
     ];
 
     if (isValidArray(options.remote)) {
-      options.remote.forEach(item => imports.push(item.module));
+      options.remote.forEach(item => imports.push(item.import));
     }
 
     return {

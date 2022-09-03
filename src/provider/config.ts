@@ -1,5 +1,5 @@
-import { cloneDeep } from 'lodash';
 import { Injectable } from '@vodyani/core';
+import { cloneDeep, isObject } from 'lodash';
 import { ArgumentValidator, CustomValidated, Required, This } from '@vodyani/class-decorator';
 import { toDeepMerge, toDeepMatch, toDeepRestore, isValidObject, isKeyof, Dictionary } from '@vodyani/utils';
 
@@ -11,7 +11,7 @@ export class ConfigProvider<T = any> {
   private store: Dictionary<T> = Object();
 
   /**
-   * Get the configuration for the given key.
+   * Deep query the configuration for the given key.
    *
    * @publicApi
    */
@@ -21,7 +21,7 @@ export class ConfigProvider<T = any> {
     @Required() key: string,
   ) {
     const result = toDeepMatch(this.store, key);
-    return isValidObject(result) ? cloneDeep(result) as any : result;
+    return isObject(result) ? cloneDeep(result) as any : result;
   }
   /**
    * Get the configuration for the given key.
@@ -37,8 +37,7 @@ export class ConfigProvider<T = any> {
   ) {
     if (isKeyof(this.store, key as string | number)) {
       const result = this.store[key];
-
-      return isValidObject(result) ? cloneDeep(result) : result;
+      return isObject(result) ? cloneDeep(result) : result;
     }
   }
   /**

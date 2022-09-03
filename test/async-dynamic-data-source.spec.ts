@@ -2,11 +2,11 @@
 import { toDelay } from '@vodyani/utils';
 import { This } from '@vodyani/class-decorator';
 import { describe, it, expect } from '@jest/globals';
+import { AsyncClient, AsyncClientAdapter } from '@vodyani/core';
 
 import { ConfigProvider } from '../src/provider/config';
 import { ConfigMonitor } from '../src/provider/monitor';
 import { AsyncDynamicDataSourceProvider } from '../src/provider/dynamic-data-source';
-import { AsyncClient, AsyncClientAdapter } from '../src/common';
 
 interface Demo {
   getArgs: () => any[],
@@ -56,7 +56,7 @@ describe('AsyncDynamicDataSourceProvider', () => {
     try {
       await provider.deploy(
         null as any,
-        { configKey: 'AsyncDynamicDataSourceProvider', args: [1, 2, 3] },
+        'AsyncDynamicDataSourceProvider', 1, 2, 3,
       );
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
@@ -81,9 +81,9 @@ describe('AsyncDynamicDataSourceProvider', () => {
     const key_02 = 'AsyncDynamicDataSource_temp';
 
     await Promise.all([
-      provider.deploy(manager.create, { configKey: key_01, args: [1, 2, 3] }),
-      provider.deploy(manager.create, { configKey: key_01, args: [4, 5, 6] }),
-      provider.deploy(manager.create, { configKey: key_02, args: [1, 1, 1] }),
+      provider.deploy(manager.create, key_01, 1, 2, 3),
+      provider.deploy(manager.create, key_01, 4, 5, 6),
+      provider.deploy(manager.create, key_02, 1, 1, 1),
     ]);
 
     expect(provider.getClient('???')).toBe(null);

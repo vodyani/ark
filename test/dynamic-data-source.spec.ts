@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { This } from '@vodyani/class-decorator';
 import { describe, it, expect } from '@jest/globals';
+import { Client, ClientAdapter } from '@vodyani/core';
 
-import { Client, ClientAdapter } from '../src/common';
 import { ConfigProvider } from '../src/provider/config';
 import { ConfigMonitor } from '../src/provider/monitor';
 import { DynamicDataSourceProvider } from '../src/provider/dynamic-data-source';
@@ -55,7 +55,8 @@ describe('DynamicDataSourceProvider', () => {
     try {
       provider.deploy(
         null as any,
-        { configKey: 'DynamicDataSourceProvider', args: [1, 2, 3] },
+        'DynamicDataSourceProvider',
+        1, 2, 3,
       );
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
@@ -79,9 +80,9 @@ describe('DynamicDataSourceProvider', () => {
     const key_02 = 'DynamicDataSourceProvider_temp';
 
     await Promise.all([
-      provider.deploy(manager.create, { configKey: key_01, args: [1, 2, 3] }),
-      provider.deploy(manager.create, { configKey: key_01, args: [4, 5, 6] }),
-      provider.deploy(manager.create, { configKey: key_02, args: [1, 1, 1] }),
+      provider.deploy(manager.create, key_01, 1, 2, 3),
+      provider.deploy(manager.create, key_01, 4, 5, 6),
+      provider.deploy(manager.create, key_02, 1, 1, 1),
     ]);
 
     expect(provider.getInstance(key_01).getCount()).toBe(1);
