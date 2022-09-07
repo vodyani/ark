@@ -20,12 +20,14 @@ export class DynamicDataSourceProvider<T = any, O = any> {
   ) {}
 
   @This
-  public getInstance(key: string): T {
+  @ArgumentValidator()
+  public getInstance(@Required() key: string): T {
     return this.getClient(key)?.getInstance() || null;
   }
 
   @This
-  public getClient(key: string): Client<T> {
+  @ArgumentValidator()
+  public getClient(@Required() key: string): Client<T> {
     return this.store.has(key) ? this.store.get(key).getClient() : null;
   }
 
