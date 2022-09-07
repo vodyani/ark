@@ -1,3 +1,10 @@
+# [8.5.0-beta.1](https://github.com/vodyani/ark/compare/v8.4.2...v8.5.0-beta.1) (2022-09-07)
+
+
+### Features
+
+* refactor the running structure and processing logic ([c738ff6](https://github.com/vodyani/ark/commit/c738ff66a3546aa9e2d317008479e9deebf9a4bd))
+
 ## [8.4.2](https://github.com/vodyani/ark/compare/v8.4.1...v8.4.2) (2022-08-31)
 
 
