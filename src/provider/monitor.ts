@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import { uniqueId } from 'lodash';
 import { Injectable } from '@vodyani/core';
 import { This } from '@vodyani/class-decorator';
-import { isValid, PromiseMethod, toCycle } from '@vodyani/utils';
+import { isValid, circular } from '@vodyani/utils';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
 
 import { toHash, WatchInfo } from '../common';
@@ -45,16 +45,16 @@ export class ConfigMonitor {
 
   @This
   public autoCycleSync(
-    callback: PromiseMethod<any>,
+    callback: (...args: any[]) => Promise<any>,
     interval = 1000,
   ) {
     const token = uniqueId('ConfigMonitor.autoCycleSync');
 
-    const worker = toCycle(
+    const worker = circular(
       async () => {
         this.autoMerge(await callback(), token);
       },
-      { interval },
+      interval,
     );
 
     this.cycleWorkers.set(token, worker);

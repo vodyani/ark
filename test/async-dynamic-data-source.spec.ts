@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { toDelay } from '@vodyani/utils';
+import { sleep } from '@vodyani/utils';
 import { This } from '@vodyani/class-decorator';
 import { describe, it, expect } from '@jest/globals';
 import { AsyncClient, AsyncClientAdapter } from '@vodyani/core';
@@ -34,13 +33,11 @@ class ClientManager implements AsyncClientAdapter<Demo> {
   private client: DemoClient;
 
   @This
-  // @ts-ignore
   public getClient() {
     return this.client;
   }
 
   @This
-  // @ts-ignore
   public async create(count: number, ...args: any[]) {
     this.client = new DemoClient(count, args);
     return this.client;
@@ -96,7 +93,7 @@ describe('AsyncDynamicDataSourceProvider', () => {
 
     monitor.autoMerge({ AsyncDynamicDataSource: 2 }, 'async_merge');
 
-    await toDelay(200);
+    await sleep(200);
 
     expect(provider.getInstance(key_01).getCount()).toBe(2);
 

@@ -2,7 +2,7 @@
 import { resolve } from 'path';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 
-import { toDelay } from '@vodyani/utils';
+import { sleep } from '@vodyani/utils';
 import { describe, it, expect } from '@jest/globals';
 
 import { ConfigProvider } from '../src/provider/config';
@@ -88,15 +88,15 @@ describe('ConfigMonitor', () => {
     // @ts-ignore
     // const errorConfigWatcher = monitor.configFileWatchers.match(tempErrorConfig);
 
-    await toDelay(300);
+    await sleep(300);
 
     writeFileSync(tempConfig, JSON.stringify({ env: 'PRO' }));
 
-    await toDelay(300);
+    await sleep(300);
 
     writeFileSync(tempErrorConfig, '10}');
 
-    await toDelay(300);
+    await sleep(300);
 
     expect(configProvider.match('env')).toBe('PRO');
 
@@ -113,7 +113,7 @@ describe('ConfigMonitor', () => {
 
     monitor.autoCycleSync(cb, 10);
 
-    await toDelay(250);
+    await sleep(250);
 
     monitor.autoCycleSync(cb);
 
