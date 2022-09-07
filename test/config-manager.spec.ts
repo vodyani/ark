@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { resolve } from 'path';
 
-import { toDelay } from '@vodyani/utils';
+import { sleep } from '@vodyani/utils';
 import { This } from '@vodyani/class-decorator';
 import { describe, it, expect } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -12,23 +12,19 @@ import { ConfigProvider } from '../src/provider/config';
 import { ArkManager, ConfigMonitor } from '../src/provider';
 
 @Injectable()
-// @ts-ignore
 class RemoteClient1 implements RemoteConfigClient {
   @This
-  // @ts-ignore
   async init() {
-    return null;
+    return null as any;
   }
 
   @This
-  // @ts-ignore
   async sync() {
     return { name1: 'RemoteClient1' };
   }
 
   @This
-  // @ts-ignore
-  subscribe(cb) {
+  subscribe(__: string, cb: (value: any) => any) {
     return cb({ name1: 'RemoteClient1' });
   }
 }
@@ -37,28 +33,23 @@ class RemoteClient1 implements RemoteConfigClient {
   exports: [RemoteClient1],
   providers: [RemoteClient1],
 })
-// @ts-ignore
 class RemoteModule1 {}
 
 @Injectable()
-// @ts-ignore
 class RemoteClient2 implements RemoteConfigClient {
   @This
-  // @ts-ignore
   async init() {
-    return null;
+    return null as any;
   }
 
   @This
-  // @ts-ignore
   async sync() {
     return { name2: 'RemoteClient2' };
   }
 
   @This
-  // @ts-ignore
-  subscribe(cb) {
-    return cb({ name2: 'RemoteClient2' });
+  subscribe(__: string, cb: (value: any) => any) {
+    return cb('RemoteClient2');
   }
 }
 
@@ -66,7 +57,6 @@ class RemoteClient2 implements RemoteConfigClient {
   exports: [RemoteClient2],
   providers: [RemoteClient2],
 })
-// @ts-ignore
 class RemoteModule2 {}
 
 let config: ConfigProvider = Object();
@@ -98,6 +88,7 @@ describe('ArkModule', () => {
             provider: RemoteClient2,
             initArgs: [],
             enableSubscribe: true,
+            subscribeKeys: ['name2'],
           },
         ],
       })],
@@ -105,7 +96,7 @@ describe('ArkModule', () => {
 
     config = moduleRef.get<ConfigProvider>(ArkManager.getToken());
 
-    await toDelay(1000);
+    await sleep(1000);
 
     expect(config.get('name1')).toBe('RemoteClient1');
     expect(config.get('name2')).toBe('RemoteClient2');
