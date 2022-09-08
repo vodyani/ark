@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@vodyani/class-decorator": "^8.2.2",
-    "@vodyani/core": "^8.6.8",
+    "@vodyani/core": "^8.6.9",
     "@vodyani/utils": "^8.5.2",
     "chokidar": "3.5.3",
     "lodash": "4.17.21",

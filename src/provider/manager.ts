@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 
-import { isValidArray, isValidDict, toConvert } from '@vodyani/utils';
+import { isValidArray, isValidDict } from '@vodyani/utils';
 import { ArgumentValidator, CustomValidated, This } from '@vodyani/class-decorator';
 import { AsyncInjectable, AsyncProvider, AsyncProviderFactory, RemoteConfigClient } from '@vodyani/core';
 
@@ -104,14 +104,12 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
 
     await Promise.all(
       options.map(
-        async ({ initArgs }, index) => {
+        async ({ args = [] }, index) => {
           const client = clients[index];
-          const currentArgs = toConvert(initArgs, { default: [] });
 
           if (client) {
-            await client.init(...currentArgs);
-
-            config.merge(await client.sync());
+            const info = await client.init(...args);
+            config.merge(info);
           }
         },
       ),
@@ -125,14 +123,16 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ enableCycleSync, enableSubscribe, subscribeKeys, cycleSyncInterval }, index) => {
+      async ({ enableCycleSync, enableSubscribe, subscribeInfo, cycleSyncInterval }, index) => {
         const client = clients[index];
 
         if (client) {
-          if (enableSubscribe && isValidArray(subscribeKeys)) {
-            for (const key of subscribeKeys) {
-              await monitor.autoSubscribe(key, client.subscribe);
-            }
+          if (enableSubscribe && isValidArray(subscribeInfo)) {
+            await Promise.all(
+              subscribeInfo.map(
+                ({ key, args = [] }) => monitor.autoSubscribe(client.subscribe, key, ...args),
+              ),
+            );
           }
 
           if (enableCycleSync) {

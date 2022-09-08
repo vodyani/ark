@@ -1,10 +1,10 @@
 import { readFileSync } from 'fs';
 
 import { uniqueId } from 'lodash';
-import { Injectable } from '@vodyani/core';
 import { This } from '@vodyani/class-decorator';
 import { isValid, circular } from '@vodyani/utils';
 import { FSWatcher, watch, WatchOptions } from 'chokidar';
+import { Injectable, RemoteConfigClient } from '@vodyani/core';
 
 import { toHash, WatchInfo } from '../common';
 
@@ -23,10 +23,11 @@ export class ConfigMonitor {
 
   @This
   public async autoSubscribe(
+    callback: RemoteConfigClient['subscribe'],
     key: string,
-    callback: (key: string, callback: (value: any) => any) => Promise<void>,
+    ...args: any[]
   ) {
-    await callback(key, (value: any) => this.config.set(key, value));
+    await callback(key, (value: any) => this.config.set(key, value), ...args);
   }
 
   @This
@@ -78,7 +79,7 @@ export class ConfigMonitor {
   }
 
   @This
-  public watchConfig(callback: (config: any) => any, key: string) {
+  public watchConfig(callback: (config: Partial<any>) => any, key: string) {
     const value = this.config.match(key);
 
     this.watchers.set(

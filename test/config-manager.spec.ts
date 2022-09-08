@@ -15,7 +15,7 @@ import { ArkManager, ConfigMonitor } from '../src/provider';
 class RemoteClient1 implements RemoteConfigClient {
   @This
   async init() {
-    return null as any;
+    return this.sync();
   }
 
   @This
@@ -39,7 +39,7 @@ class RemoteModule1 {}
 class RemoteClient2 implements RemoteConfigClient {
   @This
   async init() {
-    return null as any;
+    return this.sync();
   }
 
   @This
@@ -79,16 +79,16 @@ describe('ArkModule', () => {
           {
             import: RemoteModule1,
             provider: RemoteClient1,
-            initArgs: [],
+            args: [],
             enableCycleSync: true,
             cycleSyncInterval: 100,
           },
           {
             import: RemoteModule2,
             provider: RemoteClient2,
-            initArgs: [],
+            args: [],
             enableSubscribe: true,
-            subscribeKeys: ['name2'],
+            subscribeInfo: [{ key: 'name2' }],
           },
         ],
       })],
