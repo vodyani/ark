@@ -1,3 +1,10 @@
+## [8.5.1](https://github.com/vodyani/ark/compare/v8.5.0...v8.5.1) (2022-09-08)
+
+
+### Bug Fixes
+
+* make more reasonable adjustments to the configuration of the remote configuration center ([18c89f9](https://github.com/vodyani/ark/commit/18c89f9470cf28d2e2e1280809b31b4b61f64c11))
+
 # [8.5.0](https://github.com/vodyani/ark/compare/v8.4.2...v8.5.0) (2022-09-07)
 
 
