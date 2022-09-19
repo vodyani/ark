@@ -1,3 +1,10 @@
+## [8.5.2](https://github.com/vodyani/ark/compare/v8.5.1...v8.5.2) (2022-09-19)
+
+
+### Bug Fixes
+
+* remote config client subscribe argument ([f8761d1](https://github.com/vodyani/ark/commit/f8761d19e01b4fd4bd2d46c404226c4b5960eecf))
+
 ## [8.5.1](https://github.com/vodyani/ark/compare/v8.5.0...v8.5.1) (2022-09-08)
 
 
