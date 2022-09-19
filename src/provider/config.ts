@@ -1,7 +1,7 @@
+import { cloneDeep } from 'lodash';
 import { Injectable } from '@vodyani/core';
-import { cloneDeep, isObject } from 'lodash';
 import { ArgumentValidator, CustomValidated, Required, This } from '@vodyani/class-decorator';
-import { toDeepMerge, toDeepMatch, toDeepRestore, isValidObject, isKeyof } from '@vodyani/utils';
+import { toDeepMerge, toDeepMatch, toDeepRestore, isValidObject, isKeyof, isValidDict } from '@vodyani/utils';
 
 @Injectable()
 export class ConfigProvider<T = any> {
@@ -17,9 +17,9 @@ export class ConfigProvider<T = any> {
    */
   @This
   @ArgumentValidator()
-  public match(@Required() key: string) {
+  public match<V = any>(@Required() key: string): Partial<V> {
     const result = toDeepMatch(this.store, key);
-    return isObject(result) ? cloneDeep(result) as any : result;
+    return isValidDict(result) ? cloneDeep(result) : result;
   }
   /**
    * Get the configuration for the given key.
@@ -33,7 +33,7 @@ export class ConfigProvider<T = any> {
   public get<K extends keyof Partial<T>>(@Required() key: K) {
     if (isKeyof(this.store, key as string)) {
       const result = this.store[key];
-      return isObject(result) ? cloneDeep(result) : result;
+      return isValidDict(result) ? cloneDeep(result) : result;
     }
   }
   /**
@@ -41,9 +41,9 @@ export class ConfigProvider<T = any> {
    */
   @This
   @ArgumentValidator()
-  public set(
+  public set<V = any>(
     @Required() key: string,
-    @Required() value: any,
+    @Required() value: Partial<V>,
   ) {
     const result = toDeepRestore(value, key);
     this.merge(result);
@@ -53,10 +53,9 @@ export class ConfigProvider<T = any> {
    */
   @This
   @ArgumentValidator()
-  public merge<T = any>(
-    @CustomValidated(isValidObject, 'value must be object !') value: Partial<T>,
+  public merge<V = any>(
+    @CustomValidated(isValidObject, 'value must be object !') value: Partial<V>,
   ) {
     this.store = toDeepMerge(this.store, cloneDeep(value));
   }
 }
-

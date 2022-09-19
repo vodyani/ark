@@ -48,13 +48,13 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
     const { local, remote } = this.options;
 
     if (!local) {
-      throw new Error('ArkManager: local is a required parameter!');
+      throw new Error('local is a required parameter!');
     }
 
     const { env, params, path, enableWatch, watchOptions } = local;
 
     if (!path) {
-      throw new Error('ArkManager: local.path is a required parameter!');
+      throw new Error('local.path is a required parameter!');
     }
 
     configHandler.init({ env: env.current, ...params });
@@ -65,8 +65,8 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
     configHandler.deploy(currentPath);
 
     if (enableWatch) {
-      configMonitor.watchFile(defaultPath, watchOptions);
-      configMonitor.watchFile(currentPath, watchOptions);
+      configMonitor.setFileCheck(defaultPath, watchOptions);
+      configMonitor.setFileCheck(currentPath, watchOptions);
     }
 
     if (remote) {
@@ -85,11 +85,11 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
     const currentPath = `${path}/${env.current}.json`;
 
     if (!existsSync(defaultPath)) {
-      throw new Error(`ArkManager.deployLocalPath: The file at ${defaultPath} does not exist!`);
+      throw new Error(`The file at ${defaultPath} does not exist!`);
     }
 
     if (!existsSync(currentPath)) {
-      throw new Error(`ArkManager.deployLocalPath: The file at ${currentPath} does not exist!`);
+      throw new Error(`The file at ${currentPath} does not exist!`);
     }
 
     return { currentPath, defaultPath };
@@ -123,16 +123,12 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
     options: RemoteConfigOptions[],
   ) {
     await Promise.all(options.map(
-      async ({ enableCycleSync, enableSubscribe, subscribeInfo, cycleSyncInterval }, index) => {
+      async ({ enableCycleSync, enableSubscribe, cycleSyncInterval }, index) => {
         const client = clients[index];
 
         if (client) {
-          if (enableSubscribe && isValidArray(subscribeInfo)) {
-            await Promise.all(
-              subscribeInfo.map(
-                ({ key, args = [] }) => monitor.autoSubscribe(client.subscribe, key, ...args),
-              ),
-            );
+          if (enableSubscribe) {
+            monitor.autoSubscribe(client.subscribe);
           }
 
           if (enableCycleSync) {

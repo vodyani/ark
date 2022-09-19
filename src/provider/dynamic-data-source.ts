@@ -11,7 +11,7 @@ import { ConfigProvider } from './config';
 
 @Injectable()
 export class DynamicDataSourceProvider<T = any, O = any> {
-  private readonly store: Map<string, IClientProxy<T>> = new Map();
+  private readonly store: Map<string, IClientProxy<T, Partial<O>>> = new Map();
 
   constructor(
     @AsyncInject(ArkManager)
@@ -34,18 +34,18 @@ export class DynamicDataSourceProvider<T = any, O = any> {
   @This
   @ArgumentValidator()
   public deploy(
-    @Required() callback: CreateClient<T, O>,
+    @Required() create: CreateClient<T, Partial<O>>,
     @Required() configKey: string,
       ...args: any[]
   ) {
     const currentArgs = toConvert(args, { default: [] });
     const options = this.config.match(configKey);
-    const proxy = new ClientProxy<T, O>();
+    const proxy = new ClientProxy<T, Partial<O>>();
 
-    proxy.deploy(callback, options, ...currentArgs);
+    proxy.deploy(create, options, ...currentArgs);
 
     this.store.set(configKey, proxy);
-    this.monitor.watchConfig(proxy.redeploy, configKey);
+    this.monitor.setCheck(proxy.redeploy, configKey);
   }
 
   @This
@@ -59,7 +59,7 @@ export class DynamicDataSourceProvider<T = any, O = any> {
 
 @Injectable()
 export class AsyncDynamicDataSourceProvider<T = any, O = any> {
-  private readonly store = new Map<string, IAsyncClientProxy<T, O>>();
+  private readonly store = new Map<string, IAsyncClientProxy<T, Partial<O>>>();
 
   constructor(
     @AsyncInject(ArkManager)
@@ -80,22 +80,22 @@ export class AsyncDynamicDataSourceProvider<T = any, O = any> {
   @This
   @ArgumentValidator()
   public async deploy(
-    @Required() callback: CreateAsyncClient<T, O>,
+    @Required() create: CreateAsyncClient<T, Partial<O>>,
     @Required() configKey: string,
       ...args: any[]
   ) {
     const currentArgs = toConvert(args, { default: [] });
     const option = this.config.match(configKey);
-    const proxy = new AsyncClientProxy<T, O>();
+    const proxy = new AsyncClientProxy<T, Partial<O>>();
 
-    await proxy.deploy(callback, option, ...currentArgs);
+    await proxy.deploy(create, option, ...currentArgs);
 
     this.store.set(configKey, proxy);
-    this.monitor.watchConfig(proxy.redeploy, configKey);
+    this.monitor.setCheck(proxy.redeploy, configKey);
   }
 
   @This
-  public async clear(key: string) {
+  public async close(key: string) {
     if (this.store.has(key)) {
       await this.store.get(key).close();
       this.store.delete(key);

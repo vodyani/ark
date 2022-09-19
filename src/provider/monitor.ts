@@ -12,9 +12,9 @@ import { ConfigProvider } from './config';
 
 @Injectable()
 export class ConfigMonitor {
-  private readonly watchers = new Map<string, WatchInfo>();
   private readonly mergeWatchers = new Map<string, string>();
   private readonly fileWatchers = new Map<string, FSWatcher>();
+  private readonly configWatchers = new Map<string, WatchInfo>();
   private readonly cycleWorkers = new Map<string, { close: Function }>();
 
   constructor(
@@ -22,38 +22,17 @@ export class ConfigMonitor {
   ) {}
 
   @This
-  public async autoSubscribe(
-    callback: RemoteConfigClient['subscribe'],
-    key: string,
-    ...args: any[]
-  ) {
-    await callback(key, (value: any) => this.config.set(key, value), ...args);
+  public async autoSubscribe(subscribe: RemoteConfigClient['subscribe']) {
+    const token = uniqueId('ConfigMonitor.autoSubscribe');
+    await subscribe((config: any) => this.autoMerge(config, token));
   }
 
   @This
-  public autoMerge(value: any, token: string) {
-    if (isValid(value)) {
-      const current = toHash(value);
-      const record = this.mergeWatchers.get(token);
-
-      if (record !== current) {
-        this.config.merge(value);
-        this.mergeWatchers.set(token, current);
-        this.check();
-      }
-    }
-  }
-
-  @This
-  public autoCycleSync(
-    callback: (...args: any[]) => Promise<any>,
-    interval = 1000,
-  ) {
+  public autoCycleSync(sync: RemoteConfigClient['sync'], interval = 1000) {
     const token = uniqueId('ConfigMonitor.autoCycleSync');
-
     const worker = circular(
       async () => {
-        this.autoMerge(await callback(), token);
+        this.autoMerge(await sync(), token);
       },
       interval,
     );
@@ -62,8 +41,23 @@ export class ConfigMonitor {
   }
 
   @This
-  public check() {
-    this.watchers.forEach(async e => {
+  public autoMerge(value: any, token: string) {
+    if (isValid(value)) {
+      const current = toHash(value);
+      const record = this.mergeWatchers.get(token);
+
+      // check merge
+      if (record !== current) {
+        this.config.merge(value);
+        this.mergeWatchers.set(token, current);
+        this.mergeCheck();
+      }
+    }
+  }
+
+  @This
+  public mergeCheck() {
+    this.configWatchers.forEach(async e => {
       const { key, callback, hashToken } = e;
       const currentConfig = this.config.match(key);
       const currentHashToken = toHash(currentConfig);
@@ -74,15 +68,14 @@ export class ConfigMonitor {
         e.hashToken = currentHashToken;
       }
 
-      this.watchers.set(key, e);
+      this.configWatchers.set(key, e);
     });
   }
 
   @This
-  public watchConfig(callback: (config: Partial<any>) => any, key: string) {
+  public setCheck(callback: (config: Partial<any>) => any, key: string) {
     const value = this.config.match(key);
-
-    this.watchers.set(
+    this.configWatchers.set(
       key,
       {
         key,
@@ -94,23 +87,23 @@ export class ConfigMonitor {
   }
 
   @This
-  public watchFile(path: string, options?: WatchOptions) {
+  public setFileCheck(path: string, options?: WatchOptions) {
     const watcher = watch(path, options);
+    const token = uniqueId('ConfigMonitor.watchFile');
+
     this.fileWatchers.set(path, watcher);
 
-    watcher.on('change', (path) => {
+    watcher.on('change', path => {
       try {
-        this.autoMerge(
-          JSON.parse(readFileSync(path, 'utf-8')),
-          'ConfigMonitor.watchFile',
-        );
+        const config = JSON.parse(readFileSync(path, 'utf-8'));
+        this.autoMerge(config, token);
       } catch (e) {}
     });
   }
 
   @This
   public clearConfigWatcher() {
-    this.watchers.clear();
+    this.configWatchers.clear();
   }
 
   @This
@@ -120,10 +113,7 @@ export class ConfigMonitor {
 
   @This
   public async clearCycleSyncWorker() {
-    this.cycleWorkers.forEach((worker) => {
-      worker.close();
-    });
-
+    this.cycleWorkers.forEach((worker) => worker.close());
     this.cycleWorkers.clear();
   }
 

@@ -33,13 +33,16 @@ class ClientManager implements ClientAdapter<Demo> {
   private client: DemoClient;
 
   @This
-  // @ts-ignore
+  public getInstance() {
+    return this.client.getInstance();
+  }
+
+  @This
   public getClient() {
     return this.client;
   }
 
   @This
-  // @ts-ignore
   public create(count: number, ...args: any[]) {
     this.client = new DemoClient(count, args);
     return this.client;

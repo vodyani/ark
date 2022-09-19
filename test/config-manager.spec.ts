@@ -24,7 +24,7 @@ class RemoteClient1 implements RemoteConfigClient {
   }
 
   @This
-  subscribe(__: string, cb: (value: any) => any) {
+  subscribe(cb: (value: any) => any) {
     return cb({ name1: 'RemoteClient1' });
   }
 }
@@ -48,8 +48,8 @@ class RemoteClient2 implements RemoteConfigClient {
   }
 
   @This
-  subscribe(__: string, cb: (value: any) => any) {
-    return cb('RemoteClient2');
+  subscribe(cb: (value: any) => any) {
+    return cb({ name2: 'RemoteClient2' });
   }
 }
 
@@ -88,7 +88,6 @@ describe('ArkModule', () => {
             provider: RemoteClient2,
             args: [],
             enableSubscribe: true,
-            subscribeInfo: [{ key: 'name2' }],
           },
         ],
       })],

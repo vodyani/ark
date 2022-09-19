@@ -17,7 +17,7 @@ describe('ConfigMonitor', () => {
   it('watchConfig', async () => {
     handler.init({ test: { test: 1 }, array: [1] });
 
-    monitor.watchConfig(
+    monitor.setCheck(
       (config: number[]) => {
         expect(config).toEqual([1, 2]);
       },
@@ -31,7 +31,7 @@ describe('ConfigMonitor', () => {
 
     const testList: any[] = [];
 
-    monitor.watchConfig(
+    monitor.setCheck(
       (config: any) => {
         testList.push(config);
       },
@@ -64,7 +64,7 @@ describe('ConfigMonitor', () => {
     handler.init({ env: 'LOCAL' });
 
     try {
-      monitor.watchFile('./undefined.json');
+      monitor.setFileCheck('./undefined.json');
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
@@ -80,13 +80,8 @@ describe('ConfigMonitor', () => {
     writeFileSync(tempConfig, JSON.stringify({ env: 'DEFAULT' }));
     writeFileSync(tempErrorConfig, JSON.stringify({ env: 'DEFAULT' }));
 
-    monitor.watchFile(tempErrorConfig);
-    monitor.watchFile(tempConfig);
-
-    // @ts-ignore
-    // const watcher = monitor.configFileWatchers.match(tempConfig);
-    // @ts-ignore
-    // const errorConfigWatcher = monitor.configFileWatchers.match(tempErrorConfig);
+    monitor.setFileCheck(tempErrorConfig);
+    monitor.setFileCheck(tempConfig);
 
     await sleep(300);
 

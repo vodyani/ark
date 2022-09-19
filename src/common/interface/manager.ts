@@ -68,10 +68,6 @@ export interface RemoteConfigOptions {
    */
   enableCycleSync?: boolean;
   /**
-   * The key information in the remote config center for subscription methods.
-   */
-  subscribeInfo?: RemoteConfigSubscribeInfo[];
-  /**
    * Periodic synchronization interval. The default value is `1000` milliseconds.
    */
   cycleSyncInterval?: number;
