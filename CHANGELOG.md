@@ -1,3 +1,24 @@
+## [8.5.2](https://github.com/vodyani/ark/compare/v8.5.1...v8.5.2) (2022-09-19)
+
+
+### Bug Fixes
+
+* remote config client subscribe argument ([f8761d1](https://github.com/vodyani/ark/commit/f8761d19e01b4fd4bd2d46c404226c4b5960eecf))
+
+## [8.5.1](https://github.com/vodyani/ark/compare/v8.5.0...v8.5.1) (2022-09-08)
+
+
+### Bug Fixes
+
+* make more reasonable adjustments to the configuration of the remote configuration center ([18c89f9](https://github.com/vodyani/ark/commit/18c89f9470cf28d2e2e1280809b31b4b61f64c11))
+
+# [8.5.0](https://github.com/vodyani/ark/compare/v8.4.2...v8.5.0) (2022-09-07)
+
+
+### Features
+
+* refactor the running structure and processing logic ([c738ff6](https://github.com/vodyani/ark/commit/c738ff66a3546aa9e2d317008479e9deebf9a4bd))
+
 # [8.5.0-beta.1](https://github.com/vodyani/ark/compare/v8.4.2...v8.5.0-beta.1) (2022-09-07)
 
 

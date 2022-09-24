@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 
-import { Injectable } from '@vodyani/core';
+import { Injectable } from '@nestjs/common';
+import { ArgumentValidator, Required, This } from '@vodyani/class-decorator';
 import { isValidObject } from '@vodyani/utils';
-import { ArgumentValidator, CustomValidated, Required, This } from '@vodyani/class-decorator';
 
 import { ConfigProvider } from './config';
 
@@ -14,17 +14,13 @@ export class ConfigHandler {
 
   @This
   @ArgumentValidator()
-  public init(
-    @CustomValidated(isValidObject, 'params must be object !') params: Record<string, any>,
-  ): void {
+  public init<V = any>(params: Partial<V>): void {
     this.config.merge(params);
   }
 
   @This
   @ArgumentValidator()
-  public deploy(
-    @Required() path: string,
-  ) {
+  public deploy(@Required() path: string) {
     try {
       const config = JSON.parse(readFileSync(path, 'utf8'));
 

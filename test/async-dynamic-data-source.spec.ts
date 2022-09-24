@@ -33,6 +33,11 @@ class ClientManager implements AsyncClientAdapter<Demo> {
   private client: DemoClient;
 
   @This
+  public getInstance() {
+    return this.client.getInstance();
+  }
+
+  @This
   public getClient() {
     return this.client;
   }
@@ -99,7 +104,7 @@ describe('AsyncDynamicDataSourceProvider', () => {
 
     await provider.getClient(key_01).close();
 
-    provider.clear(key_01);
-    provider.clear(key_02);
+    provider.close(key_01);
+    provider.close(key_02);
   });
 });

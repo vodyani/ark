@@ -5,7 +5,8 @@ import { sleep } from '@vodyani/utils';
 import { This } from '@vodyani/class-decorator';
 import { describe, it, expect } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Injectable, Module, RemoteConfigClient } from '@vodyani/core';
+import { RemoteConfigClient } from '@vodyani/core';
+import { Injectable, Module } from '@nestjs/common';
 
 import { ArkModule } from '../src/module';
 import { ConfigProvider } from '../src/provider/config';
@@ -15,7 +16,7 @@ import { ArkManager, ConfigMonitor } from '../src/provider';
 class RemoteClient1 implements RemoteConfigClient {
   @This
   async init() {
-    return null as any;
+    return this.sync();
   }
 
   @This
@@ -24,7 +25,7 @@ class RemoteClient1 implements RemoteConfigClient {
   }
 
   @This
-  subscribe(__: string, cb: (value: any) => any) {
+  subscribe(cb: (value: any) => any) {
     return cb({ name1: 'RemoteClient1' });
   }
 }
@@ -39,7 +40,7 @@ class RemoteModule1 {}
 class RemoteClient2 implements RemoteConfigClient {
   @This
   async init() {
-    return null as any;
+    return this.sync();
   }
 
   @This
@@ -48,8 +49,8 @@ class RemoteClient2 implements RemoteConfigClient {
   }
 
   @This
-  subscribe(__: string, cb: (value: any) => any) {
-    return cb('RemoteClient2');
+  subscribe(cb: (value: any) => any) {
+    return cb({ name2: 'RemoteClient2' });
   }
 }
 
@@ -79,16 +80,15 @@ describe('ArkModule', () => {
           {
             import: RemoteModule1,
             provider: RemoteClient1,
-            initArgs: [],
+            args: [],
             enableCycleSync: true,
             cycleSyncInterval: 100,
           },
           {
             import: RemoteModule2,
             provider: RemoteClient2,
-            initArgs: [],
+            args: [],
             enableSubscribe: true,
-            subscribeKeys: ['name2'],
           },
         ],
       })],
