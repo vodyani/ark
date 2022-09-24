@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 
-import { Injectable } from '@vodyani/core';
-import { isValidObject } from '@vodyani/utils';
+import { Injectable } from '@nestjs/common';
 import { ArgumentValidator, Required, This } from '@vodyani/class-decorator';
+import { isValidObject } from '@vodyani/utils';
 
 import { ConfigProvider } from './config';
 

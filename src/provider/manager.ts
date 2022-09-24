@@ -1,14 +1,14 @@
 import { existsSync } from 'fs';
 
-import { isValidArray, isValidDict } from '@vodyani/utils';
 import { ArgumentValidator, CustomValidated, This } from '@vodyani/class-decorator';
 import { AsyncInjectable, AsyncProvider, AsyncProviderFactory, RemoteConfigClient } from '@vodyani/core';
+import { isValidArray, isValidDict } from '@vodyani/utils';
 
 import { ArkManagerOptions, RemoteConfigOptions } from '../common';
 
+import { ConfigProvider } from './config';
 import { ConfigHandler } from './handler';
 import { ConfigMonitor } from './monitor';
-import { ConfigProvider } from './config';
 
 @AsyncInjectable
 export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
