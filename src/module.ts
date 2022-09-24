@@ -1,4 +1,4 @@
-import { DynamicModule } from '@vodyani/core';
+import { DynamicModule } from '@nestjs/common';
 import { isValidArray, toConvert } from '@vodyani/utils';
 
 import {

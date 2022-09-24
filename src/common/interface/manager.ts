@@ -1,5 +1,5 @@
 import { WatchOptions } from 'chokidar';
-import { Type, DynamicModule, ForwardReference, Provider } from '@vodyani/core';
+import { Type, DynamicModule, ForwardReference, Provider } from '@nestjs/common';
 
 export interface EnvConfigOptions {
   /**

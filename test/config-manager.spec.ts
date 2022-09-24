@@ -5,7 +5,8 @@ import { sleep } from '@vodyani/utils';
 import { This } from '@vodyani/class-decorator';
 import { describe, it, expect } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Injectable, Module, RemoteConfigClient } from '@vodyani/core';
+import { RemoteConfigClient } from '@vodyani/core';
+import { Injectable, Module } from '@nestjs/common';
 
 import { ArkModule } from '../src/module';
 import { ConfigProvider } from '../src/provider/config';

@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { Injectable } from '@vodyani/core';
+import { Injectable } from '@nestjs/common';
 import { ArgumentValidator, CustomValidated, Required, This } from '@vodyani/class-decorator';
 import { toDeepMerge, toDeepMatch, toDeepRestore, isValidObject, isKeyof, isValidDict } from '@vodyani/utils';
 
