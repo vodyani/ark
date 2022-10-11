@@ -1,105 +1,180 @@
 import { Injectable } from '@nestjs/common';
-import { ArgumentValidator, Required, This } from '@vodyani/class-decorator';
-import { AsyncClient, AsyncInject, Client } from '@vodyani/core';
-import { toConvert } from '@vodyani/utils';
+import { This } from '@vodyani/class-decorator';
+import { CircularHandler, isValid, circular } from '@vodyani/utils';
 
-import { CreateAsyncClient, CreateClient, IAsyncClientProxy, IClientProxy } from '../common';
-import { AsyncClientProxy, ClientProxy } from '../struct';
+import { IClient, IClientMediator, IConfigObserver, IConfigSubscriber, toHash } from '../common';
 
 import { ConfigProvider } from './config';
-import { ArkManager } from './manager';
-import { ConfigMonitor } from './monitor';
 
 @Injectable()
-export class DynamicDataSourceProvider<T = any, O = any> {
-  private readonly store: Map<string, IClientProxy<T, Partial<O>>> = new Map();
+export class AsyncDynamicDataSourceProvider<T = any, C = any> implements IClientMediator<T, C> {
+  private readonly clients = new Map<string, IClient<T, C>>();
+
+  private readonly keys = new Set<string>();
 
   constructor(
-    @AsyncInject(ArkManager)
-    private readonly config: ConfigProvider,
-    private readonly monitor: ConfigMonitor,
+    private readonly config: ConfigProvider<C>,
   ) {}
 
   @This
-  @ArgumentValidator()
-  public getInstance(@Required() key: string): T {
-    return this.getClient(key)?.getInstance() || null;
+  public async destroy(key: string) {
+    const client = this.getClient(key);
+
+    await client.close();
+
+    this.clients.delete(key);
+    this.keys.delete(key);
   }
 
   @This
-  @ArgumentValidator()
-  public getClient(@Required() key: string): Client<T> {
-    return this.store.has(key) ? this.store.get(key).getClient() : null;
+  public async deploy(key: string, client: IClient<T, C>) {
+    const config = this.config.get<C>(key);
+
+    await client.create(config);
+
+    this.clients.set(key, client);
+    this.keys.add(key);
   }
 
   @This
-  @ArgumentValidator()
-  public deploy(
-    @Required() create: CreateClient<T, Partial<O>>,
-    @Required() configKey: string,
-      ...args: any[]
-  ) {
-    const currentArgs = toConvert(args, { default: [] });
-    const options = this.config.match(configKey);
-    const proxy = new ClientProxy<T, Partial<O>>();
+  public async redeploy(key: string, config: C) {
+    const client = this.getClient(key);
 
-    proxy.deploy(create, options, ...currentArgs);
+    await client.redeploy(config);
 
-    this.store.set(configKey, proxy);
-    this.monitor.setCheck(proxy.redeploy, configKey);
+    this.clients.set(key, client);
+    this.keys.add(key);
   }
 
   @This
-  public clear(key: string) {
-    if (this.store.has(key)) {
-      this.store.get(key).close();
-      this.store.delete(key);
-    }
+  public getClient(key: string) {
+    return this.clients.get(key);
+  }
+
+  @This
+  public update(key: string, value: any) {
+    this.redeploy(key, value);
   }
 }
 
 @Injectable()
-export class AsyncDynamicDataSourceProvider<T = any, O = any> {
-  private readonly store = new Map<string, IAsyncClientProxy<T, Partial<O>>>();
+export class DynamicDataSourceProvider<T = any, C = any> implements IClientMediator<T, C> {
+  private readonly clients = new Map<string, IClient<T, C>>();
+
+  private readonly keys = new Set<string>();
 
   constructor(
-    @AsyncInject(ArkManager)
-    private readonly config: ConfigProvider,
-    private readonly monitor: ConfigMonitor,
+    private readonly config: ConfigProvider<C>,
   ) {}
 
   @This
-  public getInstance(key: string): T {
-    return this.getClient(key)?.getInstance() || null;
+  public destroy(key: string) {
+    const client = this.getClient(key);
+
+    client.close();
+
+    this.clients.delete(key);
+    this.keys.delete(key);
   }
 
   @This
-  public getClient(key: string): AsyncClient<T> {
-    return this.store.has(key) ? this.store.get(key).getClient() : null;
+  public deploy(key: string, client: IClient<T, C>) {
+    const config = this.config.get<C>(key);
+
+    client.create(config);
+
+    this.clients.set(key, client);
+    this.keys.add(key);
   }
 
   @This
-  @ArgumentValidator()
-  public async deploy(
-    @Required() create: CreateAsyncClient<T, Partial<O>>,
-    @Required() configKey: string,
-      ...args: any[]
-  ) {
-    const currentArgs = toConvert(args, { default: [] });
-    const option = this.config.match(configKey);
-    const proxy = new AsyncClientProxy<T, Partial<O>>();
+  public redeploy(key: string, config: C) {
+    const client = this.getClient(key);
 
-    await proxy.deploy(create, option, ...currentArgs);
+    client.redeploy(config);
 
-    this.store.set(configKey, proxy);
-    this.monitor.setCheck(proxy.redeploy, configKey);
+    this.clients.set(key, client);
+    this.keys.add(key);
   }
 
   @This
-  public async close(key: string) {
-    if (this.store.has(key)) {
-      await this.store.get(key).close();
-      this.store.delete(key);
+  public getClient(key: string) {
+    return this.clients.get(key);
+  }
+
+  @This
+  public update(key: string, value: any) {
+    this.redeploy(key, value);
+  }
+}
+
+@Injectable()
+export class DynamicDataSourceConfigObserver<T = any> implements IConfigObserver {
+  private readonly subscribers = new Map<string, IConfigSubscriber>();
+
+  private readonly hash = new Map<string, string>();
+
+  private readonly keys = new Set<string>();
+
+  private poller: CircularHandler;
+
+  constructor(
+    private readonly config: ConfigProvider<T>,
+  ) {}
+
+  @This
+  public contrast(key: string, value: any) {
+    const afterHash = toHash(value);
+    const beforeHash = this.hash.get(key);
+
+    if (afterHash !== beforeHash) {
+      this.notify(key, value);
     }
+  }
+
+  @This
+  public subscribe(key: string, subscriber: IConfigSubscriber) {
+    const config = this.config.get(key);
+    const hash = toHash(config);
+
+    this.keys.add(key);
+    this.hash.set(key, hash);
+    this.subscribers.set(key, subscriber);
+  }
+
+  @This
+  public notify(key: string, value: any) {
+    const subscriber = this.subscribers.get(key);
+
+    subscriber.update(key, value);
+  }
+
+  @This
+  public polling() {
+    if (isValid(this.poller)) {
+      this.unPolling();
+    }
+
+    this.poller = circular(this.circularContrast, 1000);
+  }
+
+  @This
+  public unPolling() {
+    this.poller.close();
+    this.poller = null;
+  }
+
+  @This
+  public unSubscribe(key: string) {
+    this.subscribers.delete(key);
+    this.keys.delete(key);
+  }
+
+  @This
+  private circularContrast() {
+    this.keys.forEach((key) => {
+      const value = this.config.get(key);
+      this.contrast(key, value);
+    });
   }
 }

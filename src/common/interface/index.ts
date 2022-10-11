@@ -1,3 +1,3 @@
-export * from './manager';
-export * from './monitor';
-export * from './proxy';
+export * from './client';
+export * from './config';
+export * from './options';
