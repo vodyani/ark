@@ -1,3 +1,12 @@
+# [8.7.0-beta.1](https://github.com/vodyani/ark/compare/v8.6.0...v8.7.0-beta.1) (2022-10-12)
+
+
+### Features
+
+* improve the execution efficiency of initialization and operation ([616d9e6](https://github.com/vodyani/ark/commit/616d9e6bd9ba12ba809ff10d509c74a0dccbede2))
+* refactor the observer structure ([de7cd34](https://github.com/vodyani/ark/commit/de7cd344a1140cffa7415d85f2f8d8af55153ca9))
+* take previously irrational design apart & refactor it according to design pattern principles ([d9c14c1](https://github.com/vodyani/ark/commit/d9c14c1aba5ce10975dcef08cdcb980b27f6b81d))
+
 # [8.6.0](https://github.com/vodyani/ark/compare/v8.5.2...v8.6.0) (2022-09-24)
 
 
