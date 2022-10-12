@@ -1,40 +1,30 @@
 import { DynamicModule } from '@nestjs/common';
-import { isValidArray, toConvert } from '@vodyani/utils';
+import { toConvert } from '@vodyani/utils';
 
+import { ArkOptions } from './common';
 import {
-  ArkManager,
-  AsyncDynamicDataSourceProvider,
-  ConfigHandler,
-  ConfigMonitor,
-  ConfigProvider,
-  DynamicDataSourceProvider,
+  ArkManager, AsyncDynamicDataSourceProvider,
+  ConfigProvider, DynamicDataSourceConfigObserver, DynamicDataSourceProvider,
 } from './provider';
-import { ArkModuleOptions } from './common';
 
 export class ArkModule {
-  static forRoot(options: ArkModuleOptions): DynamicModule {
-    const imports: any[] = [];
+  static forRoot(options: ArkOptions): DynamicModule {
     const manager = new ArkManager().create(options);
 
-    const providers: any[] = [
-      manager,
-      ConfigMonitor,
-      ConfigHandler,
-      ConfigProvider,
-      DynamicDataSourceProvider,
-      AsyncDynamicDataSourceProvider,
-    ];
+    const providers: any[] = [ConfigProvider, manager];
+    const { enableDynamicDataSource, global } = options;
 
-    if (isValidArray(options.remote)) {
-      options.remote.forEach(item => imports.push(item.import));
+    if (enableDynamicDataSource) {
+      providers.push(AsyncDynamicDataSourceProvider);
+      providers.push(DynamicDataSourceProvider);
+      providers.push(DynamicDataSourceConfigObserver);
     }
 
     return {
-      imports,
       providers,
-      exports: providers,
       module: ArkModule,
-      global: toConvert(options.global, { default: true }),
+      exports: providers,
+      global: toConvert(global, { default: true }),
     };
   }
 }

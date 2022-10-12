@@ -1,10 +1,10 @@
 # Vodyani ark
 
-🛸  Vodyani ark 是一个完备的配置管理解决方案。
+🛸 ark（方舟）是一个功能完备的配置管理解决方案。
 
-通过在项目中引入 ark，开发者可以轻易的管理本地的配置数据，并且根据配置的变化，动态地根据配置重建本地客户端（如 MySQL/Redis 等）🤩
-
-此外，ark 还提供了远程配置中心的数据同步和数据订阅功能 🎉
+- ark 提供了灵活的配置加载方式，不仅默认提供 json/yaml 两种类型的本地配置文件加载器，而且支持注册远程配置中心（如 apolloConfig）
+- ark 提供了功能强大的动态数据源功能，支持各类客户端通过实现适配器的方式来进行接入，并可以实时（秒级）根据配置的更新进行重新部署
+- ark 适配所有的 nest.js 项目
 
 [![Npm](https://img.shields.io/npm/v/@vodyani/ark/latest.svg)](https://www.npmjs.com/package/@vodyani/ark)
 [![Npm](https://img.shields.io/npm/v/@vodyani/ark/beta.svg)](https://www.npmjs.com/package/@vodyani/ark)
