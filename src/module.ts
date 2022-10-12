@@ -12,7 +12,7 @@ export class ArkModule {
     const manager = new ArkManager().create(options);
 
     const providers: any[] = [ConfigProvider, manager];
-    const { enableDynamicDataSource, global, imports } = options;
+    const { enableDynamicDataSource, global } = options;
 
     if (enableDynamicDataSource) {
       providers.push(AsyncDynamicDataSourceProvider);
@@ -21,7 +21,6 @@ export class ArkModule {
     }
 
     return {
-      imports,
       providers,
       module: ArkModule,
       exports: providers,

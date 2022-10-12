@@ -1,4 +1,3 @@
-import { ModuleMetadata } from '@nestjs/common';
 import { IConfigClient, IConfigLoader } from '@vodyani/core';
 
 export interface ConfigClientOptions {
@@ -15,6 +14,5 @@ export interface ConfigHandlerOptions<T = any> {
 }
 
 export interface ArkOptions<T = any> extends ConfigHandlerOptions<T> {
-  imports?: ModuleMetadata['imports'];
   global?: boolean;
 }

@@ -170,9 +170,6 @@ export class DynamicDataSourceConfigObserver<T = any> implements IConfigObserver
   private circularContrast() {
     this.keys.forEach((key) => {
       const value = this.config.get(key);
-
-      console.log(value);
-
       this.contrast(key, value);
     });
   }
