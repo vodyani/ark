@@ -2,7 +2,7 @@ import { FactoryProvider } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
 import { AsyncInjectable, AsyncProvider, AsyncProviderFactory } from '@vodyani/core';
 
-import { ArkOptions } from '../common';
+import { ConfigHandlerOptions } from '../common';
 import { ConfigClientSubscriber } from '../struct';
 import { ConfigArgumentHandler, ConfigClientHandler, DynamicDataSourceConfigObserverHandler } from '../struct/config-handler';
 
@@ -11,10 +11,10 @@ import { DynamicDataSourceConfigObserver } from './dynamic-data-source';
 
 @AsyncInjectable
 export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
-  private options: ArkOptions;
+  private options: ConfigHandlerOptions;
 
   @This
-  public create(options: ArkOptions): FactoryProvider {
+  public create(options: ConfigHandlerOptions): FactoryProvider {
     const inject: any[] = [ConfigProvider];
     const { enableDynamicDataSource } = options;
 
@@ -41,12 +41,12 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
 
     if (this.options.clients) {
       const subscriber = new ConfigClientSubscriber(config);
-      const clientHandler = new ConfigClientHandler(subscriber);
+      const clientHandler = new ConfigClientHandler(config, subscriber);
 
       handlers.push(clientHandler);
     }
 
-    if (this.options.enableDynamicDataSourcePolling) {
+    if (this.options.enableDynamicDataSource) {
       const observerHandler = new DynamicDataSourceConfigObserverHandler(observer);
 
       handlers.push(observerHandler);

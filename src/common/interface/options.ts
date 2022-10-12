@@ -11,12 +11,11 @@ export interface ConfigClientOptions {
 
 export interface ConfigHandlerOptions<T = any> {
   args: T;
-  clients: ConfigClientOptions[];
-  enableDynamicDataSource: boolean;
-  enableDynamicDataSourcePolling: boolean;
+  clients?: ConfigClientOptions[];
+  enableDynamicDataSource?: boolean;
 }
 
 export interface ArkOptions<T = any> extends ConfigHandlerOptions<T> {
-  imports: ModuleMetadata['imports'];
-  global: boolean;
+  imports?: ModuleMetadata['imports'];
+  global?: boolean;
 }

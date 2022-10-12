@@ -1,6 +1,6 @@
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 
-import { toDeepMatch } from '@vodyani/utils';
+import { toDeepMerge } from '@vodyani/utils';
 
 import { IConfigLoader, Yaml } from '../common';
 
@@ -14,8 +14,7 @@ export class JSONConfigLoader implements IConfigLoader {
   public execute() {
     const defaultResult = this.readJSONFile(this.defaultEnv);
     const currentResult = this.readJSONFile(this.currentEnv);
-    const result = toDeepMatch(defaultResult, currentResult);
-    return result;
+    return toDeepMerge(defaultResult, currentResult);
   }
 
   private readJSONFile(env: string) {
@@ -35,12 +34,17 @@ export class YamlConfigLoader implements IConfigLoader {
   public execute() {
     const defaultResult = this.readYamlFile(this.defaultEnv);
     const currentResult = this.readYamlFile(this.currentEnv);
-    const result = toDeepMatch(defaultResult, currentResult);
-    return result;
+    return toDeepMerge(defaultResult, currentResult);
   }
 
   private readYamlFile(env: string) {
-    const str = readFileSync(`${this.path}/${env}.yml`, { encoding: 'utf8' });
+    let path = `${this.path}/${env}.yml`;
+
+    if (!existsSync(path)) {
+      path = `${this.path}/${env}.yaml`;
+    }
+
+    const str = readFileSync(path, { encoding: 'utf8' });
     const result = Yaml.load(str) as any;
     return result;
   }

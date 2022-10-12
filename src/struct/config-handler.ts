@@ -1,6 +1,6 @@
 import { ConfigHandlerOptions, IConfig, IConfigClientSubscriber, IConfigHandler, IConfigObserver } from '../common';
 
-abstract class ConfigHandler<T = any> implements IConfigHandler<T> {
+abstract class AbstractConfigHandler<T = any> implements IConfigHandler<T> {
   protected next: IConfigHandler;
 
   public setNext(handler: IConfigHandler) {
@@ -16,7 +16,7 @@ abstract class ConfigHandler<T = any> implements IConfigHandler<T> {
   }
 }
 
-export class ConfigArgumentHandler<T = any> extends ConfigHandler<T> {
+export class ConfigArgumentHandler<T = any> extends AbstractConfigHandler<T> {
   constructor(
     private readonly config: IConfig<T>,
   ) {
@@ -30,8 +30,9 @@ export class ConfigArgumentHandler<T = any> extends ConfigHandler<T> {
   }
 }
 
-export class ConfigClientHandler<T = any> extends ConfigHandler<T> {
+export class ConfigClientHandler<T = any> extends AbstractConfigHandler<T> {
   constructor(
+    private readonly config: IConfig<T>,
     private readonly subscriber: IConfigClientSubscriber,
   ) {
     super();
@@ -39,14 +40,16 @@ export class ConfigClientHandler<T = any> extends ConfigHandler<T> {
 
   public async execute(options: ConfigHandlerOptions<T>) {
     for (const { client, loader, enablePolling, enableSubscribe } of options.clients) {
-      await client.load(loader);
+      const config = await client.init(loader);
 
-      if (enablePolling) {
-        await client.polling();
-      }
+      this.config.merge(config);
 
       if (enableSubscribe) {
-        await client.subscribe(this.subscriber);
+        client.subscribe(this.subscriber);
+      }
+
+      if (enablePolling) {
+        client.polling();
       }
     }
 
@@ -54,7 +57,7 @@ export class ConfigClientHandler<T = any> extends ConfigHandler<T> {
   }
 }
 
-export class DynamicDataSourceConfigObserverHandler<T = any> extends ConfigHandler<T> {
+export class DynamicDataSourceConfigObserverHandler<T = any> extends AbstractConfigHandler<T> {
   constructor(
     private readonly observer: IConfigObserver,
   ) {

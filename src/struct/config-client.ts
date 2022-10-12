@@ -1,22 +1,28 @@
+import { isValidString } from '@vodyani/utils';
+
 import { IConfigClient, IConfigLoader, IConfigClientSubscriber, toHash } from '../common';
 
-export abstract class ConfigClient implements IConfigClient {
+export abstract class AbstractConfigClient implements IConfigClient {
   private subscriber: IConfigClientSubscriber;
 
   private hash: string;
 
   public contrast(value: any) {
-    const afterHash = toHash(value);
-    const beforeHash = this.hash;
+    if (isValidString(this.hash)) {
+      const afterHash = toHash(value);
+      const beforeHash = this.hash;
 
-    if (afterHash !== beforeHash) {
-      this.notify(value);
-      this.hash = afterHash;
+      if (afterHash !== beforeHash) {
+        this.notify(value);
+        this.hash = afterHash;
+      }
     }
   }
 
-  public load<T = any>(loader: IConfigLoader) {
-    return loader.execute<T>();
+  public init<T = any>(loader: IConfigLoader) {
+    const result = loader.execute<T>();
+    this.hash = toHash(result);
+    return result;
   }
 
   public subscribe(subscriber: IConfigClientSubscriber) {
@@ -40,4 +46,4 @@ export abstract class ConfigClient implements IConfigClient {
   }
 }
 
-export class LocalConfigClient extends ConfigClient {}
+export class LocalConfigClient extends AbstractConfigClient {}

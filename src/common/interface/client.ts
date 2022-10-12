@@ -1,6 +1,6 @@
 import { IConfigSubscriber } from './config';
 
-export interface IClient<T = any, C = any> {
+export interface IClientAdapter<T = any, C = any> {
   /**
    * Close the client.
    *
@@ -20,7 +20,7 @@ export interface IClient<T = any, C = any> {
    *
    * @publicApi
    */
-  create: (config: C) => T | Promise<T>;
+  create: (config: C) => void | Promise<void>;
   /**
    * Redeploy the client instance.
    *
@@ -28,7 +28,7 @@ export interface IClient<T = any, C = any> {
    *
    * @publicApi
    */
-  redeploy: (config: C) => T | Promise<T>;
+  redeploy: (config: C) => void | Promise<void>;
 }
 
 export interface IClientMediator<T = any, C = any> extends IConfigSubscriber {
@@ -44,11 +44,11 @@ export interface IClientMediator<T = any, C = any> extends IConfigSubscriber {
    * Deploy the client inside to mediator.
    *
    * @param key string The key of client.
-   * @param client IClient<T, C> The client.
+   * @param client IClientAdapter<T, C> The client.
    *
    * @publicApi
    */
-  deploy: (key: string, client: IClient<T, C>) => void | Promise<void>;
+  deploy: (key: string, client: IClientAdapter<T, C>) => void | Promise<void>;
   /**
    * Redeploy the client inside to mediator.
    *
@@ -64,5 +64,5 @@ export interface IClientMediator<T = any, C = any> extends IConfigSubscriber {
    *
    * @publicApi
    */
-  getClient: (key: string) => IClient<T, C>;
+  getClient: (key: string) => IClientAdapter<T, C>;
 }

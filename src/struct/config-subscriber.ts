@@ -1,8 +1,8 @@
 import { IConfig, IConfigClientSubscriber } from '../common';
 
-export class ConfigClientSubscriber implements IConfigClientSubscriber {
+export class ConfigClientSubscriber<T = any> implements IConfigClientSubscriber {
   constructor(
-    private readonly config: IConfig,
+    private readonly config: IConfig<T>,
   ) {}
 
   public update(value: any) {

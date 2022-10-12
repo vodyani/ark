@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { isValidDict, toDeepMatch, toDeepMerge, toDeepRestore } from '@vodyani/utils';
+import { This } from '@vodyani/class-decorator';
+import { isValidDict, toDeepMatch, toDeepMerge, toDeepSave } from '@vodyani/utils';
+import { cloneDeep } from 'lodash';
 
 import { IConfig } from '../common';
 
@@ -9,25 +11,33 @@ export class ConfigProvider<T = any> implements IConfig<T> {
 
   private readonlyConfig: T;
 
+  @This
   public get<V = any>(key: string) {
     return toDeepMatch<V>(this.readonlyConfig, key);
   }
 
+  @This
   public search<K extends keyof T>(key: K) {
     return this.readonlyConfig[key];
   }
 
-  public set(key: string, value: any) {
-    this.merge(toDeepRestore<T>(value, key));
+  @This
+  public replace(key: string, value: any) {
+    toDeepSave(this.writeConfig, value, key);
+    this.updateReadonlyConfig();
   }
 
+  @This
   public merge(config: T) {
     if (isValidDict(config)) {
       this.writeConfig = toDeepMerge(this.writeConfig, config);
-
-      this.readonlyConfig = this.writeConfig;
-
-      Object.freeze(this.readonlyConfig);
+      this.updateReadonlyConfig();
     }
+  }
+
+  @This
+  private updateReadonlyConfig() {
+    this.readonlyConfig = cloneDeep(this.writeConfig);
+    Object.freeze(this.readonlyConfig);
   }
 }

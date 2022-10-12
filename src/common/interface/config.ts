@@ -27,14 +27,14 @@ export interface IConfig<T = any> {
    */
   search: <K extends keyof T>(key: K) => T[K]
   /**
-   * Set the configuration with property key.
+   * Replace the configuration with property key.
    *
    * @param key string The property of configuration.
    * @param value any The configuration value.
    *
    * @publicApi
    */
-  set: (key: string, value: any) => void;
+  replace: (key: string, value: any) => void;
   /**
    * Merge the configuration.
    *
@@ -110,7 +110,7 @@ export interface IConfigObserver extends Observer {
   *
   * @publicApi
   */
-  subscribe: (key: string, subscriber: IConfigSubscriber) => void | Promise<void>;
+  subscribe: (key: string, subscriber: IConfigSubscriber) => void;
   /**
   * Notify subscribers of configuration updates.
   *
@@ -125,13 +125,13 @@ export interface IConfigObserver extends Observer {
   *
   * @publicApi
   */
-  polling: () => void | Promise<void>;
+  polling: () => void;
   /**
   * Close the polling.
   *
   * @publicApi
   */
-  unPolling: () => void | Promise<void>;
+  unPolling: () => void;
   /**
   * Remove the subscriber from client by the key of configuration..
   *
@@ -150,7 +150,7 @@ export interface IConfigClient extends Observer {
    *
    * @publicApi
    */
-  load: <T = any>(loader: IConfigLoader) => T | Promise<T>;
+  init: <T = any>(loader: IConfigLoader) => T | Promise<T>;
   /**
    * Contrasting configuration.
    *
@@ -166,7 +166,7 @@ export interface IConfigClient extends Observer {
   *
   * @publicApi
   */
-  subscribe: (subscriber: IConfigClientSubscriber) => void | Promise<void>;
+  subscribe: (subscriber: IConfigClientSubscriber) => void;
   /**
   * Notify subscribers of configuration updates.
   *
@@ -180,13 +180,13 @@ export interface IConfigClient extends Observer {
   *
   * @publicApi
   */
-  polling: () => void | Promise<void>;
+  polling: () => void;
   /**
   * Close the polling.
   *
   * @publicApi
   */
-  unPolling: () => void | Promise<void>;
+  unPolling: () => void;
   /**
   * Remove the subscriber from client by the key of configuration..
   *

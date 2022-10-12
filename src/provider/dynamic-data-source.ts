@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
-import { CircularHandler, isValid, circular } from '@vodyani/utils';
+import { CircularHandler, circular } from '@vodyani/utils';
 
-import { IClient, IClientMediator, IConfigObserver, IConfigSubscriber, toHash } from '../common';
+import { IClientAdapter, IClientMediator, IConfigObserver, IConfigSubscriber, toHash } from '../common';
 
 import { ConfigProvider } from './config';
 
 @Injectable()
 export class AsyncDynamicDataSourceProvider<T = any, C = any> implements IClientMediator<T, C> {
-  private readonly clients = new Map<string, IClient<T, C>>();
+  private readonly clients = new Map<string, IClientAdapter<T, C>>();
 
   private readonly keys = new Set<string>();
 
@@ -27,7 +27,7 @@ export class AsyncDynamicDataSourceProvider<T = any, C = any> implements IClient
   }
 
   @This
-  public async deploy(key: string, client: IClient<T, C>) {
+  public async deploy(key: string, client: IClientAdapter<T, C>) {
     const config = this.config.get<C>(key);
 
     await client.create(config);
@@ -52,14 +52,14 @@ export class AsyncDynamicDataSourceProvider<T = any, C = any> implements IClient
   }
 
   @This
-  public update(key: string, value: any) {
-    this.redeploy(key, value);
+  public async update(key: string, value: any) {
+    await this.redeploy(key, value);
   }
 }
 
 @Injectable()
 export class DynamicDataSourceProvider<T = any, C = any> implements IClientMediator<T, C> {
-  private readonly clients = new Map<string, IClient<T, C>>();
+  private readonly clients = new Map<string, IClientAdapter<T, C>>();
 
   private readonly keys = new Set<string>();
 
@@ -78,7 +78,7 @@ export class DynamicDataSourceProvider<T = any, C = any> implements IClientMedia
   }
 
   @This
-  public deploy(key: string, client: IClient<T, C>) {
+  public deploy(key: string, client: IClientAdapter<T, C>) {
     const config = this.config.get<C>(key);
 
     client.create(config);
@@ -152,10 +152,6 @@ export class DynamicDataSourceConfigObserver<T = any> implements IConfigObserver
 
   @This
   public polling() {
-    if (isValid(this.poller)) {
-      this.unPolling();
-    }
-
     this.poller = circular(this.circularContrast, 1000);
   }
 
@@ -175,6 +171,8 @@ export class DynamicDataSourceConfigObserver<T = any> implements IConfigObserver
   private circularContrast() {
     this.keys.forEach((key) => {
       const value = this.config.get(key);
+
+      console.log(value);
 
       this.contrast(key, value);
     });
