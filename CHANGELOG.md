@@ -1,3 +1,10 @@
+# [8.6.0](https://github.com/vodyani/ark/compare/v8.5.2...v8.6.0) (2022-09-24)
+
+
+### Features
+
+* remove custom registration decorators and reduce base dependencies ([d03108c](https://github.com/vodyani/ark/commit/d03108c4d3cfee8b044178087c7231eba6871b93))
+
 # [8.6.0-beta.1](https://github.com/vodyani/ark/compare/v8.5.2...v8.6.0-beta.1) (2022-09-24)
 
 
