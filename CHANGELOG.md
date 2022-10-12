@@ -1,3 +1,10 @@
+# [8.7.0-beta.2](https://github.com/vodyani/ark/compare/v8.7.0-beta.1...v8.7.0-beta.2) (2022-10-12)
+
+
+### Bug Fixes
+
+* ark options by module on use ([64d7976](https://github.com/vodyani/ark/commit/64d79762b153de0c1e9ae2cc8bcb7514feaece67))
+
 # [8.7.0-beta.1](https://github.com/vodyani/ark/compare/v8.6.0...v8.7.0-beta.1) (2022-10-12)
 
 
