@@ -1,4 +1,6 @@
-import { ConfigHandlerOptions, IConfig, IConfigClientSubscriber, IConfigHandler, IConfigObserver } from '../common';
+import { IConfig, IConfigClientSubscriber, IConfigObserver } from '@vodyani/core';
+
+import { IConfigHandler, ConfigHandlerOptions } from '../common';
 
 abstract class AbstractConfigHandler<T = any> implements IConfigHandler<T> {
   protected next: IConfigHandler;

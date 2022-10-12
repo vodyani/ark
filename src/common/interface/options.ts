@@ -1,6 +1,5 @@
 import { ModuleMetadata } from '@nestjs/common';
-
-import { IConfigClient, IConfigLoader } from './config';
+import { IConfigClient, IConfigLoader } from '@vodyani/core';
 
 export interface ConfigClientOptions {
   client: IConfigClient;

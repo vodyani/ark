@@ -1,6 +1,6 @@
 import { FactoryProvider } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
-import { AsyncInjectable, AsyncProvider, AsyncProviderFactory } from '@vodyani/core';
+import { AsyncInjectable, AsyncProviderFactory } from '@vodyani/core';
 
 import { ConfigHandlerOptions } from '../common';
 import { ConfigClientSubscriber } from '../struct';
@@ -10,7 +10,7 @@ import { ConfigProvider } from './config';
 import { DynamicDataSourceConfigObserver } from './dynamic-data-source';
 
 @AsyncInjectable
-export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
+export class ArkManager extends AsyncProviderFactory {
   private options: ConfigHandlerOptions;
 
   @This

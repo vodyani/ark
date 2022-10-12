@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
+import { IConfig } from '@vodyani/core';
 import { isValidDict, toDeepMatch, toDeepMerge, toDeepSave } from '@vodyani/utils';
 import { cloneDeep } from 'lodash';
-
-import { IConfig } from '../common';
 
 @Injectable()
 export class ConfigProvider<T = any> implements IConfig<T> {

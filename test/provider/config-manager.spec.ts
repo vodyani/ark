@@ -3,8 +3,9 @@ import { resolve } from 'path';
 import { describe, expect, it } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import { sleep } from '@vodyani/utils';
+import { IClientAdapter } from '@vodyani/core';
 
-import { ArkManager, ArkModule, ArkOptions, AsyncDynamicDataSourceProvider, ConfigProvider, DynamicDataSourceConfigObserver, DynamicDataSourceProvider, IClientAdapter, JSONConfigLoader, LocalConfigClient } from '../../src';
+import { ArkManager, ArkModule, ArkOptions, AsyncDynamicDataSourceProvider, ConfigProvider, DynamicDataSourceConfigObserver, DynamicDataSourceProvider, JSONConfigLoader, LocalConfigClient } from '../../src';
 
 interface File {
   env: string;

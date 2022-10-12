@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
-import { CircularHandler, circular } from '@vodyani/utils';
-
-import { IClientAdapter, IClientMediator, IConfigObserver, IConfigSubscriber, toHash } from '../common';
+import { IClientMediator, IClientAdapter, IConfigObserver, IConfigSubscriber } from '@vodyani/core';
+import { CircularHandler, circular, toHash } from '@vodyani/utils';
 
 import { ConfigProvider } from './config';
 

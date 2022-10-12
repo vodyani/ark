@@ -1,8 +1,9 @@
 import { existsSync, readFileSync } from 'fs';
 
 import { toDeepMerge } from '@vodyani/utils';
+import { IConfigLoader } from '@vodyani/core';
 
-import { IConfigLoader, Yaml } from '../common';
+import { Yaml } from '../common';
 
 export class JSONConfigLoader implements IConfigLoader {
   constructor(

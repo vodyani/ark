@@ -1,6 +1,5 @@
-import { isValidString } from '@vodyani/utils';
-
-import { IConfigClient, IConfigLoader, IConfigClientSubscriber, toHash } from '../common';
+import { IConfigClient, IConfigClientSubscriber, IConfigLoader } from '@vodyani/core';
+import { isValidString, toHash } from '@vodyani/utils';
 
 export abstract class AbstractConfigClient implements IConfigClient {
   private subscriber: IConfigClientSubscriber;
