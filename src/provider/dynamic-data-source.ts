@@ -129,6 +129,7 @@ export class DynamicDataSourceConfigObserver<T = any> implements IConfigObserver
 
     if (afterHash !== beforeHash) {
       this.notify(key, value);
+      this.hash.set(key, afterHash);
     }
   }
 
@@ -174,6 +175,7 @@ export class DynamicDataSourceConfigObserver<T = any> implements IConfigObserver
   private circularContrast() {
     this.keys.forEach((key) => {
       const value = this.config.get(key);
+
       this.contrast(key, value);
     });
   }

@@ -12,20 +12,20 @@ export class JSONConfigLoader implements IConfigLoader {
   ) {}
 
   public execute() {
-    const defaultResult = this.readJSON(this.defaultEnv);
-    const currentResult = this.readJSON(this.currentEnv);
+    const defaultResult = this.readJSONFile(this.defaultEnv);
+    const currentResult = this.readJSONFile(this.currentEnv);
     const result = toDeepMatch(defaultResult, currentResult);
     return result;
   }
 
-  private readJSON(env: string) {
+  private readJSONFile(env: string) {
     const str = readFileSync(`${this.path}/${env}.json`, { encoding: 'utf8' });
     const result = JSON.parse(str);
     return result;
   }
 }
 
-export class YAMLConfigLoader implements IConfigLoader {
+export class YamlConfigLoader implements IConfigLoader {
   constructor(
     private readonly path: string,
     private readonly defaultEnv: string,
@@ -33,13 +33,13 @@ export class YAMLConfigLoader implements IConfigLoader {
   ) {}
 
   public execute() {
-    const defaultResult = this.readJSON(this.defaultEnv);
-    const currentResult = this.readJSON(this.currentEnv);
+    const defaultResult = this.readYamlFile(this.defaultEnv);
+    const currentResult = this.readYamlFile(this.currentEnv);
     const result = toDeepMatch(defaultResult, currentResult);
     return result;
   }
 
-  private readJSON(env: string) {
+  private readYamlFile(env: string) {
     const str = readFileSync(`${this.path}/${env}.yml`, { encoding: 'utf8' });
     const result = Yaml.load(str) as any;
     return result;

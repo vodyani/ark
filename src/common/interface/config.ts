@@ -1,5 +1,14 @@
 import { ConfigHandlerOptions } from './options';
 
+interface Observer {
+  contrast: (...args: any[]) => void;
+  subscribe: (...args: any[]) => void | Promise<void>;
+  notify: (...args: any[]) => void;
+  polling: (...args: any[]) => void | Promise<void>;
+  unPolling: (...args: any[]) => void | Promise<void>;
+  unSubscribe: (...args: any[]) => void;
+}
+
 export interface IConfig<T = any> {
   /**
    * Deep search the configuration with property key.
@@ -48,6 +57,17 @@ export interface IConfigSubscriber {
   update: (key: string, value: any) => void | Promise<void>
 }
 
+export interface IConfigClientSubscriber {
+  /**
+   * Updating Configuration.
+   *
+   * @param value any The configuration value.
+   *
+   * @publicApi
+   */
+  update: (value: any) => void | Promise<void>
+}
+
 export interface IConfigLoader {
   /**
    * Load configuration.
@@ -72,7 +92,7 @@ export interface IConfigPoller {
   close: () => void | Promise<void>;
 }
 
-export interface IConfigObserver {
+export interface IConfigObserver extends Observer {
   /**
    * Contrasting configuration.
    *
@@ -81,16 +101,16 @@ export interface IConfigObserver {
    *
    * @publicApi
    */
-  contrast?: (key: string, value: any) => void;
+  contrast: (key: string, value: any) => void;
   /**
   * Register the subscriber inside client by the key of configuration.
   *
   * @param key string The key of configuration.
-  * @param value any The configuration value.
+  * @param subscriber IConfigSubscriber The configuration subscriber..
   *
   * @publicApi
   */
-  subscribe?: (key: string, subscriber: IConfigSubscriber) => void;
+  subscribe: (key: string, subscriber: IConfigSubscriber) => void | Promise<void>;
   /**
   * Notify subscribers of configuration updates.
   *
@@ -99,19 +119,19 @@ export interface IConfigObserver {
   *
   * @publicApi
   */
-  notify?: (key: string, value: any) => void;
+  notify: (key: string, value: any) => void;
   /**
   * Open the polling.
   *
   * @publicApi
   */
-  polling?: () => void | Promise<void>;
+  polling: () => void | Promise<void>;
   /**
   * Close the polling.
   *
   * @publicApi
   */
-  unPolling?: () => void | Promise<void>;
+  unPolling: () => void | Promise<void>;
   /**
   * Remove the subscriber from client by the key of configuration..
   *
@@ -119,10 +139,10 @@ export interface IConfigObserver {
   *
   * @publicApi
   */
-  unSubscribe?: (key: string) => void;
+  unSubscribe: (key: string) => void;
 }
 
-export interface IConfigClient extends IConfigObserver {
+export interface IConfigClient extends Observer {
   /**
    * Load configuration.
    *
@@ -132,20 +152,47 @@ export interface IConfigClient extends IConfigObserver {
    */
   load: <T = any>(loader: IConfigLoader) => T | Promise<T>;
   /**
-   * Register the subscriber inside client.
+   * Contrasting configuration.
    *
-   * @param key string The key of configuration.
    * @param value any The configuration value.
    *
    * @publicApi
    */
-  subscribeAll?: (subscriber: IConfigSubscriber) => void;
+  contrast: (value: any) => void;
   /**
-   * Remove the subscriber from client.
-   *
-   * @publicApi
-   */
-  unSubscribeAll?: () => void;
+  * Register the subscriber inside client by the key of configuration.
+  *
+  * @param subscriber IConfigClientSubscriber The configuration client subscriber.
+  *
+  * @publicApi
+  */
+  subscribe: (subscriber: IConfigClientSubscriber) => void | Promise<void>;
+  /**
+  * Notify subscribers of configuration updates.
+  *
+  * @param value any The configuration value.
+  *
+  * @publicApi
+  */
+  notify: (value: any) => void;
+  /**
+  * Open the polling.
+  *
+  * @publicApi
+  */
+  polling: () => void | Promise<void>;
+  /**
+  * Close the polling.
+  *
+  * @publicApi
+  */
+  unPolling: () => void | Promise<void>;
+  /**
+  * Remove the subscriber from client by the key of configuration..
+  *
+  * @publicApi
+  */
+  unSubscribe: () => void;
 }
 
 export interface IConfigHandler<T = any> {

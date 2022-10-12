@@ -10,9 +10,9 @@ import {
 export class ArkModule {
   static forRoot(options: ArkOptions): DynamicModule {
     const manager = new ArkManager().create(options);
-    const { enableDynamicDataSource, global, imports } = options;
 
     const providers: any[] = [ConfigProvider, manager];
+    const { enableDynamicDataSource, global, imports } = options;
 
     if (enableDynamicDataSource) {
       providers.push(AsyncDynamicDataSourceProvider);

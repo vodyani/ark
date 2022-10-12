@@ -6,7 +6,7 @@ export interface ConfigClientOptions {
   client: IConfigClient;
   loader: IConfigLoader;
   enablePolling?: boolean;
-  enableSubscribeAll?: boolean;
+  enableSubscribe?: boolean;
 }
 
 export interface ConfigHandlerOptions<T = any> {

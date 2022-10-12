@@ -1,6 +1,6 @@
-import { ConfigHandlerOptions, IConfig, IConfigHandler, IConfigObserver, IConfigSubscriber } from '../common';
+import { ConfigHandlerOptions, IConfig, IConfigClientSubscriber, IConfigHandler, IConfigObserver } from '../common';
 
-abstract class AbstractConfigHandler<T = any> implements IConfigHandler<T> {
+abstract class ConfigHandler<T = any> implements IConfigHandler<T> {
   protected next: IConfigHandler;
 
   public setNext(handler: IConfigHandler) {
@@ -16,7 +16,7 @@ abstract class AbstractConfigHandler<T = any> implements IConfigHandler<T> {
   }
 }
 
-export class ConfigArgumentHandler<T = any> extends AbstractConfigHandler<T> {
+export class ConfigArgumentHandler<T = any> extends ConfigHandler<T> {
   constructor(
     private readonly config: IConfig<T>,
   ) {
@@ -30,23 +30,23 @@ export class ConfigArgumentHandler<T = any> extends AbstractConfigHandler<T> {
   }
 }
 
-export class ConfigClientHandler<T = any> extends AbstractConfigHandler<T> {
+export class ConfigClientHandler<T = any> extends ConfigHandler<T> {
   constructor(
-    private readonly subscriber: IConfigSubscriber,
+    private readonly subscriber: IConfigClientSubscriber,
   ) {
     super();
   }
 
   public async execute(options: ConfigHandlerOptions<T>) {
-    for (const { client, loader, enablePolling, enableSubscribeAll } of options.clients) {
+    for (const { client, loader, enablePolling, enableSubscribe } of options.clients) {
       await client.load(loader);
 
-      if (enablePolling && client.polling) {
+      if (enablePolling) {
         await client.polling();
       }
 
-      if (enableSubscribeAll && client.subscribeAll) {
-        client.subscribeAll(this.subscriber);
+      if (enableSubscribe) {
+        await client.subscribe(this.subscriber);
       }
     }
 
@@ -54,7 +54,7 @@ export class ConfigClientHandler<T = any> extends AbstractConfigHandler<T> {
   }
 }
 
-export class DynamicDataSourceConfigObserverHandler<T = any> extends AbstractConfigHandler<T> {
+export class DynamicDataSourceConfigObserverHandler<T = any> extends ConfigHandler<T> {
   constructor(
     private readonly observer: IConfigObserver,
   ) {

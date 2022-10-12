@@ -1,11 +1,11 @@
-import { IConfig, IConfigSubscriber } from '../common';
+import { IConfig, IConfigClientSubscriber } from '../common';
 
-export class ConfigSubscriber implements IConfigSubscriber {
+export class ConfigClientSubscriber implements IConfigClientSubscriber {
   constructor(
     private readonly config: IConfig,
   ) {}
 
-  public update(key: string, value: any) {
-    this.config.set(key, value);
+  public update(value: any) {
+    this.config.merge(value);
   }
 }

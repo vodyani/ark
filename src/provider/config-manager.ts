@@ -3,7 +3,7 @@ import { This } from '@vodyani/class-decorator';
 import { AsyncInjectable, AsyncProvider, AsyncProviderFactory } from '@vodyani/core';
 
 import { ArkOptions } from '../common';
-import { ConfigSubscriber } from '../struct';
+import { ConfigClientSubscriber } from '../struct';
 import { ConfigArgumentHandler, ConfigClientHandler, DynamicDataSourceConfigObserverHandler } from '../struct/config-handler';
 
 import { ConfigProvider } from './config';
@@ -40,7 +40,7 @@ export class ArkManager extends AsyncProvider implements AsyncProviderFactory {
     const handler = new ConfigArgumentHandler(config);
 
     if (this.options.clients) {
-      const subscriber = new ConfigSubscriber(config);
+      const subscriber = new ConfigClientSubscriber(config);
       const clientHandler = new ConfigClientHandler(subscriber);
 
       handlers.push(clientHandler);
