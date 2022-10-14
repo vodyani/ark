@@ -38,11 +38,7 @@ export class AsyncDynamicDataSourceProvider<T = any, C = any> implements IClient
   @This
   public async redeploy(key: string, config: C) {
     const client = this.getClient(key);
-
-    await client.create(config);
-
-    this.clients.set(key, client);
-    this.keys.add(key);
+    await client.redeploy(config);
   }
 
   @This
@@ -89,11 +85,7 @@ export class DynamicDataSourceProvider<T = any, C = any> implements IClientMedia
   @This
   public redeploy(key: string, config: C) {
     const client = this.getClient(key);
-
-    client.create(config);
-
-    this.clients.set(key, client);
-    this.keys.add(key);
+    client.redeploy(config);
   }
 
   @This
