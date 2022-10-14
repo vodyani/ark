@@ -1,6 +1,8 @@
 import { resolve } from 'path';
 
 import { describe, it, expect } from '@jest/globals';
+import { IConfigLoader } from '@vodyani/core';
+import { toHash, isValidString } from '@vodyani/utils';
 
 import { JSONConfigLoader, ConfigClientSubscriber, LocalConfigClient, ConfigProvider } from '../../src';
 
@@ -20,8 +22,28 @@ describe('LocalConfigClient', () => {
 
   it('LocalConfigClient', async () => {
     class DemoConfigClient extends LocalConfigClient {
+      private hash: string;
+
+      public init<T = any>(loader: IConfigLoader) {
+        const result = loader.execute<T>();
+        this.hash = toHash(result);
+        return result;
+      }
+
       public polling(): void {
         this.contrast({ poller: 'DemoConfigClient' });
+      }
+
+      public contrast(value: any) {
+        if (isValidString(this.hash)) {
+          const afterHash = toHash(value);
+          const beforeHash = this.hash;
+
+          if (afterHash !== beforeHash) {
+            this.notify(value);
+            this.hash = afterHash;
+          }
+        }
       }
     }
 

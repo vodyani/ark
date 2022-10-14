@@ -114,17 +114,6 @@ export class DynamicDataSourceConfigObserver<T = any> implements IConfigObserver
   ) {}
 
   @This
-  public contrast(key: string, value: any) {
-    const afterHash = toHash(value);
-    const beforeHash = this.hash.get(key);
-
-    if (afterHash !== beforeHash) {
-      this.notify(key, value);
-      this.hash.set(key, afterHash);
-    }
-  }
-
-  @This
   public subscribe(key: string, subscriber: IConfigSubscriber) {
     const config = this.config.get(key);
     const hash = toHash(config);
@@ -162,7 +151,25 @@ export class DynamicDataSourceConfigObserver<T = any> implements IConfigObserver
   private circularContrast() {
     this.keys.forEach((key) => {
       const value = this.config.get(key);
-      this.contrast(key, value);
+      const allowNotify = this.contrast(key, value);
+
+      if (allowNotify) {
+        this.notify(key, value);
+      }
     });
   }
+
+  @This
+  private contrast(key: string, value: any) {
+    const afterHash = toHash(value);
+    const beforeHash = this.hash.get(key);
+
+    if (afterHash !== beforeHash) {
+      this.hash.set(key, afterHash);
+      return true;
+    }
+
+    return false;
+  }
+
 }
