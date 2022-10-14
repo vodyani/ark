@@ -1,7 +1,7 @@
-import { IConfigClientSubscriber, IConfigLoader } from '@vodyani/core';
+import { IConfigClient, IConfigClientSubscriber, IConfigLoader } from '@vodyani/core';
 import { isValidString, toHash } from '@vodyani/utils';
 
-export class LocalConfigClient {
+export class LocalConfigClient implements IConfigClient {
   private subscriber: IConfigClientSubscriber;
 
   private hash: string;
@@ -30,14 +30,6 @@ export class LocalConfigClient {
 
   public notify(value: any) {
     this.subscriber.update(value);
-  }
-
-  public polling() {
-    // do somethings ...
-  }
-
-  public unPolling() {
-    // do somethings ...
   }
 
   public unSubscribe() {

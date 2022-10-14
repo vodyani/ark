@@ -18,8 +18,6 @@ interface File {
 class DemoConfigClient extends LocalConfigClient {
   public polling(): void {
     this.contrast({ poller: 'DemoConfigClient' });
-    super.polling();
-    super.unPolling();
   }
 }
 
