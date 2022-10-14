@@ -1,3 +1,10 @@
+## [8.7.1](https://github.com/vodyani/ark/compare/v8.7.0...v8.7.1) (2022-10-14)
+
+
+### Bug Fixes
+
+* interface define ([0d45db3](https://github.com/vodyani/ark/commit/0d45db374fc7ca9803ac86cb64e53fa50ba83d79))
+
 # [8.7.0](https://github.com/vodyani/ark/compare/v8.6.0...v8.7.0) (2022-10-12)
 
 
