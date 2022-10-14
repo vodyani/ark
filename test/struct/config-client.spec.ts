@@ -2,7 +2,7 @@ import { resolve } from 'path';
 
 import { describe, it, expect } from '@jest/globals';
 
-import { JSONConfigLoader, ConfigClientSubscriber, AbstractConfigClient, ConfigProvider } from '../../src';
+import { JSONConfigLoader, ConfigClientSubscriber, LocalConfigClient, ConfigProvider } from '../../src';
 
 interface File {
   json: {
@@ -19,7 +19,7 @@ describe('LocalConfigClient', () => {
   const loader = new JSONConfigLoader(jsonFilePath, 'DEFAULT', 'LOCAL');
 
   it('LocalConfigClient', async () => {
-    class DemoConfigClient extends AbstractConfigClient {
+    class DemoConfigClient extends LocalConfigClient {
       public polling(): void {
         this.contrast({ poller: 'DemoConfigClient' });
         super.polling();

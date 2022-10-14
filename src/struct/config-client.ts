@@ -1,7 +1,7 @@
-import { IConfigClient, IConfigClientSubscriber, IConfigLoader } from '@vodyani/core';
+import { IConfigClientSubscriber, IConfigLoader } from '@vodyani/core';
 import { isValidString, toHash } from '@vodyani/utils';
 
-export abstract class AbstractConfigClient implements IConfigClient {
+export class LocalConfigClient {
   private subscriber: IConfigClientSubscriber;
 
   private hash: string;
@@ -44,5 +44,3 @@ export abstract class AbstractConfigClient implements IConfigClient {
     this.subscriber = null;
   }
 }
-
-export class LocalConfigClient extends AbstractConfigClient {}

@@ -17,6 +17,12 @@ describe('ConfigLoader', () => {
     expect(config.json.list).toEqual([1, 2]);
     expect(config.json.name).toBe('json');
     expect(config.json.age).toBe(3);
+
+    const loader2 = new JSONConfigLoader(jsonFilePath, 'DEFAULT');
+    const config2 = loader2.execute();
+
+    expect(config2.json.list).toEqual([1]);
+    expect(config2.json.name).toBe('json');
   });
 
   it('YamlConfigLoader', async () => {
@@ -27,5 +33,11 @@ describe('ConfigLoader', () => {
     expect(config.yaml.list).toEqual([1, 2]);
     expect(config.yaml.name).toBe('yaml');
     expect(config.yaml.age).toBe(3);
+
+    const loader2 = new YamlConfigLoader(yamlFilePath, 'DEFAULT');
+    const config2 = loader2.execute();
+
+    expect(config2.yaml.list).toEqual([1]);
+    expect(config2.yaml.name).toBe('yaml');
   });
 });

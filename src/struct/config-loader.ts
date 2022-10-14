@@ -9,12 +9,18 @@ export class JSONConfigLoader implements IConfigLoader {
   constructor(
     private readonly path: string,
     private readonly defaultEnv: string,
-    private readonly currentEnv: string,
+    private readonly currentEnv?: string,
   ) {}
 
   public execute() {
     const defaultResult = this.readJSONFile(this.defaultEnv);
+
+    if (!this.currentEnv) {
+      return defaultResult;
+    }
+
     const currentResult = this.readJSONFile(this.currentEnv);
+
     return toDeepMerge(defaultResult, currentResult);
   }
 
@@ -29,12 +35,18 @@ export class YamlConfigLoader implements IConfigLoader {
   constructor(
     private readonly path: string,
     private readonly defaultEnv: string,
-    private readonly currentEnv: string,
+    private readonly currentEnv?: string,
   ) {}
 
   public execute() {
     const defaultResult = this.readYamlFile(this.defaultEnv);
+
+    if (!this.currentEnv) {
+      return defaultResult;
+    }
+
     const currentResult = this.readYamlFile(this.currentEnv);
+
     return toDeepMerge(defaultResult, currentResult);
   }
 

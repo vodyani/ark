@@ -2,7 +2,7 @@ import { resolve } from 'path';
 
 import { describe, expect, it } from '@jest/globals';
 
-import { ConfigClientSubscriber, ConfigHandlerOptions, ConfigProvider, JSONConfigLoader, AbstractConfigClient } from '../../src';
+import { ConfigClientSubscriber, ConfigHandlerOptions, ConfigProvider, JSONConfigLoader, LocalConfigClient } from '../../src';
 import { ConfigArgumentHandler, ConfigClientHandler } from '../../src/struct/config-handler';
 
 interface File {
@@ -15,7 +15,7 @@ interface File {
   poller?: string;
 }
 
-class DemoConfigClient extends AbstractConfigClient {
+class DemoConfigClient extends LocalConfigClient {
   public polling(): void {
     this.contrast({ poller: 'DemoConfigClient' });
     super.polling();
