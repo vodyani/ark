@@ -1,3 +1,11 @@
+## [8.7.2](https://github.com/vodyani/ark/compare/v8.7.1...v8.7.2) (2022-10-14)
+
+
+### Bug Fixes
+
+* client adapter ([48a883e](https://github.com/vodyani/ark/commit/48a883e344c309d5d2920a64c300ce9368662787))
+* client adapter ([00f79d2](https://github.com/vodyani/ark/commit/00f79d2b226f8f4930527ae31f580e1dc1bfa306))
+
 ## [8.7.1](https://github.com/vodyani/ark/compare/v8.7.0...v8.7.1) (2022-10-14)
 
 
