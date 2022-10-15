@@ -1,3 +1,10 @@
+## [8.7.5](https://github.com/vodyani/ark/compare/v8.7.4...v8.7.5) (2022-10-15)
+
+
+### Bug Fixes
+
+* ark options & docs ([aef06f4](https://github.com/vodyani/ark/commit/aef06f44ba3e0fd978fd59d0315e7d1b5ccb46c1))
+
 ## [8.7.4](https://github.com/vodyani/ark/compare/v8.7.3...v8.7.4) (2022-10-15)
 
 
