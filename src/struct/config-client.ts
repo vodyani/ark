@@ -3,8 +3,8 @@ import { IConfigClient, IConfigClientSubscriber, IConfigLoader } from '@vodyani/
 export class LocalConfigClient implements IConfigClient {
   private subscriber: IConfigClientSubscriber;
 
-  public init<T = any>(loader: IConfigLoader) {
-    const result = loader.execute<T>();
+  public init<T = any>(loader: IConfigLoader<T>) {
+    const result = loader.execute();
     return result;
   }
 

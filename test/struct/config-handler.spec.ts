@@ -20,8 +20,8 @@ interface File {
 class DemoConfigClient extends LocalConfigClient {
   private hash: string;
 
-  public init<T = any>(loader: IConfigLoader) {
-    const result = loader.execute<T>();
+  public init<T = any>(loader: IConfigLoader<T>) {
+    const result = loader.execute();
     this.hash = toHash(result);
     return result;
   }
