@@ -1,3 +1,10 @@
+## [8.7.4](https://github.com/vodyani/ark/compare/v8.7.3...v8.7.4) (2022-10-15)
+
+
+### Bug Fixes
+
+* reconstructing the data structure ([d7b6b4f](https://github.com/vodyani/ark/commit/d7b6b4fc450f9678745aa6aadca40bc5594302fd))
+
 ## [8.7.3](https://github.com/vodyani/ark/compare/v8.7.2...v8.7.3) (2022-10-14)
 
 
