@@ -19,4 +19,12 @@ export class LocalConfigClient implements IConfigClient {
   public unSubscribe() {
     this.subscriber = null;
   }
+
+  public polling() {
+    // do something ...
+  }
+
+  public unPolling() {
+    // do something ...
+  }
 }

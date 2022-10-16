@@ -7,7 +7,6 @@ abstract class AbstractConfigHandler<T = any> implements IConfigHandler<T> {
 
   public setNext(handler: IConfigHandler) {
     this.next = handler;
-
     return handler;
   }
 
