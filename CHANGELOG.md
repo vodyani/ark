@@ -1,3 +1,10 @@
+## [8.7.6](https://github.com/vodyani/ark/compare/v8.7.5...v8.7.6) (2022-10-16)
+
+
+### Bug Fixes
+
+* config handler workflow ([225dd7c](https://github.com/vodyani/ark/commit/225dd7cf242958dfe81281c0c8fbcf4991313e05))
+
 ## [8.7.5](https://github.com/vodyani/ark/compare/v8.7.4...v8.7.5) (2022-10-15)
 
 
