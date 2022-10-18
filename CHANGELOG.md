@@ -1,3 +1,10 @@
+## [8.7.7](https://github.com/vodyani/ark/compare/v8.7.6...v8.7.7) (2022-10-18)
+
+
+### Bug Fixes
+
+* deep replace ([2f067ff](https://github.com/vodyani/ark/commit/2f067ff0cde5c7547c190e0329cbfc68e00e7e5d))
+
 ## [8.7.6](https://github.com/vodyani/ark/compare/v8.7.5...v8.7.6) (2022-10-16)
 
 
