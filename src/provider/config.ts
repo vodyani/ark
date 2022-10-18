@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
 import { IConfig } from '@vodyani/core';
-import { isValidDict, toDeepMatch, toDeepMerge, toDeepSave } from '@vodyani/utils';
+import { isValidDict, toDeepMatch, toDeepMerge, toDeepReplace } from '@vodyani/utils';
 import { cloneDeep } from 'lodash';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class ConfigProvider<T = any> implements IConfig<T> {
 
   @This
   public replace(key: string, value: any) {
-    toDeepSave(this.writeConfig, value, key);
+    this.writeConfig = toDeepReplace(this.writeConfig, value, key);
     this.updateReadonlyConfig();
   }
 
