@@ -1,3 +1,10 @@
+## [8.7.8](https://github.com/vodyani/ark/compare/v8.7.7...v8.7.8) (2022-10-21)
+
+
+### Bug Fixes
+
+* fix the provider deps ([4cf2528](https://github.com/vodyani/ark/commit/4cf2528cb6067ad9605ae800732242bff573b633))
+
 ## [8.7.7](https://github.com/vodyani/ark/compare/v8.7.6...v8.7.7) (2022-10-18)
 
 
