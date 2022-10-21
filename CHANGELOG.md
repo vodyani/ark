@@ -1,3 +1,10 @@
+## [8.7.9](https://github.com/vodyani/ark/compare/v8.7.8...v8.7.9) (2022-10-21)
+
+
+### Bug Fixes
+
+* ark manager inject ([1b018e6](https://github.com/vodyani/ark/commit/1b018e6269f0d0123885307fae79c93b673f3af4))
+
 ## [8.7.8](https://github.com/vodyani/ark/compare/v8.7.7...v8.7.8) (2022-10-21)
 
 
