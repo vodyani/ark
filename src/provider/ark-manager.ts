@@ -7,7 +7,7 @@ import { ConfigClientSubscriber } from '../struct';
 import { ConfigArgumentHandler, ConfigClientHandler, DynamicDataSourceConfigObserverHandler } from '../struct/config-handler';
 
 import { ConfigProvider } from './config';
-import { DynamicDataSourceConfigObserver } from './dynamic-data-source';
+import { DynamicDataSourceConfigObserver } from './dynamic-data-source-observer';
 
 @AsyncInjectable
 export class ArkManager extends AsyncProviderFactory {
