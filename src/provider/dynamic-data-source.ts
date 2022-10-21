@@ -5,8 +5,6 @@ import { IClientMediator, IClientAdapter } from '@vodyani/core';
 import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
 
-const b = ArkManager.getToken();
-
 @Injectable()
 export class AsyncDynamicDataSourceProvider<T = any, C = any> implements IClientMediator<T, C> {
   private readonly clients = new Map<string, IClientAdapter<T, C>>();
@@ -14,7 +12,7 @@ export class AsyncDynamicDataSourceProvider<T = any, C = any> implements IClient
   private readonly keys = new Set<string>();
 
   constructor(
-    @Inject(b)
+    @Inject(ArkManager.getToken())
     private readonly config: ConfigProvider<C>,
   ) {}
 
@@ -62,7 +60,7 @@ export class DynamicDataSourceProvider<T = any, C = any> implements IClientMedia
   private readonly keys = new Set<string>();
 
   constructor(
-    @Inject(b)
+    @Inject(ArkManager.getToken())
     private readonly config: ConfigProvider<C>,
   ) {}
 
