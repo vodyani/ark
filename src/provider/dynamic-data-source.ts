@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { This } from '@vodyani/class-decorator';
-import { IClientMediator, IClientAdapter } from '@vodyani/core';
+import { IClientMediator, IClientAdapter, AsyncInject } from '@vodyani/core';
 
 import { ArkManager } from './ark-manager';
 import { ConfigProvider } from './config';
@@ -12,7 +12,7 @@ export class AsyncDynamicDataSourceProvider<T = any, C = any> implements IClient
   private readonly keys = new Set<string>();
 
   constructor(
-    @Inject(ArkManager.getToken())
+    @AsyncInject(ArkManager)
     private readonly config: ConfigProvider<C>,
   ) {}
 
@@ -60,7 +60,7 @@ export class DynamicDataSourceProvider<T = any, C = any> implements IClientMedia
   private readonly keys = new Set<string>();
 
   constructor(
-    @Inject(ArkManager.getToken())
+    @AsyncInject(ArkManager)
     private readonly config: ConfigProvider<C>,
   ) {}
 

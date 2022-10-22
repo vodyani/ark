@@ -2,7 +2,7 @@ import { IConfig, IConfigClientSubscriber, IConfigObserver } from '@vodyani/core
 
 import { IConfigHandler, ConfigHandlerOptions } from '../common';
 
-abstract class AbstractConfigHandler<T = any> implements IConfigHandler<T> {
+export abstract class AbstractConfigHandler<T = any> implements IConfigHandler<T> {
   protected next: IConfigHandler;
 
   public setNext(handler: IConfigHandler) {
