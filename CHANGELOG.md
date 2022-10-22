@@ -1,3 +1,10 @@
+## [8.7.10](https://github.com/vodyani/ark/compare/v8.7.9...v8.7.10) (2022-10-22)
+
+
+### Bug Fixes
+
+* fix the use of asynchronous injection 💉 ([c228518](https://github.com/vodyani/ark/commit/c22851863872fba372c5858459b7431c6d6aab9d))
+
 ## [8.7.9](https://github.com/vodyani/ark/compare/v8.7.8...v8.7.9) (2022-10-21)
 
 
