@@ -1,3 +1,10 @@
+# [8.8.0](https://github.com/vodyani/ark/compare/v8.7.10...v8.8.0) (2022-10-26)
+
+
+### Features
+
+* support for passing empty initialization parameters ([71534a6](https://github.com/vodyani/ark/commit/71534a64822abd8477c19b09d7bd8fc8988b8779))
+
 ## [8.7.10](https://github.com/vodyani/ark/compare/v8.7.9...v8.7.10) (2022-10-22)
 
 
