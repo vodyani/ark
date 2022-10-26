@@ -8,7 +8,7 @@ export interface ConfigClientOptions {
 }
 
 export interface ConfigHandlerOptions<T = any> {
-  args: T;
+  args?: T;
   clients?: ConfigClientOptions[];
   enableDynamicDataSource?: boolean;
 }

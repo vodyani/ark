@@ -25,14 +25,14 @@ export class ArkManager extends AsyncProviderFactory {
     this.options = options;
 
     return {
-      useFactory: this.getProvider,
+      useFactory: this.useFactory,
       provide: ArkManager.getToken(),
       inject,
     };
   }
 
   @This
-  private async getProvider(
+  private async useFactory(
     config: ConfigProvider,
     observer?: DynamicDataSourceConfigObserver,
   ) {

@@ -25,7 +25,9 @@ export class ConfigArgumentHandler<T = any> extends AbstractConfigHandler<T> {
   }
 
   public async execute(options: ConfigHandlerOptions<T>) {
-    this.config.merge(options.args);
+    if (options.args) {
+      this.config.merge(options.args);
+    }
 
     await super.execute(options);
   }
